@@ -21,6 +21,7 @@
 #include <linux/pinctrl/machine.h>
 #include <linux/pinctrl/pinctrl.h>
 #include <linux/pinctrl/pinconf.h>
+#include <linux/pinctrl/pinconf-generic.h>
 #include "core.h"
 #include "pinconf.h"
 
@@ -169,9 +170,21 @@ int pinconf_apply_setting(const struct pinctrl_setting *setting)
 				setting->data.configs.configs,
 				setting->data.configs.num_configs);
 		if (ret < 0) {
+#ifdef CONFIG_OF
 			dev_err(pctldev->dev,
-				"pin_config_set op failed for pin %d\n",
+				"%s error %d setting %s for pin %d\n",
+				pctldev->desc->name, ret,
+				pinconf_generic_get_param_property_name(
+					pctldev, setting->data.configs.num_configs,
+					setting->data.configs.configs),
 				setting->data.configs.group_or_pin);
+#endif
+
+			dev_err(pctldev->dev,
+				"pin_config_set op failed for %s pin %d\n",
+				pctldev->desc->name,
+				setting->data.configs.group_or_pin);
+
 			return ret;
 		}
 		break;
