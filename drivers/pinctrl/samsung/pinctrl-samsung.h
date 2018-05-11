@@ -16,6 +16,7 @@
 #include <linux/pinctrl/pinctrl.h>
 #include <linux/pinctrl/pinmux.h>
 #include <linux/pinctrl/pinconf.h>
+#include <linux/pinctrl/pinconf-generic.h>
 #include <linux/pinctrl/consumer.h>
 #include <linux/pinctrl/machine.h>
 
@@ -31,14 +32,14 @@
  * @PINCFG_TYPE_PUD_PDN: Pull up/down configuration in power down mode.
  */
 enum pincfg_type {
-	PINCFG_TYPE_FUNC,
-	PINCFG_TYPE_DAT,
-	PINCFG_TYPE_PUD,
-	PINCFG_TYPE_DRV,
-	PINCFG_TYPE_CON_PDN,
-	PINCFG_TYPE_PUD_PDN,
+	PINCFG_TYPE_FUNC = (PIN_CONFIG_END + 1),
+	PINCFG_TYPE_DAT = (PIN_CONFIG_END + 2),
+	PINCFG_TYPE_PUD = (PIN_CONFIG_END + 3),
+	PINCFG_TYPE_DRV = (PIN_CONFIG_END + 4),
+	PINCFG_TYPE_CON_PDN = (PIN_CONFIG_END + 5),
+	PINCFG_TYPE_PUD_PDN = (PIN_CONFIG_END + 6),
 
-	PINCFG_TYPE_NUM
+	PINCFG_TYPE_NUM = (PIN_CONFIG_END + 7)
 };
 
 /*
