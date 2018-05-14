@@ -33,6 +33,22 @@
 /* maximum number of the memory resources */
 #define	SAMSUNG_PINCTRL_NUM_RESOURCES	2
 
+/* number of fsels */
+#define SAMSUNG_PINCTRL_NUM_FUNCIONTS	EXYNOS_PIN_FUNC_F +1
+
+/* list fsels */
+static const char * const exynos_functions[SAMSUNG_PINCTRL_NUM_FUNCIONTS] = {
+	/* each pin can have 7 alternate functions */
+	[EXYNOS_PIN_FUNC_INPUT] = "gpio_in",	/* input is alt0 */
+	[EXYNOS_PIN_FUNC_OUTPUT] = "gpio_out",	/* output is alt1 */
+	[EXYNOS_PIN_FUNC_2] = "alt2",
+	[EXYNOS_PIN_FUNC_3] = "alt3",
+	[EXYNOS_PIN_FUNC_4] = "alt4",
+	[EXYNOS_PIN_FUNC_5] = "alt5",
+	[EXYNOS_PIN_FUNC_6] = "alt6",
+	[EXYNOS_PIN_FUNC_EINT] = "eint",	/* EINT alt7 */
+};
+
 /* list of all possible config options supported */
 static struct pin_config {
 	const char *property;
@@ -317,6 +333,7 @@ static int samsung_pinmux_get_groups(struct pinctrl_dev *pctldev,
 	drvdata = pinctrl_dev_get_drvdata(pctldev);
 	*groups = drvdata->pmx_functions[selector].groups;
 	*num_groups = drvdata->pmx_functions[selector].num_groups;
+
 	return 0;
 }
 
@@ -378,6 +395,8 @@ static void samsung_pinmux_setup(struct pinctrl_dev *pctldev, unsigned selector,
 	writel(data, reg + type->reg_offset[PINCFG_TYPE_FUNC]);
 
 	spin_unlock_irqrestore(&bank->slock, flags);
+
+	dev_info(pctldev->dev, "what reg write %s for %d\n", func->name, func->val);
 }
 
 /* enable a specified pinmux by writing to registers */
@@ -656,6 +675,8 @@ static struct samsung_pin_group *samsung_pinctrl_create_groups(
 		grp->name = pdesc->name;
 		grp->pins = &pdesc->number;
 		grp->num_pins = 1;
+
+		dev_info(dev, "Group name: %s\n", pdesc->name);
 	}
 
 	*cnt = ctrldesc->npins;

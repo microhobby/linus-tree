@@ -6,6 +6,7 @@ config PINCTRL_SAMSUNG
 	bool
 	select PINMUX
 	select PINCONF
+	select GENERIC_PINCONF
 
 config PINCTRL_EXYNOS
 	bool "Pinctrl driver data for Samsung EXYNOS SoCs other than 5440"

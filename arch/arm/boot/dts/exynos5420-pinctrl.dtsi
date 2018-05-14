@@ -656,6 +656,11 @@
 		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
 		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
 		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
+		output-high;
+		/*pins = "gpb2-2";
+		function = <EXYNOS_PIN_FUNC_2>;
+		drive-strength = <0>;
+		bias-disable;*/
 	};
 
 	pwm3_out: pwm3-out {

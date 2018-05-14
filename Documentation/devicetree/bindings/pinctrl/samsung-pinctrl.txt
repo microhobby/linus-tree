@@ -90,7 +90,17 @@ Required Properties:
   for the specified pin group. This property is optional in the child node if
   no specific function selection is desired for the pins listed in the child
   node. The value of this property is used as-is to program the pin-controller
-  function selector register of the pin-bank.
+  function selector register of the pin-bank. You can use a string or a integer
+  to describe the function:
+
+    0: gpio_in
+    1: gpio_out
+    2: alt2
+    3: alt3
+    4: alt4
+    5: alt5
+    6: alt6
+  0xf: external_interrupt
 
   The child node can also optionally specify one or more of the pin
   configuration that should be applied on all the pins listed in the
