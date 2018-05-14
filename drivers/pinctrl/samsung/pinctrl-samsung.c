@@ -24,6 +24,7 @@
 #include <linux/irqdomain.h>
 #include <linux/of_device.h>
 #include <linux/spinlock.h>
+#include <linux/pinctrl/pinconf-generic.h>
 
 #include <dt-bindings/pinctrl/samsung.h>
 
@@ -202,7 +203,14 @@ static int samsung_dt_subnode_to_map(struct samsung_pinctrl_drv_data *drvdata,
 	struct property *prop;
 	const char *group;
 	bool has_func = false;
+	struct pinctrl_dev *pctldev = drvdata->pctl_dev;
 
+	/* Check for generic binding in this node */
+	ret = pinconf_generic_dt_node_to_map_all(pctldev, np, map, num_maps);
+	if (ret || *num_maps)
+		return ret;
+
+	/* Generic binding did not find anything continue with legacy parse */
 	ret = of_property_read_u32(np, "samsung,pin-function", &val);
 	if (!ret)
 		has_func = true;
