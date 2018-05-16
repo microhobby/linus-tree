@@ -652,14 +652,14 @@
 	};
 
 	pwm2_out: pwm2-out {
-		samsung,pins = "gpb2-2";
+		/*samsung,pins = "gpb2-2";
 		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
 		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
-		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-		/*pins = "gpb2-2";
-		function = <EXYNOS_PIN_FUNC_2>;
-		drive-strength = <0>;
-		bias-disable;*/
+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;*/
+		pins = "gpb2-2";
+		function = "alt2";
+		drive-strength = <0>;	/* 0 mA */
+		bias-disable;
 	};
 
 	pwm3_out: pwm3-out {
@@ -668,6 +668,13 @@
 		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
 		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
 	};
+
+	/*buceta_cabiluda: buceta {
+		pins = "gpb2-2", "gpb2-3";
+		function = "alt2";
+		drive-strength = <0>;
+		bias-disable;
+	};*/
 
 	i2c7_hs_bus: i2c7-hs-bus {
 		samsung,pins = "gpb2-2", "gpb2-3";

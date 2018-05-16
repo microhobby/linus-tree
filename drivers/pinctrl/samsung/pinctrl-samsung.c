@@ -15,6 +15,8 @@
 // but provides extensions to which platform specific implementation of the gpio
 // and wakeup interrupts can be hooked to.
 
+#define DEBUG
+
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
@@ -34,20 +36,20 @@
 /* maximum number of the memory resources */
 #define	SAMSUNG_PINCTRL_NUM_RESOURCES	2
 
-/* number of fsels */
-#define SAMSUNG_PINCTRL_NUM_FUNCIONTS	EXYNOS_PIN_FUNC_F +1
-
-/* list fsels */
-static const char * const exynos_functions[SAMSUNG_PINCTRL_NUM_FUNCIONTS] = {
+/* list alternate functions */
+static struct pin_mux {
+	int func;
+	const char *name;
+} mux_functions[] = {
 	/* each pin can have 7 alternate functions */
-	[EXYNOS_PIN_FUNC_INPUT] = "gpio_in",	/* input is alt0 */
-	[EXYNOS_PIN_FUNC_OUTPUT] = "gpio_out",	/* output is alt1 */
-	[EXYNOS_PIN_FUNC_2] = "alt2",
-	[EXYNOS_PIN_FUNC_3] = "alt3",
-	[EXYNOS_PIN_FUNC_4] = "alt4",
-	[EXYNOS_PIN_FUNC_5] = "alt5",
-	[EXYNOS_PIN_FUNC_6] = "alt6",
-	[EXYNOS_PIN_FUNC_EINT] = "eint",	/* EINT alt7 */
+	{ EXYNOS_PIN_FUNC_INPUT, "gpio_in" },	/* input is alt0 */
+	{ EXYNOS_PIN_FUNC_OUTPUT, "gpio_out" },	/* output is alt1 */
+	{ EXYNOS_PIN_FUNC_2, "alt2" },
+	{ EXYNOS_PIN_FUNC_3, "alt3" },
+	{ EXYNOS_PIN_FUNC_4, "alt4" },
+	{ EXYNOS_PIN_FUNC_5, "alt5" },
+	{ EXYNOS_PIN_FUNC_6, "alt6" },
+	{ EXYNOS_PIN_FUNC_EINT, "eint" },	/* EINT alt7 */
 };
 
 /* list of all possible config options supported */
@@ -210,6 +212,15 @@ static int samsung_dt_subnode_to_map(struct samsung_pinctrl_drv_data *drvdata,
 	if (ret || *num_maps)
 		return ret;
 
+<<<<<<< Updated upstream
+=======
+	/* Check for generic bindinf in this node */
+	ret = pinconf_generic_dt_node_to_map_all(drvdata->pctl_dev, np, map,
+		num_maps);
+	if (ret || *num_maps)
+		return ret;
+
+>>>>>>> Stashed changes
 	/* Generic binding did not find anything continue with legacy parse */
 	ret = of_property_read_u32(np, "samsung,pin-function", &val);
 	if (!ret)
@@ -218,7 +229,7 @@ static int samsung_dt_subnode_to_map(struct samsung_pinctrl_drv_data *drvdata,
 	for (i = 0; i < ARRAY_SIZE(cfg_params); i++) {
 		ret = of_property_read_u32(np, cfg_params[i].property, &val);
 		if (!ret) {
-			config = PINCFG_PACK(cfg_params[i].param, val);
+			config = pinconf_to_config_packed(cfg_params[i].param, val);
 			ret = add_config(dev, &configs, &num_configs, config);
 			if (ret < 0)
 				goto exit;
@@ -404,7 +415,12 @@ static void samsung_pinmux_setup(struct pinctrl_dev *pctldev, unsigned selector,
 
 	spin_unlock_irqrestore(&bank->slock, flags);
 
+<<<<<<< Updated upstream
 	dev_info(pctldev->dev, "what reg write %s for %d\n", func->name, func->val);
+=======
+	dev_dbg(pctldev->dev, "write reg group:%s, func:%s, val:%d\n",
+			grp->name, func->name, func->val);
+>>>>>>> Stashed changes
 }
 
 /* enable a specified pinmux by writing to registers */
@@ -432,18 +448,28 @@ static int samsung_pinconf_rw(struct pinctrl_dev *pctldev, unsigned int pin,
 	const struct samsung_pin_bank_type *type;
 	struct samsung_pin_bank *bank;
 	void __iomem *reg_base;
-	enum pincfg_type cfg_type = PINCFG_UNPACK_TYPE(*config);
+	enum pincfg_type cfg_type = pinconf_to_config_param(*config);
 	u32 data, width, pin_offset, mask, shift;
 	u32 cfg_value, cfg_reg;
 	unsigned long flags;
+	int i;
 
 	drvdata = pinctrl_dev_get_drvdata(pctldev);
 	pin_to_reg_bank(drvdata, pin - drvdata->pin_base, &reg_base,
 					&pin_offset, &bank);
 	type = bank->type;
 
-	if (cfg_type >= PINCFG_TYPE_NUM || !type->fld_width[cfg_type])
+	/*for (i = 0; i < ARRAY_SIZE(type->fld_width); i++) {
+		dev_info(pctldev->dev, "maldito it:%d, val:%d\n", i, type->fld_width[i]);
+	}*/
+
+	dev_dbg(pctldev->dev, "pinconf pin:%d, type:%d, val:%d",
+			pin, cfg_type, pinconf_to_config_argument(*config));
+
+	if (cfg_type >= PINCFG_TYPE_NUM || !type->fld_width[cfg_type]) {
+		dev_info(pctldev->dev, "MALDIÇÃO INVALIDA");
 		return -EINVAL;
+	}
 
 	width = type->fld_width[cfg_type];
 	cfg_reg = type->reg_offset[cfg_type];
@@ -455,17 +481,20 @@ static int samsung_pinconf_rw(struct pinctrl_dev *pctldev, unsigned int pin,
 	data = readl(reg_base + cfg_reg);
 
 	if (set) {
-		cfg_value = PINCFG_UNPACK_VALUE(*config);
+		cfg_value = pinconf_to_config_argument(*config);
 		data &= ~(mask << shift);
 		data |= (cfg_value << shift);
 		writel(data, reg_base + cfg_reg);
 	} else {
 		data >>= shift;
 		data &= mask;
-		*config = PINCFG_PACK(cfg_type, data);
+		*config = pinconf_to_config_packed(cfg_type, data);
 	}
 
 	spin_unlock_irqrestore(&bank->slock, flags);
+
+	dev_dbg(pctldev->dev, "ak pinconf pin:%d, type:%d, val:%d",
+			pin, cfg_type, pinconf_to_config_argument(*config));
 
 	return 0;
 }
@@ -697,10 +726,17 @@ static int samsung_pinctrl_create_function(struct device *dev,
 				struct samsung_pmx_func *func)
 {
 	int npins;
-	int ret;
+	int ret, err_generic;
 	int i;
 
+<<<<<<< Updated upstream
 	if (of_property_read_u32(func_np, "samsung,pin-function", &func->val))
+=======
+	ret = of_property_read_u32(func_np, "samsung,pin-function", &func->val);
+	err_generic = of_property_read_string(func_np, "function", &func->generic_val);
+
+	if (ret && err_generic)
+>>>>>>> Stashed changes
 		return 0;
 
 	npins = of_property_count_strings(func_np, "samsung,pins");
@@ -709,7 +745,16 @@ static int samsung_pinctrl_create_function(struct device *dev,
 		return -EINVAL;
 	}
 
-	func->name = func_np->full_name;
+	if (err_generic)
+		func->name = func_np->full_name;
+	else {
+		func->name = func->generic_val;
+		/* get value from alternate functions */
+		for (i = 0; i < ARRAY_SIZE(mux_functions); i++) {
+			if (strcmp(mux_functions[i].name, func->generic_val) == 0)
+			 	func->val = mux_functions[i].func;
+		}
+	}
 
 	func->groups = devm_kzalloc(dev, npins * sizeof(char *), GFP_KERNEL);
 	if (!func->groups)

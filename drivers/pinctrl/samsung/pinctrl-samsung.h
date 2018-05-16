@@ -31,16 +31,16 @@
  * @PINCFG_TYPE_CON_PDN: Pin function in power down mode.
  * @PINCFG_TYPE_PUD_PDN: Pull up/down configuration in power down mode.
  */
-enum pincfg_type {
-	PINCFG_TYPE_FUNC = (PIN_CONFIG_END + 1),
-	PINCFG_TYPE_DAT = (PIN_CONFIG_END + 2),
-	PINCFG_TYPE_PUD = (PIN_CONFIG_END + 3),
-	PINCFG_TYPE_DRV = (PIN_CONFIG_END + 4),
-	PINCFG_TYPE_CON_PDN = (PIN_CONFIG_END + 5),
-	PINCFG_TYPE_PUD_PDN = (PIN_CONFIG_END + 6),
+ enum pincfg_type {
+ 	PINCFG_TYPE_FUNC = (PIN_CONFIG_END + 1),
+ 	PINCFG_TYPE_DAT = (PIN_CONFIG_END + 2),
+ 	PINCFG_TYPE_PUD = (PIN_CONFIG_END + 3),
+ 	PINCFG_TYPE_DRV = (PIN_CONFIG_END + 4),
+ 	PINCFG_TYPE_CON_PDN = (PIN_CONFIG_END + 5),
+ 	PINCFG_TYPE_PUD_PDN = (PIN_CONFIG_END + 6),
 
-	PINCFG_TYPE_NUM = (PIN_CONFIG_END + 7)
-};
+ 	PINCFG_TYPE_NUM = (PIN_CONFIG_END + 7)
+ };
 
 /*
  * pin configuration (pull up/down and drive strength) type and its value are

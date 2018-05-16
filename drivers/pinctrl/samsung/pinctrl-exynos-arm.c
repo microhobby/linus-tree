@@ -23,13 +23,15 @@
 #include "pinctrl-exynos.h"
 
 static const struct samsung_pin_bank_type bank_type_off = {
-	.fld_width = { 4, 1, 2, 2, 2, 2, },
-	.reg_offset = { 0x00, 0x04, 0x08, 0x0c, 0x10, 0x14, },
+	.fld_width = { [PIN_CONFIG_BIAS_DISABLE] = 
+			/* legacy */
+			[PINCFG_TYPE_NUM -6] = 4, 1, 2, 2, 2, 2, },
+	.reg_offset = { [PINCFG_TYPE_NUM -6] = 0x00, 0x04, 0x08, 0x0c, 0x10, 0x14, },
 };
 
 static const struct samsung_pin_bank_type bank_type_alive = {
-	.fld_width = { 4, 1, 2, 2, },
-	.reg_offset = { 0x00, 0x04, 0x08, 0x0c, },
+	.fld_width = { [PINCFG_TYPE_NUM -4] = 4, 1, 2, 2, },
+	.reg_offset = { [PINCFG_TYPE_NUM -4] = 0x00, 0x04, 0x08, 0x0c, },
 };
 
 /* Retention control for S5PV210 are located at the end of clock controller */
