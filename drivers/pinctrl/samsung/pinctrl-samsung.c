@@ -671,13 +671,19 @@ static int samsung_pinctrl_create_function(struct device *dev,
 	int ret;
 	int i;
 
-	if (of_property_read_u32(func_np, "samsung,pin-function", &func->val))
+	if (of_property_read_u32(func_np, "samsung,pin-function", &func->val) &&
+		of_property_read_string(func_np, "function", &func->generic_val))
 		return 0;
 
 	npins = of_property_count_strings(func_np, "samsung,pins");
 	if (npins < 1) {
-		dev_err(dev, "invalid pin list in %pOFn node", func_np);
-		return -EINVAL;
+		/* try get generic pins */
+		npins = of_property_count_strings(func_np, "pins");
+		if(npins < 1) {
+			dev_err(dev, "invalid pin list in %pOFn node",
+					func_np);
+			return -EINVAL;
+		}
 	}
 
 	func->name = func_np->full_name;
@@ -692,10 +698,16 @@ static int samsung_pinctrl_create_function(struct device *dev,
 		ret = of_property_read_string_index(func_np, "samsung,pins",
 							i, &gname);
 		if (ret) {
-			dev_err(dev,
-				"failed to read pin name %d from %pOFn node\n",
-				i, func_np);
-			return ret;
+			/* try generic */
+			ret = of_property_read_string_index(func_np, "pins",
+								i, &gname);
+			if (ret) {
+				dev_err(dev,
+					"failed to read pin name" \
+						"%d from %pOFn node\n",
+					i, func_np);
+				return ret;
+			}
 		}
 
 		func->groups[i] = gname;
@@ -725,7 +737,8 @@ static struct samsung_pmx_func *samsung_pinctrl_create_functions(
 
 		if (!of_get_child_count(cfg_np)) {
 			if (!of_find_property(cfg_np,
-			    "samsung,pin-function", NULL))
+			    "samsung,pin-function", NULL) &&
+			    !of_find_property(cfg_np, "function", NULL))
 				continue;
 			++func_cnt;
 			continue;
@@ -733,7 +746,8 @@ static struct samsung_pmx_func *samsung_pinctrl_create_functions(
 
 		for_each_child_of_node(cfg_np, func_np) {
 			if (!of_find_property(func_np,
-			    "samsung,pin-function", NULL))
+			    "samsung,pin-function", NULL) &&
+			    !of_find_property(cfg_np, "function", NULL))
 				continue;
 			++func_cnt;
 		}
