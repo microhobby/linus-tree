@@ -214,6 +214,13 @@ static int max17040_probe(struct i2c_client *client,
 	i2c_set_clientdata(client, chip);
 	psy_cfg.drv_data = chip;
 
+	/* check interrupt */
+	if (client->irq) {
+		dev_info (&client->dev, "IRQ is true");
+	} else {
+		dev_info (&client->dev, "IRQ is false");
+	}
+
 	chip->battery = power_supply_register(&client->dev,
 				&max17040_battery_desc, &psy_cfg);
 	if (IS_ERR(chip->battery)) {
