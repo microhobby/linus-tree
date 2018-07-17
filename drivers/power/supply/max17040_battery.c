@@ -17,6 +17,7 @@
 #include <linux/err.h>
 #include <linux/i2c.h>
 #include <linux/delay.h>
+#include <linux/interrupt.h>
 #include <linux/power_supply.h>
 #include <linux/max17040_battery.h>
 #include <linux/slab.h>
@@ -179,6 +180,24 @@ static void max17040_work(struct work_struct *work)
 			   MAX17040_DELAY);
 }
 
+static irqreturn_t max17040_thread_handler(int id, void *dev)
+{
+	struct max17040_chip *chip = dev;
+	struct i2c_client *client = chip->client;
+
+	dev_warn(&client->dev, "IRQ: Alert battery low level");
+	/* read registers */
+	max17040_get_vcell(chip->client);
+	max17040_get_soc(chip->client);
+	max17040_get_online(chip->client);
+	max17040_get_status(chip->client);
+
+	/* send uevent */
+	power_supply_changed(chip->battery);
+
+	return IRQ_HANDLED;
+}
+
 static enum power_supply_property max17040_battery_props[] = {
 	POWER_SUPPLY_PROP_STATUS,
 	POWER_SUPPLY_PROP_ONLINE,
@@ -200,6 +219,8 @@ static int max17040_probe(struct i2c_client *client,
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
 	struct power_supply_config psy_cfg = {};
 	struct max17040_chip *chip;
+	int ret;
+	unsigned int flags;
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE))
 		return -EIO;
@@ -214,18 +235,29 @@ static int max17040_probe(struct i2c_client *client,
 	i2c_set_clientdata(client, chip);
 	psy_cfg.drv_data = chip;
 
-	/* check interrupt */
-	if (client->irq) {
-		dev_info (&client->dev, "IRQ is true");
-	} else {
-		dev_info (&client->dev, "IRQ is false");
-	}
-
 	chip->battery = power_supply_register(&client->dev,
 				&max17040_battery_desc, &psy_cfg);
 	if (IS_ERR(chip->battery)) {
 		dev_err(&client->dev, "failed: power supply register\n");
 		return PTR_ERR(chip->battery);
+	}
+
+	/* check interrupt */
+	if (client->irq) {
+		dev_info(&client->dev, "IRQ: enabled\n");
+		flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
+
+		ret = devm_request_threaded_irq(&client->dev, client->irq,
+						NULL,
+						max17040_thread_handler, flags,
+						chip->battery->desc->name,
+						chip);
+		if (ret) {
+			client->irq = 0;
+			if (ret != -EBUSY)
+				dev_warn(&client->dev,
+					"Failed to get IRQ err %d \n", ret);
+		}
 	}
 
 	max17040_reset(client);
