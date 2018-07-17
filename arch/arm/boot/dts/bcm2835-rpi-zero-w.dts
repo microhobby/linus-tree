@@ -151,7 +151,7 @@
 	fuelgauge@36 {
 		compatible = "maxim,max17040";
 		interrupt-parent = <&gpio>;
-		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
+		interrupts = <18 IRQ_TYPE_LEVEL_LOW>;
 		reg = <0x36>;
 	};
 };
