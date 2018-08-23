@@ -29,6 +29,20 @@
 		};
 	};
 
+	clap-sensor {
+		compatible = "texugo,clap-sensor";
+		pinctrl-names = "default";
+		/*pinctrl-0 = <&clap_input_pinctrl &clap_output_pinctrl>;*/
+		pinctrl-0 = <&clap_sensor_pinctrl>;
+		interrupt-parent = <&gpio>;
+		interrupts = <25 IRQ_TYPE_EDGE_BOTH>;
+		clap-trigger-led = <24>;
+		debounce = <100>;
+		/* for use with new gpio API */
+		label = "trigger";
+		trigger-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
+	};
+
 	wifi_pwrseq: wifi-pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		pinctrl-names = "default";
@@ -107,8 +121,25 @@
 
 	wl_on: wl-on {
 		brcm,pins = <41>;
-		brcm,function = <BCM2835_FSEL_GPIO_OUT>;
+		brcm,function = <1>;
 	};
+
+	clap_sensor_pinctrl: clap-pins {
+		brcm,pins = <24 25 23>;
+		brcm,function = <1 0 0>;
+		brcm,pull = <0 0 1>;
+	};
+
+	/*clap_input_pinctrl: clap-pin-irq {
+		pins = "gpio25";
+		function = "gpio_in";
+	};
+
+	clap_output_pinctrl: clap-pin-led {
+		pins = "gpio24", "gpio23";
+		function = "gpio_out";
+		output-high;
+	};*/
 };
 
 &hdmi {

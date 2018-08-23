@@ -1,0 +1,21 @@
+config INPUT_CLAP_SENSOR
+	bool "Geric Clap sound sensor"
+	depends on GPIOLIB
+	help
+	  Say Y here if you want to uevents from clap sensor interrupts.
+
+config CLAP_GPIO_LEGACY
+	bool "Use legacy GPIO API for led trigger"
+	help
+		Say yes to test it
+
+config CLAP_GPIO_LEGACY_OF
+	bool "Use legacy GPIO API for led trigger"
+	select CLAP_GPIO_LEGACY
+	help
+		Say yes to test it
+
+config CLAP_GPIODESC
+	bool "Use new GPIO API"
+	help
+		Say yes to test it
