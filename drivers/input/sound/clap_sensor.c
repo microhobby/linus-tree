@@ -101,16 +101,8 @@ static int clap_sensor_probe(struct platform_device *pdev)
 		return err;
 	}
 
-	/* get debounce time from device tree */
-	err = of_property_read_u32(clap->dev->of_node,
-		"debounce", &clap->debounce);
-
-	if (err) {
-		dev_err(&pdev->dev, "Error trying request debounce %d\n", err);
-		return err;
-	} else
-		dev_info(&pdev->dev, "We get the debounce %d\n", clap->debounce);
-
+	/* init debounce vars */
+	clap->debounce = 100;
 	clap->debounced = true;
 	dev_info(clap->dev, "initializing CLAP\n");
 

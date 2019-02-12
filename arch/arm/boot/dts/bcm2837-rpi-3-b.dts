@@ -24,9 +24,32 @@
 		};
 	};
 
+	clap-sensor {
+		compatible = "texugo,clap-sensor";
+		pinctrl-names = "default";
+		pinctrl-0 = <&clap_input_pinctrl &clap_output_pinctrl>;
+		interrupt-parent = <&gpio>;
+		interrupts = <24 IRQ_TYPE_EDGE_BOTH>;
+		label = "BCM23";
+		BCM23-gpios = <&gpio 23 GPIO_ACTIVE_HIGH>;
+	};
+
 	wifi_pwrseq: wifi-pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&expgpio 1 GPIO_ACTIVE_LOW>;
+	};
+};
+
+&gpio {
+	clap_input_pinctrl: clap-pin-sensor {
+		pins = "gpio24";
+		function = "gpio_in";
+	};
+
+	clap_output_pinctrl: clap-pin-led {
+		pins = "gpio23";
+		function = "gpio_out";
+		output-low;
 	};
 };
 
