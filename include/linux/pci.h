@@ -678,10 +678,22 @@ struct pci_ops {
  * ACPI needs to be able to access PCI config space before we've done a
  * PCI bus scan and created pci_bus structures.
  */
+#ifdef CONFIG_PCI
 int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn,
 		 int reg, int len, u32 *val);
 int raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn,
 		  int reg, int len, u32 val);
+#else
+static inline int raw_pci_read(unsigned int domain, unsigned int bus,
+			       unsigned int devfn, int reg, int len, u32 *val)
+{
+	*val = 0;
+	return -EINVAL;
+}
+static inline int raw_pci_write(unsigned int domain, unsigned int bus,
+				unsigned int devfn, int reg, int len, u32 val)
+{ return -EINVAL; }
+#endif
 
 #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
 typedef u64 pci_bus_addr_t;
@@ -1596,7 +1608,27 @@ pci_release_mem_regions(struct pci_dev *pdev)
 }
 
 #else /* CONFIG_PCI is not enabled */
+static inline int pci_bus_read_config_byte(struct pci_bus *bus,
+		unsigned int devfn, int where, u8 *val)
+{ return -EINVAL; }
 
+static inline int pci_bus_read_config_word(struct pci_bus *bus,
+		unsigned int devfn, int where, u16 *val)
+{ return -EINVAL; }
+static inline int pci_bus_read_config_dword(struct pci_bus *bus,
+		unsigned int devfn, int where, u32 *val)
+{ return -EINVAL; }
+static inline int pci_bus_write_config_byte(struct pci_bus *bus,
+		unsigned int devfn, int where, u8 val)
+{ return -EINVAL; }
+static inline int pci_bus_write_config_word(struct pci_bus *bus,
+		unsigned int devfn, int where, u16 val)
+{ return -EINVAL; }
+static inline int pci_bus_write_config_dword(struct pci_bus *bus,
+		unsigned int devfn, int where, u32 val)
+{ return -EINVAL; }
+static inline struct pci_bus *pci_find_bus(int domain, int busnr)
+{ return NULL; }
 static inline void pci_set_flags(int flags) { }
 static inline void pci_add_flags(int flags) { }
 static inline void pci_clear_flags(int flags) { }
@@ -1953,7 +1985,11 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev,
 				 enum pcie_reset_state state);
 int pcibios_add_device(struct pci_dev *dev);
 void pcibios_release_device(struct pci_dev *dev);
+#ifdef CONFIG_PCI
 void pcibios_penalize_isa_irq(int irq, int active);
+#else
+static inline void pcibios_penalize_isa_irq(int irq, int active) {}
+#endif
 int pcibios_alloc_irq(struct pci_dev *dev);
 void pcibios_free_irq(struct pci_dev *dev);
 resource_size_t pcibios_default_alignment(void);
