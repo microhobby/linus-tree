@@ -650,6 +650,8 @@ static int owl_uart_probe(struct platform_device *pdev)
 			info = match->data;
 	}
 
+	dev_err(&pdev->dev, "matheus serial now");
+
 	if (pdev->id < 0 || pdev->id >= OWL_UART_PORT_NUM) {
 		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
 		return -EINVAL;
@@ -702,6 +704,8 @@ static int owl_uart_probe(struct platform_device *pdev)
 	ret = uart_add_one_port(&owl_uart_driver, &owl_port->port);
 	if (ret)
 		owl_uart_ports[pdev->id] = NULL;
+		
+	dev_err(&pdev->dev, "matheus serial is probeb");
 
 	return ret;
 }

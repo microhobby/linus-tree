@@ -14,7 +14,7 @@
 #define GIC_PPI 1
 
 /*
- * Interrupt specifier cell 2.
+ * Interrupt <specifier cell 2.
  * The flags in irq.h are valid, plus those below.
  */
 #define GIC_CPU_MASK_RAW(x) ((x) << 8)

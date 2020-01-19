@@ -719,13 +719,13 @@ static unsigned int  uart2_ctsb_mfp_pads[]		= { UART2_CTSB };
 static unsigned int  uart2_ctsb_mfp_funcs[]		= { S700_MUX_UART2,
 							    S700_MUX_UART0 };
 /* uart3_rtsb */
-static unsigned int  uart3_rtsb_mfp_pads[]		= { UART3_RTSB };
-static unsigned int  uart3_rtsb_mfp_funcs[]		= { S700_MUX_UART3,
+static unsigned int  uart3_rtsb_pads[]			= { UART3_RTSB };
+static unsigned int  uart3_rtsb_funcs[]			= { S700_MUX_UART3,
 							    S700_MUX_UART5 };
 
 /* uart3_ctsb */
-static unsigned int  uart3_ctsb_mfp_pads[]		= { UART3_CTSB };
-static unsigned int  uart3_ctsb_mfp_funcs[]		= { S700_MUX_UART3,
+static unsigned int  uart3_ctsb_pads[]			= { UART3_CTSB };
+static unsigned int  uart3_ctsb_funcs[]			= { S700_MUX_UART3,
 							    S700_MUX_UART5 };
 /* sd0_d0 */
 static unsigned int  sd0_d0_mfp_pads[]			= { SD0_D0 };
@@ -1065,8 +1065,8 @@ static const struct owl_pingroup s700_groups[] = {
 	MUX_PG(dsi_dn2_mfp, 2, 24, 3),
 	MUX_PG(uart2_rtsb_mfp, 2, 23, 1),
 	MUX_PG(uart2_ctsb_mfp, 2, 22, 1),
-	MUX_PG(uart3_rtsb_mfp, 2, 21, 1),
-	MUX_PG(uart3_ctsb_mfp, 2, 20, 1),
+	MUX_PG(uart3_rtsb, 2, 21, 1),
+	MUX_PG(uart3_ctsb, 2, 20, 1),
 	MUX_PG(sd0_d0_mfp, 2, 17, 3),
 	MUX_PG(sd0_d1_mfp, 2, 14, 3),
 	MUX_PG(sd0_d2_d3_mfp, 2, 11, 3),
@@ -1884,6 +1884,7 @@ static int s700_pinctrl_probe(struct platform_device *pdev)
 
 static const struct of_device_id s700_pinctrl_of_match[] = {
 	{ .compatible = "actions,s700-pinctrl", },
+	{ .compatible = "actions,s500-pinctrl", },
 	{}
 };
 

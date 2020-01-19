@@ -72,7 +72,9 @@
 #define CLK_NAND		52
 #define CLK_ECC			53
 #define CLK_RMII_REF		54
+#define CLK_APB			55
+#define CLK_GPIO		56
 
-#define CLK_NR_CLKS	       (CLK_RMII_REF + 1)
+#define CLK_NR_CLKS	       (CLK_GPIO + 1)
 
 #endif /* __DT_BINDINGS_CLOCK_S500_CMU_H */

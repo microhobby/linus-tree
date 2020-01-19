@@ -5,7 +5,7 @@
 
 /dts-v1/;
 
-#include "owl-s500-guitar.dtsi"
+#include "owl-s500.dtsi"
 
 / {
 	compatible = "lemaker,guitar-bb-rev-b", "lemaker,guitar", "actions,s500";
@@ -26,7 +26,9 @@
 	};
 };
 
-&uart3 {
+/*&uart3 {
 	status = "okay";
 	clocks = <&uart3_clk>;
-};
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3_rx_pins>, <&uart3_tx_pins>;
+};*/

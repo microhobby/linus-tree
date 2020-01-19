@@ -930,6 +930,8 @@ int owl_pinctrl_probe(struct platform_device *pdev,
 	pctrl->clk = devm_clk_get(&pdev->dev, NULL);
 	if (IS_ERR(pctrl->clk)) {
 		dev_err(&pdev->dev, "no clock defined\n");
+		dev_err(&pdev->dev, "error trying to get clk: %d\n",
+			IS_ERR(pctrl->clk));
 		return PTR_ERR(pctrl->clk);
 	}
 

@@ -13,5 +13,6 @@ menuconfig ARCH_ACTIONS
 	select HAVE_ARM_TWD if SMP
 	select OWL_PM_DOMAINS_HELPER
 	select OWL_TIMER
+	select PINCTRL
 	help
 	  This enables support for the Actions Semiconductor S500 SoC family.

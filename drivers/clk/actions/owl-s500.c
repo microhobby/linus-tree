@@ -181,10 +181,12 @@ static OWL_GATE(spi2_clk, "spi2_clk", "ahb_clk", CMU_DEVCLKEN1, 12, 0, CLK_IGNOR
 static OWL_GATE(spi3_clk, "spi3_clk", "ahb_clk", CMU_DEVCLKEN1, 13, 0, CLK_IGNORE_UNUSED);
 static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
 static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
+static OWL_GATE(clk_gpio, "gpio", "apb_clk", CMU_DEVCLKEN0, 18, 0, 0);
 
 /* divider clocks */
 static OWL_DIVIDER(h_clk, "h_clk", "ahbprevdiv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
 static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
+static OWL_DIVIDER(clk_apb, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
 
 /* factor clocks */
 static OWL_FACTOR(ahb_clk, "ahb_clk", "h_clk", CMU_BUSCLK1, 2, 2, ahb_factor_table, 0, 0);
@@ -428,6 +430,8 @@ static struct owl_clk_common *s500_clks[] = {
 	&spdif_clk.common,
 	&nand_clk.common,
 	&ecc_clk.common,
+	&clk_apb.common,
+	&clk_gpio.common,
 };
 
 static struct clk_hw_onecell_data s500_hw_clks = {
@@ -484,6 +488,8 @@ static struct clk_hw_onecell_data s500_hw_clks = {
 		[CLK_SPDIF]		= &spdif_clk.common.hw,
 		[CLK_NAND]		= &nand_clk.common.hw,
 		[CLK_ECC]		= &ecc_clk.common.hw,
+		[CLK_APB]		= &clk_apb.common.hw,
+		[CLK_GPIO]		= &clk_gpio.common.hw,
 	},
 	.num = CLK_NR_CLKS,
 };
