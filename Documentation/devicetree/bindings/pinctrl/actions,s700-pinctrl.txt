@@ -4,7 +4,7 @@ This binding describes the pin controller found in the S700 SoC.
 
 Required Properties:
 
-- compatible:   Should be "actions,s700-pinctrl"
+- compatible:   Should be "actions,s700-pinctrl" or "actions,s500-pinctrl"
 - reg:          Should contain the register base address and size of
 		the pin controller.
 - clocks:       phandle of the clock feeding the pin controller

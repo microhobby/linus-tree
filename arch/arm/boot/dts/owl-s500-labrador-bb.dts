@@ -18,8 +18,32 @@
 	chosen {
 		stdout-path = "serial3:115200n8";
 	};
+
+	/*button-tester {
+		compatible = "texugo,button";
+		pinctrl-names = "default";
+		pinctrl-0 = <&clap_input_pinctrl &clap_output_pinctrl>;
+		interrupt-parent = <&pinctrl>;
+		interrupts = <24 IRQ_TYPE_EDGE_BOTH>;
+		label = "led";
+		led-gpios = <&gpio 23 GPIO_ACTIVE_HIGH>;
+	};*/
+};
+
+&pinctrl {
+	clap_input_pinctrl: clap-pin-sensor {
+		pins = "i2s_d1";
+		output-enable;
+	};
+
+	clap_output_pinctrl: clap-pin-led {
+		pins = "i2s_d0";
+		output-enable;
+	};
 };
 
 &uart3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3_default &clap_input_pinctrl>;
 	status = "okay";
 };

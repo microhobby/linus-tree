@@ -95,11 +95,23 @@
 	struct owl_st pad_name##_st_conf		\
 		= ST_CONF(st_reg, st_sft, st_wdt)
 
+#define GPIO_CONF(g_reg, g_sft, g_wdt)			\
+	{						\
+		.reg = g_reg,				\
+		.shift = g_sft,				\
+		.width = g_wdt,				\
+	}
+
+#define PAD_GPIO_CONF(pad_name, g_reg, g_sft, g_wdt)	\
+	struct owl_gpio pad_name##_gpio_conf		\
+		= GPIO_CONF(g_reg, g_sft, g_wdt)
+
 #define PAD_INFO(name)					\
 	{						\
 		.pad = name,				\
 		.pullctl = NULL,			\
 		.st = NULL,				\
+		.gpio = &name##_gpio_conf,		\
 	}
 
 #define PAD_INFO_ST(name)				\
@@ -107,6 +119,7 @@
 		.pad = name,				\
 		.pullctl = NULL,			\
 		.st = &name##_st_conf,			\
+		.gpio = NULL,				\
 	}
 
 #define PAD_INFO_PULLCTL(name)				\
@@ -114,6 +127,7 @@
 		.pad = name,				\
 		.pullctl = &name##_pullctl_conf,	\
 		.st = NULL,				\
+		.gpio = NULL,				\
 	}
 
 #define PAD_INFO_PULLCTL_ST(name)			\
@@ -121,6 +135,7 @@
 		.pad = name,				\
 		.pullctl = &name##_pullctl_conf,	\
 		.st = &name##_st_conf,			\
+		.gpio = NULL,				\
 	}
 
 #define OWL_GPIO_PORT_A		0
@@ -189,6 +204,18 @@ struct owl_st {
 };
 
 /**
+ * struct owl_gpio - Actions pad GPIO enable register
+ * @reg: offset to the schmitt trigger enable register
+ * @shift: shift value of the register
+ * @width: width of the register
+ */
+struct owl_gpio {
+	int reg;
+	unsigned int shift;
+	unsigned int width;
+};
+
+/**
  * struct owl_pingroup - Actions pingroup definition
  * @name: name of the  pin group
  * @pads: list of pins assigned to this pingroup
@@ -235,6 +262,7 @@ struct owl_padinfo {
 	int pad;
 	struct owl_pullctl *pullctl;
 	struct owl_st *st;
+	struct owl_gpio *gpio;
 };
 
 /**

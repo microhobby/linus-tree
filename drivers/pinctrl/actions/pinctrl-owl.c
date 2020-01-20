@@ -239,6 +239,13 @@ static int owl_pad_pinconf_reg(const struct owl_padinfo *info,
 		*bit = info->st->shift;
 		*width = info->st->width;
 		break;
+	case PIN_CONFIG_OUTPUT_ENABLE:
+		if (!info->gpio)
+			return -EINVAL;
+		*reg = info->gpio->reg;
+		*bit = info->gpio->shift;
+		*width = info->gpio->width;
+		break;
 	default:
 		return -ENOTSUPP;
 	}
@@ -293,6 +300,9 @@ static int owl_pin_config_set(struct pinctrl_dev *pctrldev,
 	for (i = 0; i < num_configs; i++) {
 		param = pinconf_to_config_param(configs[i]);
 		arg = pinconf_to_config_argument(configs[i]);
+
+		dev_err(pctrldev->dev,
+			"matheus:: %d :: %d :: %d\n", param, arg, pin);
 
 		ret = owl_pad_pinconf_reg(info, param, &reg, &bit, &width);
 		if (ret)
