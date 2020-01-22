@@ -5,9 +5,11 @@
  * Copyright (c) 2016-2017 Andreas Färber
  */
 
-#include <dt-bindings/clock/actions,s700-cmu.h>
+#include <dt-bindings/clock/actions,s500-cmu.h>
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/power/owl-s500-powergate.h>
+#include <dt-bindings/reset/actions,s500-reset.h>
 
 / {
 	compatible = "actions,s500";
@@ -77,6 +79,24 @@
 		#clock-cells = <0>;
 	};
 
+	/* Fixed regulator used in the absence of PMIC */
+	vcc_3v1: vcc-3v1 {
+		compatible = "regulator-fixed";
+		regulator-name = "fixed-3.1V";
+		regulator-min-microvolt = <3100000>;
+		regulator-max-microvolt = <3100000>;
+		regulator-always-on;
+	};
+
+	/* Fixed regulator used in the absence of PMIC */
+	sd_vcc: sd-vcc {
+		compatible = "regulator-fixed";
+		regulator-name = "fixed-3.1V";
+		regulator-min-microvolt = <3100000>;
+		regulator-max-microvolt = <3100000>;
+		regulator-always-on;
+	};
+
 	soc {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -122,6 +142,7 @@
 			reg = <0xb0160000 0x8000>;
 			clocks = <&hosc>, <&losc>;
 			#clock-cells = <1>;
+			#reset-cells = <1>;
 		};
 
 		l2: cache-controller@b0022000 {
@@ -157,6 +178,51 @@
 				pinconf {
 					groups = "uart3_all_drv";
 					drive-strength = <2>;
+				};
+			};
+
+			mmc0_default: mmc0-default {
+				sd0_mfp_d0_d3_cmd_clk {
+					groups = "sd0_d0_mfp",
+						 "sd0_d1_mfp",
+						 "sd0_d2_d3_mfp",
+						 "sd1_d0_d3_mfp",
+						 "sd0_cmd_mfp";
+					function = "sd0";
+				};
+
+				sd0_pull_d0_d3_cmd {
+					pins = "sd0_d0", "sd0_d1",
+						       "sd0_d2", "sd0_d3",
+						       "sd0_cmd";
+					bias-pull-up;
+				};
+
+				/*sd0_pull_clk {
+					pins = "sd0_clk";
+					bias-pull-disable; TODO no pull none arg
+				};*/
+			
+				sd0_d0_d3_cmd_clk_paddrv  {
+					groups  = "sd0_d0_d3_drv",
+						  "sd0_cmd_drv",
+						  "sd0_clk_drv";
+					drive-strength = <4>;
+				};
+		    	};
+
+			mmc2_default: mmc2-default {
+				pinmux {
+					groups = "dnand_data_wr_mfp";
+					function = "sd2";
+				};
+				pinconf {
+					pins = "dnand_d0", "dnand_d1",
+					       "dnand_d2", "dnand_d3",
+					       "dnand_d4", "dnand_d5",
+					       "dnand_d6", "dnand_d7",
+					       "dnand_rdbn";
+					bias-pull-up;
 				};
 			};
 		};
@@ -223,10 +289,55 @@
 			interrupt-names = "2hz0", "2hz1", "timer0", "timer1";
 		};
 
+		dma: dma-controller@b0260000 {
+			compatible = "actions,s500-dma";
+			reg = <0xb0260000 0x1000>;
+			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
+			#dma-cells = <1>;
+			dma-channels = <12>;
+			dma-requests = <46>;
+			clocks = <&cmu CLK_DMAC>;
+		};
+
 		sps: power-controller@b01b0100 {
 			compatible = "actions,s500-sps";
 			reg = <0xb01b0100 0x100>;
 			#power-domain-cells = <1>;
+		};
+
+		mmc0: mmc@b0230000 {
+			compatible = "actions,owl-mmc";
+			reg = <0xb0230000 0x38>;
+			interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&cmu CLK_SD0>;
+			resets = <&cmu RESET_SD0>;
+			dmas = <&dma 2>;
+			dma-names = "mmc";
+			/*status = "disabled";*/
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&mmc0_default>;
+			no-sdio;
+			no-mmc;
+			no-1-8-v;
+			cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
+			bus-width = <4>;
+			vmmc-supply = <&sd_vcc>;
+			vqmmc-supply = <&sd_vcc>;
+		};
+
+		mmc2: mmc@b0238000 {
+			compatible = "actions,owl-mmc";
+			reg = <0xb0238000 0x38>;
+			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&cmu CLK_SD2>;
+			resets = <&cmu RESET_SD2>;
+			dmas = <&dma 4>;
+			dma-names = "mmc";
+			status = "disabled";
 		};
 	};
 };

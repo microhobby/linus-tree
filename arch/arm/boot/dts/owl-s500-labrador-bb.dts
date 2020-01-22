@@ -12,6 +12,8 @@
 	model = "Caninos Labrador Base Board M v1.0";
 
 	aliases {
+		mmc0 = &mmc0;
+		mmc2 = &mmc2;
 		serial3 = &uart3;
 	};
 
@@ -47,3 +49,29 @@
 	pinctrl-0 = <&uart3_default &clap_input_pinctrl>;
 	status = "okay";
 };
+
+/* uSD */
+/*&mmc0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mmc0_default>;
+	no-sdio;
+	no-mmc;
+	no-1-8-v;
+	cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
+	bus-width = <4>;
+	vmmc-supply = <&sd_vcc>;
+	vqmmc-supply = <&sd_vcc>;
+};*/
+
+/* eMMC */
+/*&mmc2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&mmc2_default>;
+	no-sdio;
+	no-sd;
+	non-removable;
+	bus-width = <8>;
+	vmmc-supply = <&vcc_3v1>;
+};*/

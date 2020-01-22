@@ -1204,6 +1204,7 @@ static int owl_dma_remove(struct platform_device *pdev)
 
 static const struct of_device_id owl_dma_match[] = {
 	{ .compatible = "actions,s900-dma", },
+	{ .compatible = "actions,s500-dma", },
 	{ /* sentinel */ }
 };
 MODULE_DEVICE_TABLE(of, owl_dma_match);
