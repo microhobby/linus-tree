@@ -152,6 +152,15 @@
 		compatible = "st,m41t0";
 		reg = <0x68>;
 	};
+
+	battery-fuel-gauge@36 {
+		compatible = "maxim,max77836-battery";
+		reg = <0x36>;
+		maxim,alert-low-soc-level = <15>;
+		interrupt-parent = <&gpio2>;
+		interrupts = <19 IRQ_TYPE_EDGE_FALLING>;	/* SODIMM 79 */
+		wakeup-source;
+	};
 };
 
 &iomuxc {
