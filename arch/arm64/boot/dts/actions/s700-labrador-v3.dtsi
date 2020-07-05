@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Matheus Castello
+ */
+
+#include "s700.dtsi"
+
+/ {
+	compatible = "caninos,labrador-v3", "actions,s700";
+	model = "Caninos Labrador Core v3.1";
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x0 0x0 0x80000000>;
+	};
+
+	memory@1,e0000000 {
+		device_type = "memory";
+		reg = <0x1 0xe0000000 0x0 0x0>;
+	};
+};
+
+&timer {
+	clocks = <&hosc>;
+};
+
+&uart3 {
+	status = "okay";
+};
