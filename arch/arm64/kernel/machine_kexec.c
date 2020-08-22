@@ -220,20 +220,12 @@ static void machine_kexec_mask_interrupts(void)
 
 	for_each_irq_desc(i, desc) {
 		struct irq_chip *chip;
-		int ret;
 
 		chip = irq_desc_get_chip(desc);
 		if (!chip)
 			continue;
 
-		/*
-		 * First try to remove the active state. If this
-		 * fails, try to EOI the interrupt.
-		 */
-		ret = irq_set_irqchip_state(i, IRQCHIP_STATE_ACTIVE, false);
-
-		if (ret && irqd_irq_inprogress(&desc->irq_data) &&
-		    chip->irq_eoi)
+		if (irqd_irq_inprogress(&desc->irq_data) && chip->irq_eoi)
 			chip->irq_eoi(&desc->irq_data);
 
 		if (chip->irq_mask)
@@ -255,8 +247,8 @@ void machine_crash_shutdown(struct pt_regs *regs)
 	crash_smp_send_stop();
 
 	/* for crashing cpu */
-	crash_save_cpu(regs, smp_processor_id());
-	machine_kexec_mask_interrupts();
+	/*crash_save_cpu(regs, smp_processor_id());
+	machine_kexec_mask_interrupts();*/
 
 	pr_info("Starting crashdump kernel...\n");
 }
