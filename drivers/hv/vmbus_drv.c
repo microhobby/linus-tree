@@ -1367,8 +1367,8 @@ static void hv_kmsg_dump(struct kmsg_dumper *dumper,
 	size_t bytes_written;
 
 	/* We are only interested in panics. */
-	if ((reason != KMSG_DUMP_PANIC) || (!sysctl_record_panic_msg))
-		return;
+	/*if ((reason != KMSG_DUMP_PANIC) || (!sysctl_record_panic_msg))
+		return;*/
 
 	/*
 	 * Write dump contents to the page. No need to synchronize; panic should
