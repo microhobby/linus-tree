@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Hyper-V pinctrl drivers
+#
+
+config PINCTRL_HYPERV
+	bool "Hyper-V WSL 2 pinctrl/GPIO driver"
+	depends on HYPERV
+	depends on ACPI
+	select GPIOLIB
+	select PINMUX
+	select PINCONF
+	select GENERIC_PINCONF
+	help
+	  Say Y here to support Hyper-V virtual pinctrl/gpio drivers
