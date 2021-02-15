@@ -15,21 +15,16 @@
 		     "caninos,labrador-v2", "actions,s500";
 
 	aliases {
+		mmc0 = &mmc0;
+		mmc2 = &mmc2;
 		serial3 = &uart3;
 	};
 
 	chosen {
 		stdout-path = "serial3:115200n8";
 	};
-
-	uart3_clk: uart3-clk {
-		compatible = "fixed-clock";
-		clock-frequency = <921600>;
-		#clock-cells = <0>;
-	};
 };
 
 &uart3 {
 	status = "okay";
-	clocks = <&uart3_clk>;
 };
