@@ -46,6 +46,26 @@ static void drop_pagecache_sb(struct super_block *sb, void *unused)
 	iput(toput_inode);
 }
 
+void drop_all()
+{
+	static int stfu;
+
+	if (sysctl_drop_caches & 1) {
+		iterate_supers(drop_pagecache_sb, NULL);
+		count_vm_event(DROP_PAGECACHE);
+	}
+	if (sysctl_drop_caches & 2) {
+		drop_slab();
+		count_vm_event(DROP_SLAB);
+	}
+	if (!stfu) {
+		pr_info("%s (%d): drop_caches: %d\n",
+			current->comm, task_pid_nr(current),
+			sysctl_drop_caches);
+	}
+	stfu |= sysctl_drop_caches & 4;
+}
+
 int drop_caches_sysctl_handler(struct ctl_table *table, int write,
 		void *buffer, size_t *length, loff_t *ppos)
 {
@@ -55,22 +75,7 @@ int drop_caches_sysctl_handler(struct ctl_table *table, int write,
 	if (ret)
 		return ret;
 	if (write) {
-		static int stfu;
-
-		if (sysctl_drop_caches & 1) {
-			iterate_supers(drop_pagecache_sb, NULL);
-			count_vm_event(DROP_PAGECACHE);
-		}
-		if (sysctl_drop_caches & 2) {
-			drop_slab();
-			count_vm_event(DROP_SLAB);
-		}
-		if (!stfu) {
-			pr_info("%s (%d): drop_caches: %d\n",
-				current->comm, task_pid_nr(current),
-				sysctl_drop_caches);
-		}
-		stfu |= sysctl_drop_caches & 4;
+		drop_all();
 	}
 	return 0;
 }

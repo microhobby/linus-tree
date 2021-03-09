@@ -300,7 +300,7 @@ static void __init ms_hyperv_init_platform(void)
 	 * For now, use the privilege flag as the indicator for running as
 	 * root.
 	 */
-	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
+	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_POWER_MANAGEMENT) {
 		hv_root_partition = true;
 		pr_info("Hyper-V: running as root partition\n");
 	}
@@ -327,7 +327,7 @@ static void __init ms_hyperv_init_platform(void)
 		x86_platform.calibrate_cpu = hv_get_tsc_khz;
 	}
 
-	if (ms_hyperv.features_b & HV_ISOLATION) {
+	if (ms_hyperv.features_b & HV_ISOLATION_TYPE) {
 		ms_hyperv.isolation_config_a = cpuid_eax(HYPERV_CPUID_ISOLATION_CONFIG);
 		ms_hyperv.isolation_config_b = cpuid_ebx(HYPERV_CPUID_ISOLATION_CONFIG);
 

@@ -11,6 +11,7 @@
 #include <linux/kernel.h>
 #include <linux/jiffies.h>
 #include <linux/mman.h>
+#include <linux/mm.h>
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/module.h>
@@ -1617,6 +1618,10 @@ static int hv_free_page_report(struct page_reporting_dev_info *pr_dev_info,
 			status);
 		return -EINVAL;
 	}
+
+	/* let's drop all 🔥 */
+	sysctl_drop_caches = 1;
+	drop_all();
 
 	return 0;
 }

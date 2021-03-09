@@ -650,7 +650,7 @@ EXPORT_SYMBOL_GPL(hv_is_hibernation_supported);
 
 enum hv_isolation_type hv_get_isolation_type(void)
 {
-	if (!(ms_hyperv.features_b & HV_ISOLATION))
+	if (!(ms_hyperv.features_b & HV_ISOLATION_TYPE))
 		return HV_ISOLATION_TYPE_NONE;
 	return FIELD_GET(HV_ISOLATION_TYPE, ms_hyperv.isolation_config_b);
 }
