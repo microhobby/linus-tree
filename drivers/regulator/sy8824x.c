@@ -23,7 +23,7 @@ struct sy8824_config {
 	unsigned int enable_reg;
 	/* Voltage range and step(linear) */
 	unsigned int vsel_min;
-	unsigned int vsel_step;
+	unsigned int uV_step;
 	unsigned int vsel_count;
 	const struct regmap_config *config;
 };
@@ -99,7 +99,7 @@ static int sy8824_regulator_register(struct sy8824_device_info *di,
 	rdesc->enable_reg = cfg->enable_reg;
 	rdesc->enable_mask = SY8824C_BUCK_EN;
 	rdesc->min_uV = cfg->vsel_min;
-	rdesc->uV_step = cfg->vsel_step;
+	rdesc->uV_step = cfg->uV_step;
 	rdesc->vsel_reg = cfg->vol_reg;
 	rdesc->vsel_mask = cfg->vsel_count - 1;
 	rdesc->owner = THIS_MODULE;
@@ -168,7 +168,7 @@ static const struct sy8824_config sy8824c_cfg = {
 	.mode_reg = 0x00,
 	.enable_reg = 0x00,
 	.vsel_min = 762500,
-	.vsel_step = 12500,
+	.uV_step = 12500,
 	.vsel_count = 64,
 	.config = &sy8824_regmap_config,
 };
@@ -178,7 +178,7 @@ static const struct sy8824_config sy8824e_cfg = {
 	.mode_reg = 0x00,
 	.enable_reg = 0x00,
 	.vsel_min = 700000,
-	.vsel_step = 12500,
+	.uV_step = 12500,
 	.vsel_count = 64,
 	.config = &sy8824_regmap_config,
 };
@@ -188,7 +188,7 @@ static const struct sy8824_config sy20276_cfg = {
 	.mode_reg = 0x01,
 	.enable_reg = 0x01,
 	.vsel_min = 600000,
-	.vsel_step = 10000,
+	.uV_step = 10000,
 	.vsel_count = 128,
 	.config = &sy20276_regmap_config,
 };
@@ -198,7 +198,7 @@ static const struct sy8824_config sy20278_cfg = {
 	.mode_reg = 0x01,
 	.enable_reg = 0x01,
 	.vsel_min = 762500,
-	.vsel_step = 12500,
+	.uV_step = 12500,
 	.vsel_count = 64,
 	.config = &sy20276_regmap_config,
 };
