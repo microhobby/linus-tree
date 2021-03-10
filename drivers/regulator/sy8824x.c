@@ -33,6 +33,7 @@ struct sy8824_device_info {
 	struct regulator_desc desc;
 	struct regulator_init_data *regulator;
 	const struct sy8824_config *cfg;
+	unsigned int vsel_step;
 };
 
 static int sy8824_set_mode(struct regulator_dev *rdev, unsigned int mode)
@@ -102,6 +103,7 @@ static int sy8824_regulator_register(struct sy8824_device_info *di,
 	rdesc->uV_step = cfg->uV_step;
 	rdesc->vsel_reg = cfg->vol_reg;
 	rdesc->vsel_mask = cfg->vsel_count - 1;
+	rdesc->vsel_step = di->vsel_step;
 	rdesc->owner = THIS_MODULE;
 
 	rdev = devm_regulator_register(di->dev, &di->desc, config);
@@ -156,6 +158,8 @@ static int sy8824_i2c_probe(struct i2c_client *client)
 	config.regmap = regmap;
 	config.driver_data = di;
 	config.of_node = np;
+
+	of_property_read_u32(np, "silergy,vsel-step", &di->vsel_step);
 
 	ret = sy8824_regulator_register(di, &config);
 	if (ret < 0)
