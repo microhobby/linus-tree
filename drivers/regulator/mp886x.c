@@ -40,6 +40,7 @@ struct mp886x_device_info {
 	const struct mp886x_cfg_info *ci;
 	u32 r[2];
 	unsigned int sel;
+	unsigned int vsel_step;
 };
 
 static void mp886x_set_switch_freq(struct mp886x_device_info *di,
@@ -272,6 +273,7 @@ static int mp886x_regulator_register(struct mp886x_device_info *di,
 	rdesc->ramp_mask = MP886X_SLEW_MASK;
 	rdesc->ramp_delay_table = di->ci->slew_rates;
 	rdesc->n_ramp_values = ARRAY_SIZE(di->ci->slew_rates);
+	rdesc->vsel_step = di->vsel_step;
 	rdesc->owner = THIS_MODULE;
 
 	rdev = devm_regulator_register(di->dev, &di->desc, config);
@@ -331,6 +333,7 @@ static int mp886x_i2c_probe(struct i2c_client *client)
 	config.driver_data = di;
 	config.of_node = np;
 
+	of_property_read_u32(np, "mps,vsel-step", &di->vsel_step);
 	if (!of_property_read_u32(np, "mps,switch-frequency-hz", &freq))
 		mp886x_set_switch_freq(di, regmap, freq);
 
