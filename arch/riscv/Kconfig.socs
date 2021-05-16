@@ -1,5 +1,14 @@
 menu "SoC selection"
 
+config ARCH_SUNXI
+	bool "Allwinner sun20i SoCs"
+	select ERRATA_THEAD if MMU && !XIP_KERNEL
+	select SIFIVE_PLIC
+	select SUN4I_TIMER
+	help
+	  This enables support for Allwinner sun20i platform hardware,
+	  including boards based on the D1 and D1s SoCs.
+
 config SOC_MICROCHIP_POLARFIRE
 	bool "Microchip PolarFire SoCs"
 	select MCHP_CLK_MPFS
