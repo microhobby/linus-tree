@@ -7,6 +7,7 @@
 	aliases {
 		ethernet0 = &emac;
 		ethernet1 = &xr829;
+		serial3 = &uart3;
 	};
 
 	audio_amplifier: audio-amplifier {
@@ -129,6 +130,11 @@
 		pins = "PE17";
 		function = "dmic";
 	};
+
+	uart3_pb_pins: uart3-pb-pins {
+		pins = "PB6", "PB7";
+		function = "uart3";
+	};
 };
 
 &uart1 {
@@ -137,7 +143,19 @@
 	pinctrl-names = "default";
 	status = "okay";
 
-	/* XR829 bluetooth is connected here */
+	bluetooth {
+		compatible = "xradio,xr829-bt";
+		interrupt-parent = <&pio>;
+		interrupts = <2 0 IRQ_TYPE_LEVEL_LOW>; /* PC0 */
+		device-wakeup-gpios = <&pio 2 1 GPIO_ACTIVE_LOW>; /* PC1 */
+		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
+	};
+};
+
+&uart3 {
+	pinctrl-0 = <&uart3_pb_pins>;
+	pinctrl-names = "default";
+	status = "okay";
 };
 
 &usb_otg {
