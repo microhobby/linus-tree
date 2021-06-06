@@ -373,12 +373,8 @@ err_clk:
 static int sun8i_pwm_remove(struct platform_device *pdev)
 {
 	struct sun8i_pwm_chip *pc = platform_get_drvdata(pdev);
-	int ret;
 
-	ret = pwmchip_remove(&pc->chip);
-	if (ret)
-		return ret;
-
+	pwmchip_remove(&pc->chip);
 	clk_disable_unprepare(pc->clk);
 	reset_control_assert(pc->rst_clk);
 
