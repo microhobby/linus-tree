@@ -104,14 +104,12 @@ static int sun6i_hwspinlock_probe(struct platform_device *pdev)
 	if (!priv)
 		return -ENOMEM;
 
-	priv->ahb_clk = devm_clk_get(&pdev->dev, "ahb");
-	if (IS_ERR(priv->ahb_clk)) {
-		err = PTR_ERR(priv->ahb_clk);
-		dev_err(&pdev->dev, "unable to get AHB clock (%d)\n", err);
-		return err;
-	}
+	priv->ahb_clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(priv->ahb_clk))
+		return dev_err_probe(&pdev->dev, PTR_ERR(priv->ahb_clk),
+				     "unable to get AHB clock\n");
 
-	priv->reset = devm_reset_control_get(&pdev->dev, "ahb");
+	priv->reset = devm_reset_control_get(&pdev->dev, NULL);
 	if (IS_ERR(priv->reset))
 		return dev_err_probe(&pdev->dev, PTR_ERR(priv->reset),
 				     "unable to get reset control\n");
