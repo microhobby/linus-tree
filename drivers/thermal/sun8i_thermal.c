@@ -17,6 +17,7 @@
 #include <linux/of_device.h>
 #include <linux/platform_device.h>
 #include <linux/regmap.h>
+#include <linux/regulator/consumer.h>
 #include <linux/reset.h>
 #include <linux/slab.h>
 #include <linux/thermal.h>
@@ -84,6 +85,7 @@ struct ths_device {
 	struct device				*dev;
 	struct regmap				*regmap;
 	struct reset_control			*reset;
+	struct regulator			*vref_supply;
 	struct clk				*bus_clk;
 	struct clk                              *mod_clk;
 	struct tsensor				sensor[MAX_SENSOR_NUM];
@@ -333,6 +335,10 @@ static int sun8i_ths_resource_init(struct ths_device *tmdev)
 	if (IS_ERR(tmdev->regmap))
 		return PTR_ERR(tmdev->regmap);
 
+	tmdev->vref_supply = devm_regulator_get(dev, "vref");
+	if (IS_ERR(tmdev->vref_supply))
+		return PTR_ERR(tmdev->vref_supply);
+
 	tmdev->reset = devm_reset_control_get_optional(dev, NULL);
 	if (IS_ERR(tmdev->reset))
 		return PTR_ERR(tmdev->reset);
@@ -345,9 +351,13 @@ static int sun8i_ths_resource_init(struct ths_device *tmdev)
 	if (IS_ERR(tmdev->mod_clk))
 		return PTR_ERR(tmdev->mod_clk);
 
-	ret = reset_control_deassert(tmdev->reset);
+	ret = regulator_enable(tmdev->vref_supply);
 	if (ret)
 		return ret;
+
+	ret = reset_control_deassert(tmdev->reset);
+	if (ret)
+		goto disable_vref_supply;
 
 	ret = clk_prepare_enable(tmdev->bus_clk);
 	if (ret)
@@ -373,6 +383,8 @@ bus_disable:
 	clk_disable_unprepare(tmdev->bus_clk);
 assert_reset:
 	reset_control_assert(tmdev->reset);
+disable_vref_supply:
+	regulator_disable(tmdev->vref_supply);
 
 	return ret;
 }
@@ -529,6 +541,7 @@ static int sun8i_ths_remove(struct platform_device *pdev)
 	clk_disable_unprepare(tmdev->mod_clk);
 	clk_disable_unprepare(tmdev->bus_clk);
 	reset_control_assert(tmdev->reset);
+	regulator_disable(tmdev->vref_supply);
 
 	return 0;
 }
