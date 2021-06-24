@@ -22,7 +22,15 @@
 #define  MP886X_SLEW_MASK	(0x7 << MP886X_SLEW_SHIFT)
 #define  MP886X_GO		(1 << 6)
 #define  MP886X_EN		(1 << 7)
+#define MP8867_ID1		0x02
+#define MP8867_STATUS		0x03
+#define MP8867_MAX		(MP8867_STATUS + 1)
 #define MP8869_SYSCNTLREG2	0x02
+#define MP8869_OUTPUTCURRENT	0x03
+#define MP8869_OUTPUTVOLTAGE	0x04
+#define MP8869_ID1		0x05
+#define MP8869_STATUS		0x06
+#define MP8869_MAX		(MP8869_STATUS + 1)
 
 struct mp886x_cfg_info {
 	const struct regulator_ops *rops;
@@ -30,6 +38,7 @@ struct mp886x_cfg_info {
 	const int switch_freq[4];
 	const u8 fs_reg;
 	const u8 fs_shift;
+	const struct regmap_config *config;
 };
 
 struct mp886x_device_info {
@@ -239,9 +248,40 @@ static int mp886x_regulator_register(struct mp886x_device_info *di,
 	return 0;
 }
 
-static const struct regmap_config mp886x_regmap_config = {
+static bool mp8867_volatile_reg(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case MP886X_SYSCNTLREG1:
+	case MP8867_STATUS:
+		return true;
+	}
+	return false;
+}
+
+static bool mp8869_volatile_reg(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case MP886X_SYSCNTLREG1:
+	case MP8869_STATUS:
+		return true;
+	}
+	return false;
+}
+
+static const struct regmap_config mp8867_regmap_config = {
 	.reg_bits = 8,
 	.val_bits = 8,
+	.volatile_reg = mp8867_volatile_reg,
+	.num_reg_defaults_raw = MP8867_MAX,
+	.cache_type = REGCACHE_FLAT,
+};
+
+static const struct regmap_config mp8869_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 8,
+	.volatile_reg = mp8869_volatile_reg,
+	.num_reg_defaults_raw = MP8869_MAX,
+	.cache_type = REGCACHE_FLAT,
 };
 
 static const struct mp886x_cfg_info mp8867_ci = {
@@ -264,6 +304,7 @@ static const struct mp886x_cfg_info mp8867_ci = {
 	},
 	.fs_reg = MP886X_SYSCNTLREG1,
 	.fs_shift = 1,
+	.config = &mp8867_regmap_config,
 };
 
 static const struct mp886x_cfg_info mp8869_ci = {
@@ -286,6 +327,7 @@ static const struct mp886x_cfg_info mp8869_ci = {
 	},
 	.fs_reg = MP8869_SYSCNTLREG2,
 	.fs_shift = 4,
+	.config = &mp8869_regmap_config,
 };
 
 static int mp886x_i2c_probe(struct i2c_client *client)
@@ -320,7 +362,7 @@ static int mp886x_i2c_probe(struct i2c_client *client)
 	di->ci = i2c_get_match_data(client);
 	di->dev = dev;
 
-	regmap = devm_regmap_init_i2c(client, &mp886x_regmap_config);
+	regmap = devm_regmap_init_i2c(client, di->ci->config);
 	if (IS_ERR(regmap)) {
 		dev_err(dev, "Failed to allocate regmap!\n");
 		return PTR_ERR(regmap);
