@@ -151,28 +151,6 @@ static const struct regulator_ops mp8869_regulator_ops = {
 	.set_ramp_delay = regulator_set_ramp_delay_regmap,
 };
 
-static const struct mp886x_cfg_info mp8869_ci = {
-	.rops = &mp8869_regulator_ops,
-	.slew_rates = {
-		40000,
-		30000,
-		20000,
-		10000,
-		5000,
-		2500,
-		1250,
-		625,
-	},
-	.switch_freq = {
-		500000,
-		750000,
-		1000000,
-		1250000,
-	},
-	.fs_reg = MP8869_SYSCNTLREG2,
-	.fs_shift = 4,
-};
-
 static int mp8867_set_voltage_sel(struct regulator_dev *rdev, unsigned int sel)
 {
 	struct mp886x_device_info *di = rdev_get_drvdata(rdev);
@@ -230,28 +208,6 @@ static const struct regulator_ops mp8867_regulator_ops = {
 	.set_ramp_delay = regulator_set_ramp_delay_regmap,
 };
 
-static const struct mp886x_cfg_info mp8867_ci = {
-	.rops = &mp8867_regulator_ops,
-	.slew_rates = {
-		64000,
-		32000,
-		16000,
-		8000,
-		4000,
-		2000,
-		1000,
-		500,
-	},
-	.switch_freq = {
-		500000,
-		750000,
-		1000000,
-		1500000,
-	},
-	.fs_reg = MP886X_SYSCNTLREG1,
-	.fs_shift = 1,
-};
-
 static int mp886x_regulator_register(struct mp886x_device_info *di,
 				     struct regulator_config *config)
 {
@@ -286,6 +242,50 @@ static int mp886x_regulator_register(struct mp886x_device_info *di,
 static const struct regmap_config mp886x_regmap_config = {
 	.reg_bits = 8,
 	.val_bits = 8,
+};
+
+static const struct mp886x_cfg_info mp8867_ci = {
+	.rops = &mp8867_regulator_ops,
+	.slew_rates = {
+		64000,
+		32000,
+		16000,
+		8000,
+		4000,
+		2000,
+		1000,
+		500,
+	},
+	.switch_freq = {
+		500000,
+		750000,
+		1000000,
+		1500000,
+	},
+	.fs_reg = MP886X_SYSCNTLREG1,
+	.fs_shift = 1,
+};
+
+static const struct mp886x_cfg_info mp8869_ci = {
+	.rops = &mp8869_regulator_ops,
+	.slew_rates = {
+		40000,
+		30000,
+		20000,
+		10000,
+		5000,
+		2500,
+		1250,
+		625,
+	},
+	.switch_freq = {
+		500000,
+		750000,
+		1000000,
+		1250000,
+	},
+	.fs_reg = MP8869_SYSCNTLREG2,
+	.fs_shift = 4,
 };
 
 static int mp886x_i2c_probe(struct i2c_client *client)
