@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "Dockerfile*": "dockerfile",
+        "Containerfile*": "dockerfile",
+        "docker-compose*": "yaml",
+        "*.scr": "shellscript",
+        "*defconfig*": "kconfig",
+        "kthread.h": "c",
+        "sched.h": "c",
+        "kmap_size.h": "c",
+        "hv_trace_balloon.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Enabled",
+    "checkpatch.checkpatchPath": "/home/castello/linus-tree/linux/scripts/checkpatch.pl",
+    "checkpatch.run": "onSave",
+    "checkpatch.diagnosticLevel": "Warning"
+}
