@@ -409,7 +409,7 @@
 			clocks = <&clkgen JH7100_CLK_PWM_APB>;
 			#pwm-cells = <3>;
 			sifive,npwm = <8>;
-
+			status = "disabled";
 		};
 
 		qspi: spi@11860000 {
