@@ -705,9 +705,13 @@ err_unregister:
 
 static int sun4i_spdif_remove(struct platform_device *pdev)
 {
+	struct sun4i_spdif_dev *host = dev_get_drvdata(&pdev->dev);
+
 	pm_runtime_disable(&pdev->dev);
 	if (!pm_runtime_status_suspended(&pdev->dev))
 		sun4i_spdif_runtime_suspend(&pdev->dev);
+
+	reset_control_assert(host->rst);
 
 	return 0;
 }
