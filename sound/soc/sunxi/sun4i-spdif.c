@@ -170,12 +170,10 @@
  * struct sun4i_spdif_quirks - Differences between SoC variants.
  *
  * @reg_dac_txdata: TX FIFO offset for DMA config.
- * @has_reset: SoC needs reset deasserted.
  * @val_fctl_ftx: TX FIFO flush bitmask.
  */
 struct sun4i_spdif_quirks {
 	unsigned int reg_dac_txdata;
-	bool has_reset;
 	unsigned int val_fctl_ftx;
 };
 
@@ -546,19 +544,16 @@ static const struct sun4i_spdif_quirks sun4i_a10_spdif_quirks = {
 static const struct sun4i_spdif_quirks sun6i_a31_spdif_quirks = {
 	.reg_dac_txdata	= SUN4I_SPDIF_TXFIFO,
 	.val_fctl_ftx   = SUN4I_SPDIF_FCTL_FTX,
-	.has_reset	= true,
 };
 
 static const struct sun4i_spdif_quirks sun8i_h3_spdif_quirks = {
 	.reg_dac_txdata	= SUN8I_SPDIF_TXFIFO,
 	.val_fctl_ftx   = SUN4I_SPDIF_FCTL_FTX,
-	.has_reset	= true,
 };
 
 static const struct sun4i_spdif_quirks sun50i_h6_spdif_quirks = {
 	.reg_dac_txdata = SUN8I_SPDIF_TXFIFO,
 	.val_fctl_ftx   = SUN50I_H6_SPDIF_FCTL_FTX,
-	.has_reset      = true,
 };
 
 static const struct of_device_id sun4i_spdif_of_match[] = {
@@ -667,17 +662,12 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, host);
 
-	if (quirks->has_reset) {
-		host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
-								      NULL);
-		if (PTR_ERR(host->rst) == -EPROBE_DEFER) {
-			ret = -EPROBE_DEFER;
-			dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
-			return ret;
-		}
-		if (!IS_ERR(host->rst))
-			reset_control_deassert(host->rst);
-	}
+	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+	if (IS_ERR(host->rst))
+		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
+				     "Failed to get reset\n");
+
+	reset_control_deassert(host->rst);
 
 	ret = devm_snd_soc_register_component(&pdev->dev,
 				&sun4i_spdif_component, &sun4i_spdif_dai, 1);
