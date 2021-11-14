@@ -26,17 +26,22 @@ properties:
   resets:
     maxItems: 1
 
+  interrupts:
+    maxItems: 1
+
 required:
   - compatible
   - reg
   - clocks
   - resets
+  - interrupts
 
 additionalProperties: false
 
 examples:
   - |
     #include <dt-bindings/clock/sun8i-a23-a33-ccu.h>
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
     #include <dt-bindings/reset/sun8i-a23-a33-ccu.h>
 
     hwlock@1c18000 {
@@ -44,5 +49,6 @@ examples:
         reg = <0x01c18000 0x1000>;
         clocks = <&ccu CLK_BUS_SPINLOCK>;
         resets = <&ccu RST_BUS_SPINLOCK>;
+        interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
     };
 ...
