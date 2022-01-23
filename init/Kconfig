@@ -1578,6 +1578,12 @@ config PRINTK
 	  very difficult to diagnose system problems, saying N here is
 	  strongly discouraged.
 
+config PRINTK_EMOJI
+	default n
+	bool "Enable support for printk" if PRINTK
+	help
+	  This option enables emojis prefix for printk log levels.
+
 config BUG
 	bool "BUG() support" if EXPERT
 	default y
