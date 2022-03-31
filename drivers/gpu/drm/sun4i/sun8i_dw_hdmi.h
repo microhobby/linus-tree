@@ -187,6 +187,7 @@ struct sun8i_dw_hdmi {
 	struct regulator		*regulator;
 	const struct sun8i_dw_hdmi_quirks *quirks;
 	struct reset_control		*rst_ctrl;
+	struct reset_control		*rst_sub;
 };
 
 extern struct platform_driver sun8i_hdmi_phy_driver;
