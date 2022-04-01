@@ -26,6 +26,7 @@ properties:
   compatible:
     oneOf:
       - const: allwinner,sun8i-a83t-dw-hdmi
+      - const: allwinner,sun20i-d1-dw-hdmi
       - const: allwinner,sun50i-h6-dw-hdmi
 
       - items:
