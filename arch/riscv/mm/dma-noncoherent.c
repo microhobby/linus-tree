@@ -6,6 +6,7 @@
  */
 
 #include <linux/dma-direct.h>
+#include <linux/dma-iommu.h>
 #include <linux/dma-map-ops.h>
 #include <linux/mm.h>
 #include <linux/of.h>
@@ -73,6 +74,9 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
 		   dev_driver_string(dev), dev_name(dev));
 
 	dev->dma_coherent = coherent;
+
+	if (iommu)
+		iommu_setup_dma_ops(dev, dma_base, dma_base + size - 1);
 }
 
 #ifdef CONFIG_RISCV_ISA_ZICBOM
