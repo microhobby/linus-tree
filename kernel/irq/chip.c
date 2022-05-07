@@ -439,16 +439,6 @@ void unmask_irq(struct irq_desc *desc)
 	}
 }
 
-void unmask_threaded_irq(struct irq_desc *desc)
-{
-	struct irq_chip *chip = desc->irq_data.chip;
-
-	if (chip->flags & IRQCHIP_EOI_THREADED)
-		chip->irq_eoi(&desc->irq_data);
-
-	unmask_irq(desc);
-}
-
 /*
  *	handle_nested_irq - Handle a nested irq from a irq thread
  *	@irq:	the interrupt number
@@ -656,25 +646,33 @@ out_unlock:
 }
 EXPORT_SYMBOL_GPL(handle_level_irq);
 
+void unmask_eoi_threaded_irq(struct irq_desc *desc)
+{
+	struct irq_chip *chip = desc->irq_data.chip;
+
+	if (desc->istate & IRQS_ONESHOT)
+		unmask_irq(desc);
+
+	if (chip->flags & IRQCHIP_EOI_THREADED)
+		chip->irq_eoi(&desc->irq_data);
+}
+
 static void cond_unmask_eoi_irq(struct irq_desc *desc, struct irq_chip *chip)
 {
-	if (!(desc->istate & IRQS_ONESHOT)) {
-		chip->irq_eoi(&desc->irq_data);
+	/* Do not send EOI if the thread will do it for us. */
+	if ((chip->flags & IRQCHIP_EOI_THREADED) && desc->threads_oneshot)
 		return;
-	}
+
 	/*
 	 * We need to unmask in the following cases:
 	 * - Oneshot irq which did not wake the thread (caused by a
 	 *   spurious interrupt or a primary handler handling it
 	 *   completely).
 	 */
-	if (!irqd_irq_disabled(&desc->irq_data) &&
-	    irqd_irq_masked(&desc->irq_data) && !desc->threads_oneshot) {
-		chip->irq_eoi(&desc->irq_data);
+	if ((desc->istate & IRQS_ONESHOT) && !desc->threads_oneshot)
 		unmask_irq(desc);
-	} else if (!(chip->flags & IRQCHIP_EOI_THREADED)) {
-		chip->irq_eoi(&desc->irq_data);
-	}
+
+	chip->irq_eoi(&desc->irq_data);
 }
 
 /**

@@ -1074,9 +1074,9 @@ static int irq_wait_for_interrupt(struct irqaction *action)
 static void irq_finalize_oneshot(struct irq_desc *desc,
 				 struct irqaction *action)
 {
-	if (!(desc->istate & IRQS_ONESHOT) ||
-	    action->handler == irq_forced_secondary_handler)
+	if (action->handler == irq_forced_secondary_handler)
 		return;
+
 again:
 	chip_bus_lock(desc);
 	raw_spin_lock_irq(&desc->lock);
@@ -1112,9 +1112,8 @@ again:
 
 	desc->threads_oneshot &= ~action->thread_mask;
 
-	if (!desc->threads_oneshot && !irqd_irq_disabled(&desc->irq_data) &&
-	    irqd_irq_masked(&desc->irq_data))
-		unmask_threaded_irq(desc);
+	if (!desc->threads_oneshot)
+		unmask_eoi_threaded_irq(desc);
 
 out_unlock:
 	raw_spin_unlock_irq(&desc->lock);
@@ -1662,7 +1661,8 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
 	 * !ONESHOT irqs the thread mask is 0 so we can avoid a
 	 * conditional in irq_wake_thread().
 	 */
-	if (new->flags & IRQF_ONESHOT) {
+	if ((new->flags & IRQF_ONESHOT) ||
+	    (desc->irq_data.chip->flags & (IRQCHIP_ONESHOT_SAFE | IRQCHIP_EOI_THREADED)) == (IRQCHIP_ONESHOT_SAFE | IRQCHIP_EOI_THREADED)) {
 		/*
 		 * Unlikely to have 32 resp 64 irqs sharing one line,
 		 * but who knows.
