@@ -39,6 +39,7 @@ properties:
       - items:
           - const: allwinner,sun8i-r40-system-control
           - const: allwinner,sun4i-a10-system-control
+      - const: allwinner,sun20i-d1-system-control
       - const: allwinner,sun50i-a64-sram-controller
         deprecated: true
       - const: allwinner,sun50i-a64-system-control
