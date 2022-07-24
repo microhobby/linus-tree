@@ -11,6 +11,8 @@
 #include <linux/irqdomain.h>
 #include <asm/sbi.h>
 
+#ifdef CONFIG_SMP
+
 static void sbi_send_cpumask_ipi(unsigned int parent_virq,
 				 const struct cpumask *target)
 {
@@ -58,3 +60,5 @@ void __init sbi_ipi_init(void)
 	riscv_ipi_set_virq_range(virq, BITS_PER_LONG, false);
 	pr_info("providing IPIs using SBI IPI extension\n");
 }
+
+#endif
