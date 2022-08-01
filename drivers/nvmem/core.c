@@ -1373,63 +1373,67 @@ void nvmem_cell_put(struct nvmem_cell *cell)
 }
 EXPORT_SYMBOL_GPL(nvmem_cell_put);
 
-static void nvmem_shift_read_buffer_in_place(struct nvmem_cell_entry *cell, void *buf)
+static int nvmem_shift_read_buffer_in_place(struct nvmem_cell_entry *cell, void *buf)
 {
 	u8 *p, *b;
-	int i, extra, bit_offset = cell->bit_offset;
+	int i, bit_offset = cell->bit_offset, bytes = cell->bytes;
 
 	p = b = buf;
 	if (bit_offset) {
+		int byte_offset = bit_offset / BITS_PER_BYTE;
+
+		b += byte_offset;
+		bytes -= byte_offset;
+		bit_offset %= BITS_PER_BYTE;
+
 		/* First shift */
-		*b++ >>= bit_offset;
+		*p = *b++ >> bit_offset;
 
 		/* setup rest of the bytes if any */
-		for (i = 1; i < cell->bytes; i++) {
+		for (i = 1; i < bytes; i++) {
 			/* Get bits from next byte and shift them towards msb */
-			*p |= *b << (BITS_PER_BYTE - bit_offset);
-
-			p = b;
-			*b++ >>= bit_offset;
+			*p++ |= *b << (BITS_PER_BYTE - bit_offset);
+			*p = *b++ >> bit_offset;
 		}
-	} else {
-		/* point to the msb */
-		p += cell->bytes - 1;
 	}
 
 	/* result fits in less bytes */
-	extra = cell->bytes - DIV_ROUND_UP(cell->nbits, BITS_PER_BYTE);
-	while (--extra >= 0)
-		*p-- = 0;
+	bytes = DIV_ROUND_UP(cell->nbits, BITS_PER_BYTE);
+	p = buf + bytes;
+	memset(p, 0, cell->bytes - bytes);
 
 	/* clear msb bits if any leftover in the last byte */
 	if (cell->nbits % BITS_PER_BYTE)
-		*p &= GENMASK((cell->nbits % BITS_PER_BYTE) - 1, 0);
+		p[-1] &= GENMASK((cell->nbits % BITS_PER_BYTE) - 1, 0);
+
+	return bytes;
 }
 
 static int __nvmem_cell_read(struct nvmem_device *nvmem,
 		      struct nvmem_cell_entry *cell,
 		      void *buf, size_t *len, const char *id)
 {
+	int bytes = cell->bytes;
 	int rc;
 
-	rc = nvmem_reg_read(nvmem, cell->offset, buf, cell->bytes);
+	rc = nvmem_reg_read(nvmem, cell->offset, buf, bytes);
 
 	if (rc)
 		return rc;
 
 	/* shift bits in-place */
 	if (cell->bit_offset || cell->nbits)
-		nvmem_shift_read_buffer_in_place(cell, buf);
+		bytes = nvmem_shift_read_buffer_in_place(cell, buf);
 
 	if (nvmem->cell_post_process) {
 		rc = nvmem->cell_post_process(nvmem->priv, id,
-					      cell->offset, buf, cell->bytes);
+					      cell->offset, buf, bytes);
 		if (rc)
 			return rc;
 	}
 
 	if (len)
-		*len = cell->bytes;
+		*len = bytes;
 
 	return 0;
 }
@@ -1526,6 +1530,7 @@ static int __nvmem_cell_entry_write(struct nvmem_cell_entry *cell, void *buf, si
 	int rc;
 
 	if (!nvmem || nvmem->read_only ||
+	    cell->bit_offset >= BITS_PER_BYTE ||
 	    (cell->bit_offset == 0 && len != cell->bytes))
 		return -EINVAL;
 
