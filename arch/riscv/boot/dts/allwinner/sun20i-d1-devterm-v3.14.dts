@@ -36,10 +36,6 @@
 	};
 };
 
-&de {
-	status = "okay";
-};
-
 &dsi {
 	pinctrl-0 = <&dsi_4lane_pins>;
 	pinctrl-names = "default";
