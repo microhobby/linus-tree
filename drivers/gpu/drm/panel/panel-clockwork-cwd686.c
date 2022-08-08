@@ -20,7 +20,8 @@
 struct cwd686 {
 	struct device *dev;
 	struct drm_panel panel;
-	struct regulator *supply;
+	struct regulator *iovcc;
+	struct regulator *vci;
 	struct gpio_desc *enable_gpio;
 	struct gpio_desc *reset_gpio;
 	struct backlight_device *backlight;
@@ -279,6 +280,9 @@ static int cwd686_unprepare(struct drm_panel *panel)
 
 	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
 
+	regulator_disable(ctx->vci);
+	regulator_disable(ctx->iovcc);
+
 	ctx->prepared = false;
 
 	return 0;
@@ -292,6 +296,18 @@ static int cwd686_prepare(struct drm_panel *panel)
 
 	if (ctx->prepared)
 		return 0;
+
+	err = regulator_enable(ctx->iovcc);
+	if (err) {
+		dev_err(ctx->dev, "failed to enable iovcc (%d)\n", err);
+		return err;
+	}
+
+	err = regulator_enable(ctx->vci);
+	if (err) {
+		dev_err(ctx->dev, "failed to enable vci (%d)\n", err);
+		return err;
+	}
 
 	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
 	/* T2 */
@@ -401,6 +417,14 @@ static int cwd686_probe(struct mipi_dsi_device *dsi)
 			dev_err(dev, "failed to request GPIO (%d)\n", err);
 		return err;
 	}
+
+	ctx->iovcc = devm_regulator_get(dev, "iovcc");
+	if (IS_ERR(ctx->iovcc))
+		return PTR_ERR(ctx->iovcc);
+
+	ctx->vci = devm_regulator_get(dev, "vci");
+	if (IS_ERR(ctx->vci))
+		return PTR_ERR(ctx->vci);
 
 	ctx->backlight = devm_of_find_backlight(dev);
 	if (IS_ERR(ctx->backlight))
