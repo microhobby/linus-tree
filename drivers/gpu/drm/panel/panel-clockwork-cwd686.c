@@ -410,7 +410,7 @@ static int cwd686_probe(struct mipi_dsi_device *dsi)
 			  MIPI_DSI_MODE_VIDEO_BURST |
 			  MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
 
-	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
 		err = PTR_ERR(ctx->reset_gpio);
 		if (err != -EPROBE_DEFER)
