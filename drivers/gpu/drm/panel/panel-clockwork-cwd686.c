@@ -315,7 +315,7 @@ static int cwd686_prepare(struct drm_panel *panel)
 
 	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
 	/* T3 */
-	msleep(20);
+	msleep(120);
 
 	/* Exit sleep mode and power on */
 
