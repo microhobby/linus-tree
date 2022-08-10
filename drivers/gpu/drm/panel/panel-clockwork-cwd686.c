@@ -218,12 +218,14 @@ static int cwd686_prepare(struct drm_panel *panel)
 		dev_err(ctx->dev, "failed to enable iovcc (%d)\n", err);
 		return err;
 	}
+	msleep(20);
 
 	err = regulator_enable(ctx->vci);
 	if (err) {
 		dev_err(ctx->dev, "failed to enable vci (%d)\n", err);
 		return err;
 	}
+	msleep(120);
 
 	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
 	/* T2 */
