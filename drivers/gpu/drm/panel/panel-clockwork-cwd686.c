@@ -373,6 +373,8 @@ static int cwd686_remove(struct mipi_dsi_device *dsi)
 
 	mipi_dsi_detach(dsi);
 	drm_panel_remove(&ctx->panel);
+	if (ctx->prepared)
+		cwd686_unprepare(&ctx->panel);
 
 	return 0;
 }
