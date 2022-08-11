@@ -320,10 +320,22 @@
 		};
 
 		codec: audio-codec@2030000 {
-			compatible = "simple-mfd", "syscon";
+			compatible = "allwinner,sun20i-d1-codec", "simple-mfd", "syscon";
 			reg = <0x2030000 0x1000>;
+			interrupts = <41 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_AUDIO>,
+				 <&ccu CLK_AUDIO_ADC>,
+				 <&ccu CLK_AUDIO_DAC>,
+				 <&osc24M>,
+				 <&rtc CLK_OSC32K>;
+			clock-names = "bus", "adc", "dac", "hosc", "losc";
+			resets = <&ccu RST_BUS_AUDIO>;
+			dmas = <&dma 7>, <&dma 7>;
+			dma-names = "rx", "tx";
+			status = "disabled";
 			#address-cells = <1>;
 			#size-cells = <1>;
+			#sound-dai-cells = <0>;
 
 			regulators@2030348 {
 				compatible = "allwinner,sun20i-d1-analog-ldos";
@@ -337,6 +349,21 @@
 				reg_hpldo: hpldo {
 				};
 			};
+		};
+
+		// TODO: try the posted driver.
+		dmic: dmic@2031000 {
+			compatible = "allwinner,sun20i-d1-dmic";
+			reg = <0x2031000 0x400>;
+			interrupts = <40 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_DMIC>,
+				 <&ccu CLK_DMIC>;
+			clock-names = "bus", "mod";
+			resets = <&ccu RST_BUS_DMIC>;
+			dmas = <&dma 8>;
+			dma-names = "rx";
+			status = "disabled";
+			#sound-dai-cells = <0>;
 		};
 
 		i2s0: i2s@2032000 {
@@ -369,6 +396,7 @@
 			#sound-dai-cells = <0>;
 		};
 
+		// TODO: how to integrate ASRC? same or separate node?
 		i2s2: i2s@2034000 {
 			compatible = "allwinner,sun20i-d1-i2s",
 				     "allwinner,sun50i-r329-i2s";
@@ -379,6 +407,22 @@
 			clock-names = "apb", "mod";
 			resets = <&ccu RST_BUS_I2S2>;
 			dmas = <&dma 5>, <&dma 5>;
+			dma-names = "rx", "tx";
+			status = "disabled";
+			#sound-dai-cells = <0>;
+		};
+
+		// TODO: add receive functionality
+		spdif: spdif@2036000 {
+			compatible = "allwinner,sun20i-d1-spdif";
+			reg = <0x2036000 0x400>;
+			interrupts = <39 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_SPDIF>,
+				 <&ccu CLK_SPDIF_RX>,
+				 <&ccu CLK_SPDIF_TX>;
+			clock-names = "apb", "rx", "tx";
+			resets = <&ccu RST_BUS_SPDIF>;
+			dmas = <&dma 2>, <&dma 2>;
 			dma-names = "rx", "tx";
 			status = "disabled";
 			#sound-dai-cells = <0>;

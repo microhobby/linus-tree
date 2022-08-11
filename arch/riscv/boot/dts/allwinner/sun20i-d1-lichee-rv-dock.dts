@@ -15,6 +15,32 @@
 		ethernet1 = &rtl8723ds;
 	};
 
+	dmic_codec: dmic-codec {
+		compatible = "dmic-codec";
+		num-channels = <2>;
+		#sound-dai-cells = <0>;
+	};
+
+	dmic-sound {
+		compatible = "simple-audio-card";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		simple-audio-card,dai-link@0 {
+			format = "pdm";
+			frame-master = <&link0_cpu>;
+			bitclock-master = <&link0_cpu>;
+
+			link0_cpu: cpu {
+				sound-dai = <&dmic>;
+			};
+
+			link0_codec: codec {
+				sound-dai = <&dmic_codec>;
+			};
+		};
+	};
+
 	hdmi_connector: connector {
 		compatible = "hdmi-connector";
 		type = "a";
@@ -32,7 +58,25 @@
 	};
 };
 
+&codec {
+	routing = "Internal Speaker", "HPOUTL",
+		  "Internal Speaker", "HPOUTR",
+		  "LINEINL", "HPOUTL",
+		  "LINEINR", "HPOUTR",
+		  "MICIN3", "Internal Microphone",
+		  "Internal Microphone", "HBIAS";
+	widgets = "Microphone", "Internal Microphone",
+		  "Speaker", "Internal Speaker";
+	status = "okay";
+};
+
 &de {
+	status = "okay";
+};
+
+&dmic {
+	pinctrl-0 = <&dmic_pb11_d0_pin>, <&dmic_pe17_clk_pin>;
+	pinctrl-names = "default";
 	status = "okay";
 };
 
@@ -94,6 +138,18 @@
 
 &ohci1 {
 	status = "okay";
+};
+
+&pio {
+	dmic_pb11_d0_pin: dmic-pb11-d0-pin {
+		pins = "PB11";
+		function = "dmic";
+	};
+
+	dmic_pe17_clk_pin: dmic-pe17-clk-pin {
+		pins = "PE17";
+		function = "dmic";
+	};
 };
 
 &uart1 {
