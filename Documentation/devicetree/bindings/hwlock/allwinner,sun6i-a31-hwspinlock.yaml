@@ -15,7 +15,21 @@ description:
 
 properties:
   compatible:
-    const: allwinner,sun6i-a31-hwspinlock
+    oneOf:
+      - items:
+          - enum:
+              - allwinner,sun8i-a23-hwspinlock
+              - allwinner,sun8i-a33-hwspinlock
+              - allwinner,sun8i-a50-hwspinlock
+              - allwinner,sun8i-a83t-hwspinlock
+              - allwinner,sun8i-h3-hwspinlock
+              - allwinner,sun9i-a80-hwspinlock
+              - allwinner,sun20i-d1-hwspinlock
+              - allwinner,sun50i-a64-hwspinlock
+              - allwinner,sun50i-h6-hwspinlock
+              - allwinner,sun50i-r329-hwspinlock
+          - const: allwinner,sun6i-a31-hwspinlock
+      - const: allwinner,sun6i-a31-hwspinlock
 
   reg:
     maxItems: 1
@@ -26,17 +40,22 @@ properties:
   resets:
     maxItems: 1
 
+  interrupts:
+    maxItems: 1
+
 required:
   - compatible
   - reg
   - clocks
   - resets
+  - interrupts
 
 additionalProperties: false
 
 examples:
   - |
     #include <dt-bindings/clock/sun8i-a23-a33-ccu.h>
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
     #include <dt-bindings/reset/sun8i-a23-a33-ccu.h>
 
     hwlock@1c18000 {
@@ -44,5 +63,6 @@ examples:
         reg = <0x01c18000 0x1000>;
         clocks = <&ccu CLK_BUS_SPINLOCK>;
         resets = <&ccu RST_BUS_SPINLOCK>;
+        interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
     };
 ...
