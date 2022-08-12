@@ -17,11 +17,18 @@ properties:
   compatible:
     oneOf:
       - const: allwinner,sun6i-a31-mipi-dphy
+      - const: allwinner,sun50i-a100-mipi-dphy
       - items:
           - const: allwinner,sun50i-a64-mipi-dphy
           - const: allwinner,sun6i-a31-mipi-dphy
+      - items:
+          - const: allwinner,sun20i-d1-mipi-dphy
+          - const: allwinner,sun50i-a100-mipi-dphy
 
   reg:
+    maxItems: 1
+
+  interrupts:
     maxItems: 1
 
   clocks:
@@ -53,6 +60,7 @@ required:
   - "#phy-cells"
   - compatible
   - reg
+  - interrupts
   - clocks
   - clock-names
   - resets
