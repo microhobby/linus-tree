@@ -9,6 +9,38 @@
 		ethernet1 = &xr829;
 	};
 
+	audio_amplifier: audio-amplifier {
+		compatible = "simple-audio-amplifier";
+		enable-gpios = <&pio 1 10 GPIO_ACTIVE_HIGH>; /* PB10 */
+		sound-name-prefix = "Amplifier";
+	};
+
+	dmic_codec: dmic-codec {
+		compatible = "dmic-codec";
+		num-channels = <1>;
+		#sound-dai-cells = <0>;
+	};
+
+	dmic-sound {
+		compatible = "simple-audio-card";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		simple-audio-card,dai-link@0 {
+			format = "pdm";
+			frame-master = <&link0_cpu>;
+			bitclock-master = <&link0_cpu>;
+
+			link0_cpu: cpu {
+				sound-dai = <&dmic>;
+			};
+
+			link0_codec: codec {
+				sound-dai = <&dmic_codec>;
+			};
+		};
+	};
+
 	wifi_pwrseq: wifi-pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		clocks = <&ccu CLK_FANOUT1>;
@@ -19,6 +51,27 @@
 		pinctrl-0 = <&clk_pg11_pin>;
 		pinctrl-names = "default";
 	};
+};
+
+&codec {
+	aux-devs = <&audio_amplifier>;
+	routing = "Internal Speaker", "Amplifier OUTL",
+		  "Internal Speaker", "Amplifier OUTR",
+		  "Amplifier INL", "HPOUTL",
+		  "Amplifier INR", "HPOUTR",
+		  "LINEINL", "HPOUTL",
+		  "LINEINR", "HPOUTR",
+		  "MICIN3", "Internal Microphone",
+		  "Internal Microphone", "HBIAS";
+	widgets = "Microphone", "Internal Microphone",
+		  "Speaker", "Internal Speaker";
+	status = "okay";
+};
+
+&dmic {
+	pinctrl-0 = <&dmic_pb11_d0_pin>, <&dmic_pe17_clk_pin>;
+	pinctrl-names = "default";
+	status = "okay";
 };
 
 &ehci1 {
@@ -65,6 +118,16 @@
 	clk_pg11_pin: clk-pg11-pin {
 		pins = "PG11";
 		function = "clk";
+	};
+
+	dmic_pb11_d0_pin: dmic-pb11-d0-pin {
+		pins = "PB11";
+		function = "dmic";
+	};
+
+	dmic_pe17_clk_pin: dmic-pe17-clk-pin {
+		pins = "PE17";
+		function = "dmic";
 	};
 };
 

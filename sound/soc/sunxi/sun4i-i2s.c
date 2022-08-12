@@ -633,6 +633,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
 			params_physical_width(params));
 		return -EINVAL;
 	}
+	i2s->capture_dma_data.addr_width = width;
 	i2s->playback_dma_data.addr_width = width;
 
 	sr = i2s->variant->get_sr(word_size);
