@@ -796,6 +796,12 @@ L:	linux-media@vger.kernel.org
 S:	Maintained
 F:	drivers/staging/media/sunxi/cedrus/
 
+ALLWINNER PWM DRIVER
+M:	Ban Tao <fengzheng923@gmail.com>
+L:	linux-pwm@vger.kernel.org
+S:	Maintained
+F:	drivers/pwm/pwm-sun8i-v536.c
+
 ALPHA PORT
 M:	Richard Henderson <rth@twiddle.net>
 M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
