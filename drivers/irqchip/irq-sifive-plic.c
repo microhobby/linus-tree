@@ -201,7 +201,9 @@ static struct irq_chip plic_chip = {
 	.irq_set_affinity = plic_set_affinity,
 #endif
 	.irq_set_type	= plic_irq_set_type,
-	.flags		= IRQCHIP_AFFINITY_PRE_STARTUP,
+	.flags		= IRQCHIP_ONESHOT_SAFE |
+			  IRQCHIP_EOI_THREADED |
+			  IRQCHIP_AFFINITY_PRE_STARTUP,
 };
 
 static int plic_irq_set_type(struct irq_data *d, unsigned int type)
