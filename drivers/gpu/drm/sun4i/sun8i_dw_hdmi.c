@@ -128,12 +128,17 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
 	if (encoder->possible_crtcs == 0)
 		return -EPROBE_DEFER;
 
-	hdmi->rst_ctrl = devm_reset_control_get(dev, "ctrl");
+	hdmi->rst_ctrl = devm_reset_control_get_shared(dev, "ctrl");
 	if (IS_ERR(hdmi->rst_ctrl))
 		return dev_err_probe(dev, PTR_ERR(hdmi->rst_ctrl),
 				     "Could not get ctrl reset control\n");
 
-	hdmi->clk_tmds = devm_clk_get(dev, "tmds");
+	hdmi->rst_sub = devm_reset_control_get_optional_shared(dev, "sub");
+	if (IS_ERR(hdmi->rst_sub))
+		return dev_err_probe(dev, PTR_ERR(hdmi->rst_sub),
+				     "Could not get sub reset control\n");
+
+	hdmi->clk_tmds = devm_clk_get_optional(dev, "tmds");
 	if (IS_ERR(hdmi->clk_tmds))
 		return dev_err_probe(dev, PTR_ERR(hdmi->clk_tmds),
 				     "Couldn't get the tmds clock\n");
@@ -155,10 +160,16 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
 		goto err_disable_regulator;
 	}
 
+	ret = reset_control_deassert(hdmi->rst_sub);
+	if (ret) {
+		dev_err(dev, "Could not deassert sub reset control\n");
+		goto err_assert_ctrl_reset;
+	}
+
 	ret = clk_prepare_enable(hdmi->clk_tmds);
 	if (ret) {
 		dev_err(dev, "Could not enable tmds clock\n");
-		goto err_assert_ctrl_reset;
+		goto err_assert_sub_reset;
 	}
 
 	phy_node = of_parse_phandle(dev->of_node, "phys", 0);
@@ -205,6 +216,8 @@ cleanup_encoder:
 	drm_encoder_cleanup(encoder);
 err_disable_clk_tmds:
 	clk_disable_unprepare(hdmi->clk_tmds);
+err_assert_sub_reset:
+	reset_control_assert(hdmi->rst_sub);
 err_assert_ctrl_reset:
 	reset_control_assert(hdmi->rst_ctrl);
 err_disable_regulator:
@@ -246,6 +259,11 @@ static const struct sun8i_dw_hdmi_quirks sun8i_a83t_quirks = {
 	.mode_valid = sun8i_dw_hdmi_mode_valid_a83t,
 };
 
+static const struct sun8i_dw_hdmi_quirks sun20i_d1_quirks = {
+	.mode_valid = sun8i_dw_hdmi_mode_valid_a83t,
+	.use_drm_infoframe = true,
+};
+
 static const struct sun8i_dw_hdmi_quirks sun50i_h6_quirks = {
 	.mode_valid = sun8i_dw_hdmi_mode_valid_h6,
 	.use_drm_infoframe = true,
@@ -255,6 +273,10 @@ static const struct of_device_id sun8i_dw_hdmi_dt_ids[] = {
 	{
 		.compatible = "allwinner,sun8i-a83t-dw-hdmi",
 		.data = &sun8i_a83t_quirks,
+	},
+	{
+		.compatible = "allwinner,sun20i-d1-dw-hdmi",
+		.data = &sun20i_d1_quirks,
 	},
 	{
 		.compatible = "allwinner,sun50i-h6-dw-hdmi",

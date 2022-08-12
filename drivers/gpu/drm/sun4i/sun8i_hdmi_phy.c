@@ -9,6 +9,8 @@
 
 #include "sun8i_dw_hdmi.h"
 
+#include "aw_phy.h"
+
 /*
  * Address can be actually any value. Here is set to same value as
  * it is set in BSP driver.
@@ -123,10 +125,30 @@ static const struct dw_hdmi_phy_config sun50i_h6_phy_config[] = {
 	{ ~0UL,	     0x0000, 0x0000, 0x0000}
 };
 
-static int sun8i_hdmi_phy_config_a83t(struct dw_hdmi *hdmi,
-				      struct sun8i_hdmi_phy *phy,
-				      unsigned int clk_rate)
+static void sun8i_hdmi_phy_set_polarity(struct sun8i_hdmi_phy *phy,
+					const struct drm_display_mode *mode)
 {
+	u32 val = 0;
+
+	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
+		val |= SUN8I_HDMI_PHY_DBG_CTRL_POL_NHSYNC;
+
+	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
+		val |= SUN8I_HDMI_PHY_DBG_CTRL_POL_NVSYNC;
+
+	regmap_update_bits(phy->regs, SUN8I_HDMI_PHY_DBG_CTRL_REG,
+			   SUN8I_HDMI_PHY_DBG_CTRL_POL_MASK, val);
+};
+
+static int sun8i_a83t_hdmi_phy_config(struct dw_hdmi *hdmi, void *data,
+				      const struct drm_display_info *display,
+				      const struct drm_display_mode *mode)
+{
+	unsigned int clk_rate = mode->crtc_clock * 1000;
+	struct sun8i_hdmi_phy *phy = data;
+
+	sun8i_hdmi_phy_set_polarity(phy, mode);
+
 	regmap_update_bits(phy->regs, SUN8I_HDMI_PHY_REXT_CTRL_REG,
 			   SUN8I_HDMI_PHY_REXT_CTRL_REXT_EN,
 			   SUN8I_HDMI_PHY_REXT_CTRL_REXT_EN);
@@ -185,10 +207,31 @@ static int sun8i_hdmi_phy_config_a83t(struct dw_hdmi *hdmi,
 	return 0;
 }
 
-static int sun8i_hdmi_phy_config_h3(struct dw_hdmi *hdmi,
-				    struct sun8i_hdmi_phy *phy,
-				    unsigned int clk_rate)
+static void sun8i_a83t_hdmi_phy_disable(struct dw_hdmi *hdmi, void *data)
 {
+	struct sun8i_hdmi_phy *phy = data;
+
+	dw_hdmi_phy_gen2_txpwron(hdmi, 0);
+	dw_hdmi_phy_gen2_pddq(hdmi, 1);
+
+	regmap_update_bits(phy->regs, SUN8I_HDMI_PHY_REXT_CTRL_REG,
+			   SUN8I_HDMI_PHY_REXT_CTRL_REXT_EN, 0);
+}
+
+static const struct dw_hdmi_phy_ops sun8i_a83t_hdmi_phy_ops = {
+	.init		= sun8i_a83t_hdmi_phy_config,
+	.disable	= sun8i_a83t_hdmi_phy_disable,
+	.read_hpd	= dw_hdmi_phy_read_hpd,
+	.update_hpd	= dw_hdmi_phy_update_hpd,
+	.setup_hpd	= dw_hdmi_phy_setup_hpd,
+};
+
+static int sun8i_h3_hdmi_phy_config(struct dw_hdmi *hdmi, void *data,
+				    const struct drm_display_info *display,
+				    const struct drm_display_mode *mode)
+{
+	unsigned int clk_rate = mode->crtc_clock * 1000;
+	struct sun8i_hdmi_phy *phy = data;
 	u32 pll_cfg1_init;
 	u32 pll_cfg2_init;
 	u32 ana_cfg1_end;
@@ -196,6 +239,11 @@ static int sun8i_hdmi_phy_config_h3(struct dw_hdmi *hdmi,
 	u32 ana_cfg3_init;
 	u32 b_offset = 0;
 	u32 val;
+
+	if (phy->variant->has_phy_clk)
+		clk_set_rate(phy->clk_phy, clk_rate);
+
+	sun8i_hdmi_phy_set_polarity(phy, mode);
 
 	/* bandwidth / frequency independent settings */
 
@@ -333,41 +381,10 @@ static int sun8i_hdmi_phy_config_h3(struct dw_hdmi *hdmi,
 	return 0;
 }
 
-static int sun8i_hdmi_phy_config(struct dw_hdmi *hdmi, void *data,
-				 const struct drm_display_info *display,
-				 const struct drm_display_mode *mode)
+static void sun8i_h3_hdmi_phy_disable(struct dw_hdmi *hdmi, void *data)
 {
-	struct sun8i_hdmi_phy *phy = (struct sun8i_hdmi_phy *)data;
-	u32 val = 0;
+	struct sun8i_hdmi_phy *phy = data;
 
-	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
-		val |= SUN8I_HDMI_PHY_DBG_CTRL_POL_NHSYNC;
-
-	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
-		val |= SUN8I_HDMI_PHY_DBG_CTRL_POL_NVSYNC;
-
-	regmap_update_bits(phy->regs, SUN8I_HDMI_PHY_DBG_CTRL_REG,
-			   SUN8I_HDMI_PHY_DBG_CTRL_POL_MASK, val);
-
-	if (phy->variant->has_phy_clk)
-		clk_set_rate(phy->clk_phy, mode->crtc_clock * 1000);
-
-	return phy->variant->phy_config(hdmi, phy, mode->crtc_clock * 1000);
-};
-
-static void sun8i_hdmi_phy_disable_a83t(struct dw_hdmi *hdmi,
-					struct sun8i_hdmi_phy *phy)
-{
-	dw_hdmi_phy_gen2_txpwron(hdmi, 0);
-	dw_hdmi_phy_gen2_pddq(hdmi, 1);
-
-	regmap_update_bits(phy->regs, SUN8I_HDMI_PHY_REXT_CTRL_REG,
-			   SUN8I_HDMI_PHY_REXT_CTRL_REXT_EN, 0);
-}
-
-static void sun8i_hdmi_phy_disable_h3(struct dw_hdmi *hdmi,
-				      struct sun8i_hdmi_phy *phy)
-{
 	regmap_write(phy->regs, SUN8I_HDMI_PHY_ANA_CFG1_REG,
 		     SUN8I_HDMI_PHY_ANA_CFG1_LDOEN |
 		     SUN8I_HDMI_PHY_ANA_CFG1_ENVBS |
@@ -375,19 +392,187 @@ static void sun8i_hdmi_phy_disable_h3(struct dw_hdmi *hdmi,
 	regmap_write(phy->regs, SUN8I_HDMI_PHY_PLL_CFG1_REG, 0);
 }
 
-static void sun8i_hdmi_phy_disable(struct dw_hdmi *hdmi, void *data)
-{
-	struct sun8i_hdmi_phy *phy = (struct sun8i_hdmi_phy *)data;
+static const struct dw_hdmi_phy_ops sun8i_h3_hdmi_phy_ops = {
+	.init		= sun8i_h3_hdmi_phy_config,
+	.disable	= sun8i_h3_hdmi_phy_disable,
+	.read_hpd	= dw_hdmi_phy_read_hpd,
+	.update_hpd	= dw_hdmi_phy_update_hpd,
+	.setup_hpd	= dw_hdmi_phy_setup_hpd,
+};
 
-	phy->variant->phy_disable(hdmi, phy);
+static int sun20i_d1_hdmi_phy_enable(volatile struct __aw_phy_reg_t __iomem *phy_base)
+{
+	int i = 0, status = 0;
+
+	pr_info("enter %s\n", __func__);
+
+	//enib -> enldo -> enrcal -> encalog -> enbi[3:0] -> enck -> enp2s[3:0] -> enres -> enresck -> entx[3:0]
+	phy_base->phy_ctl4.bits.reg_slv = 4;     //low power voltage 1.08V, default is 3, set 4 as well as pll_ctl0 bit [24:26]
+	phy_base->phy_ctl5.bits.enib = 1;
+	phy_base->phy_ctl0.bits.enldo = 1;
+	phy_base->phy_ctl0.bits.enldo_fs = 1;
+	phy_base->phy_ctl5.bits.enrcal = 1;
+
+	phy_base->phy_ctl5.bits.encalog = 1;
+
+	for (i = 0; i < AW_PHY_TIMEOUT; i++) {
+		udelay(5);
+		status = phy_base->phy_pll_sts.bits.phy_rcalend2d_status;
+		if (status & 0x1) {
+			pr_info("[%s]:phy_rcalend2d_status\n", __func__);
+			break;
+		}
+	}
+	if ((i == AW_PHY_TIMEOUT) && !status) {
+		pr_err("phy_rcalend2d_status Timeout !\n");
+		return -1;
+	}
+
+	phy_base->phy_ctl0.bits.enbi = 0xF;
+	for (i = 0; i < AW_PHY_TIMEOUT; i++) {
+		udelay(5);
+		status = phy_base->phy_pll_sts.bits.pll_lock_status;
+		if (status & 0x1) {
+			pr_info("[%s]:pll_lock_status\n", __func__);
+			break;
+		}
+	}
+	if ((i == AW_PHY_TIMEOUT) && !status) {
+		pr_err("pll_lock_status Timeout! status = 0x%x\n", status);
+		return -1;
+	}
+
+	phy_base->phy_ctl0.bits.enck = 1;
+	phy_base->phy_ctl5.bits.enp2s = 0xF;
+	phy_base->phy_ctl5.bits.enres = 1;
+	phy_base->phy_ctl5.bits.enresck = 1;
+	phy_base->phy_ctl0.bits.entx = 0xF;
+
+	for (i = 0; i < AW_PHY_TIMEOUT; i++) {
+		udelay(5);
+		status = phy_base->phy_pll_sts.bits.tx_ready_dly_status;
+		if (status & 0x1) {
+			pr_info("[%s]:tx_ready_status\n", __func__);
+			break;
+		}
+	}
+	if ((i == AW_PHY_TIMEOUT) && !status) {
+		pr_err("tx_ready_status Timeout ! status = 0x%x\n", status);
+		return -1;
+	}
+
+	return 0;
 }
 
-static const struct dw_hdmi_phy_ops sun8i_hdmi_phy_ops = {
-	.init = &sun8i_hdmi_phy_config,
-	.disable = &sun8i_hdmi_phy_disable,
-	.read_hpd = &dw_hdmi_phy_read_hpd,
-	.update_hpd = &dw_hdmi_phy_update_hpd,
-	.setup_hpd = &dw_hdmi_phy_setup_hpd,
+static int sun20i_d1_hdmi_phy_config(struct dw_hdmi *hdmi, void *data,
+				     const struct drm_display_info *display,
+				     const struct drm_display_mode *mode)
+{
+	struct sun8i_hdmi_phy *phy = data;
+	volatile struct __aw_phy_reg_t __iomem *phy_base = phy->base;
+	int ret;
+
+	pr_info("enter %s\n", __func__);
+
+	/* enable all channel */
+	phy_base->phy_ctl5.bits.reg_p1opt = 0xF;
+
+	// phy_reset
+	phy_base->phy_ctl0.bits.entx = 0;
+	phy_base->phy_ctl5.bits.enresck = 0;
+	phy_base->phy_ctl5.bits.enres = 0;
+	phy_base->phy_ctl5.bits.enp2s = 0;
+	phy_base->phy_ctl0.bits.enck = 0;
+	phy_base->phy_ctl0.bits.enbi = 0;
+	phy_base->phy_ctl5.bits.encalog = 0;
+	phy_base->phy_ctl5.bits.enrcal = 0;
+	phy_base->phy_ctl0.bits.enldo_fs = 0;
+	phy_base->phy_ctl0.bits.enldo = 0;
+	phy_base->phy_ctl5.bits.enib = 0;
+	phy_base->pll_ctl1.bits.reset = 1;
+	phy_base->pll_ctl1.bits.pwron = 0;
+	phy_base->pll_ctl0.bits.envbs = 0;
+
+	// phy_set_mpll
+	phy_base->pll_ctl0.bits.cko_sel = 0x3;
+	phy_base->pll_ctl0.bits.bypass_ppll = 0x1;
+	phy_base->pll_ctl1.bits.drv_ana = 1;
+	phy_base->pll_ctl1.bits.ctrl_modle_clksrc = 0x0; //0: PLL_video   1: MPLL
+	phy_base->pll_ctl1.bits.sdm_en = 0x0;            //mpll sdm jitter 很大，暂不使用
+	phy_base->pll_ctl1.bits.sckref = 0;        //默认值为1
+	phy_base->pll_ctl0.bits.slv = 4;
+	phy_base->pll_ctl0.bits.prop_cntrl = 7;   //默认值7
+	phy_base->pll_ctl0.bits.gmp_cntrl = 3;    //默认值1
+	phy_base->pll_ctl1.bits.ref_cntrl = 0;
+	phy_base->pll_ctl0.bits.vcorange = 1;
+
+	// phy_set_div
+	phy_base->pll_ctl0.bits.div_pre = 0;      //div7 = n+1
+	phy_base->pll_ctl1.bits.pcnt_en = 0;
+	phy_base->pll_ctl1.bits.pcnt_n = 1;       //div6 = 1 (pcnt_en=0)    [div6 = n (pcnt_en = n 注意部分倍数有问题)]  4-256
+	phy_base->pll_ctl1.bits.pixel_rep = 0;    //div5 = n+1
+	phy_base->pll_ctl0.bits.bypass_clrdpth = 0;
+	phy_base->pll_ctl0.bits.clr_dpth = 0;     //div4 = 1 (bypass_clrdpth = 0)
+	//00: 2    01: 2.5  10: 3   11: 4
+	phy_base->pll_ctl0.bits.n_cntrl = 1;      //div
+	phy_base->pll_ctl0.bits.div2_ckbit = 0;   //div1 = n+1
+	phy_base->pll_ctl0.bits.div2_cktmds = 0;  //div2 = n+1
+	phy_base->pll_ctl0.bits.bcr = 0;          //div3    0: [1:10]  1: [1:40]
+	phy_base->pll_ctl1.bits.pwron = 1;
+	phy_base->pll_ctl1.bits.reset = 0;
+
+	//配置phy
+	/* config values taken from table */
+	phy_base->phy_ctl1.dwval = ((phy_base->phy_ctl1.dwval & 0xFFC0FFFF) | /* config->phy_ctl1 */ 0x0);
+	phy_base->phy_ctl2.dwval = ((phy_base->phy_ctl2.dwval & 0xFF000000) | /* config->phy_ctl2 */ 0x0);
+	phy_base->phy_ctl3.dwval = ((phy_base->phy_ctl3.dwval & 0xFFFF0000) | /* config->phy_ctl3 */ 0xFFFF);
+	phy_base->phy_ctl4.dwval = ((phy_base->phy_ctl4.dwval & 0xE0000000) | /* config->phy_ctl4 */ 0xC0D0D0D);
+	//phy_base->pll_ctl0.dwval |= config->pll_ctl0;
+	//phy_base->pll_ctl1.dwval |= config->pll_ctl1;
+
+	// phy_set_clk
+	phy_base->phy_ctl6.bits.switch_clkch_data_corresponding = 0;
+	phy_base->phy_ctl6.bits.clk_greate0_340m = 0x3FF;
+	phy_base->phy_ctl6.bits.clk_greate1_340m = 0x3FF;
+	phy_base->phy_ctl6.bits.clk_greate2_340m = 0x0;
+	phy_base->phy_ctl7.bits.clk_greate3_340m = 0x0;
+	phy_base->phy_ctl7.bits.clk_low_340m = 0x3E0;
+	phy_base->phy_ctl6.bits.en_ckdat = 1;       //默认值为0
+
+	// phy_base->phy_ctl2.bits.reg_resdi = 0x18;
+	// phy_base->phy_ctl4.bits.reg_slv = 3;         //low power voltage 1.08V, 默认值是3
+
+	phy_base->phy_ctl1.bits.res_scktmds = 0;  //
+	phy_base->phy_ctl0.bits.reg_csmps = 2;
+	phy_base->phy_ctl0.bits.reg_ck_test_sel = 0;  //?
+	phy_base->phy_ctl0.bits.reg_ck_sel = 1;
+	phy_base->phy_indbg_ctrl.bits.txdata_debugmode = 0;
+
+	// phy_enable
+	ret = sun20i_d1_hdmi_phy_enable(phy_base);
+	if (ret)
+		return ret;
+
+	phy_base->phy_ctl0.bits.sda_en = 1;
+	phy_base->phy_ctl0.bits.scl_en = 1;
+	phy_base->phy_ctl0.bits.hpd_en = 1;
+	phy_base->phy_ctl0.bits.reg_den = 0xF;
+	phy_base->pll_ctl0.bits.envbs = 1;
+
+	return 0;
+}
+
+static void sun20i_d1_hdmi_phy_disable(struct dw_hdmi *hdmi, void *data)
+{
+	struct sun8i_hdmi_phy *phy = data;
+}
+
+static const struct dw_hdmi_phy_ops sun20i_d1_hdmi_phy_ops = {
+	.init		= sun20i_d1_hdmi_phy_config,
+	.disable	= sun20i_d1_hdmi_phy_disable,
+	.read_hpd	= dw_hdmi_phy_read_hpd,
+	.update_hpd	= dw_hdmi_phy_update_hpd,
+	.setup_hpd	= dw_hdmi_phy_setup_hpd,
 };
 
 static void sun8i_hdmi_phy_unlock(struct sun8i_hdmi_phy *phy)
@@ -565,10 +750,11 @@ void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy)
 void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
 			    struct dw_hdmi_plat_data *plat_data)
 {
-	struct sun8i_hdmi_phy_variant *variant = phy->variant;
+	const struct sun8i_hdmi_phy_variant *variant = phy->variant;
 
-	if (variant->is_custom_phy) {
-		plat_data->phy_ops = &sun8i_hdmi_phy_ops;
+	if (variant->phy_ops) {
+		plat_data->phy_force_vendor = true;
+		plat_data->phy_ops = variant->phy_ops;
 		plat_data->phy_name = "sun8i_dw_hdmi_phy";
 		plat_data->phy_data = phy;
 	} else {
@@ -587,35 +773,32 @@ static const struct regmap_config sun8i_hdmi_phy_regmap_config = {
 };
 
 static const struct sun8i_hdmi_phy_variant sun8i_a83t_hdmi_phy = {
-	.is_custom_phy = true,
+	.phy_ops = &sun8i_a83t_hdmi_phy_ops,
 	.phy_init = &sun8i_hdmi_phy_init_a83t,
-	.phy_disable = &sun8i_hdmi_phy_disable_a83t,
-	.phy_config = &sun8i_hdmi_phy_config_a83t,
 };
 
 static const struct sun8i_hdmi_phy_variant sun8i_h3_hdmi_phy = {
 	.has_phy_clk = true,
-	.is_custom_phy = true,
+	.phy_ops = &sun8i_h3_hdmi_phy_ops,
 	.phy_init = &sun8i_hdmi_phy_init_h3,
-	.phy_disable = &sun8i_hdmi_phy_disable_h3,
-	.phy_config = &sun8i_hdmi_phy_config_h3,
 };
 
 static const struct sun8i_hdmi_phy_variant sun8i_r40_hdmi_phy = {
 	.has_phy_clk = true,
 	.has_second_pll = true,
-	.is_custom_phy = true,
+	.phy_ops = &sun8i_h3_hdmi_phy_ops,
 	.phy_init = &sun8i_hdmi_phy_init_h3,
-	.phy_disable = &sun8i_hdmi_phy_disable_h3,
-	.phy_config = &sun8i_hdmi_phy_config_h3,
+};
+
+static const struct sun8i_hdmi_phy_variant sun20i_d1_hdmi_phy = {
+	.phy_ops = &sun20i_d1_hdmi_phy_ops,
+	.phy_init = &sun50i_hdmi_phy_init_h6,
 };
 
 static const struct sun8i_hdmi_phy_variant sun50i_a64_hdmi_phy = {
 	.has_phy_clk = true,
-	.is_custom_phy = true,
+	.phy_ops = &sun8i_h3_hdmi_phy_ops,
 	.phy_init = &sun8i_hdmi_phy_init_h3,
-	.phy_disable = &sun8i_hdmi_phy_disable_h3,
-	.phy_config = &sun8i_hdmi_phy_config_h3,
 };
 
 static const struct sun8i_hdmi_phy_variant sun50i_h6_hdmi_phy = {
@@ -637,6 +820,10 @@ static const struct of_device_id sun8i_hdmi_phy_of_table[] = {
 	{
 		.compatible = "allwinner,sun8i-r40-hdmi-phy",
 		.data = &sun8i_r40_hdmi_phy,
+	},
+	{
+		.compatible = "allwinner,sun20i-d1-hdmi-phy",
+		.data = &sun20i_d1_hdmi_phy,
 	},
 	{
 		.compatible = "allwinner,sun50i-a64-hdmi-phy",
@@ -672,116 +859,65 @@ int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
 
 static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
 {
-	const struct of_device_id *match;
 	struct device *dev = &pdev->dev;
-	struct device_node *node = dev->of_node;
 	struct sun8i_hdmi_phy *phy;
-	struct resource res;
 	void __iomem *regs;
-	int ret;
-
-	match = of_match_node(sun8i_hdmi_phy_of_table, node);
-	if (!match) {
-		dev_err(dev, "Incompatible HDMI PHY\n");
-		return -EINVAL;
-	}
 
 	phy = devm_kzalloc(dev, sizeof(*phy), GFP_KERNEL);
 	if (!phy)
 		return -ENOMEM;
 
-	phy->variant = (struct sun8i_hdmi_phy_variant *)match->data;
+	phy->variant = of_device_get_match_data(dev);
 	phy->dev = dev;
 
-	ret = of_address_to_resource(node, 0, &res);
-	if (ret) {
-		dev_err(dev, "phy: Couldn't get our resources\n");
-		return ret;
-	}
+	regs = devm_platform_ioremap_resource(pdev, 0);
+	if (IS_ERR(regs))
+		return dev_err_probe(dev, PTR_ERR(regs),
+				     "Couldn't map the HDMI PHY registers\n");
 
-	regs = devm_ioremap_resource(dev, &res);
-	if (IS_ERR(regs)) {
-		dev_err(dev, "Couldn't map the HDMI PHY registers\n");
-		return PTR_ERR(regs);
-	}
-
+	phy->base = regs;
 	phy->regs = devm_regmap_init_mmio(dev, regs,
 					  &sun8i_hdmi_phy_regmap_config);
-	if (IS_ERR(phy->regs)) {
-		dev_err(dev, "Couldn't create the HDMI PHY regmap\n");
-		return PTR_ERR(phy->regs);
-	}
+	if (IS_ERR(phy->regs))
+		return dev_err_probe(dev, PTR_ERR(phy->regs),
+				     "Couldn't create the HDMI PHY regmap\n");
 
-	phy->clk_bus = of_clk_get_by_name(node, "bus");
-	if (IS_ERR(phy->clk_bus)) {
-		dev_err(dev, "Could not get bus clock\n");
-		return PTR_ERR(phy->clk_bus);
-	}
+	phy->clk_bus = devm_clk_get(dev, "bus");
+	if (IS_ERR(phy->clk_bus))
+		return dev_err_probe(dev, PTR_ERR(phy->clk_bus),
+				     "Could not get bus clock\n");
 
-	phy->clk_mod = of_clk_get_by_name(node, "mod");
-	if (IS_ERR(phy->clk_mod)) {
-		dev_err(dev, "Could not get mod clock\n");
-		ret = PTR_ERR(phy->clk_mod);
-		goto err_put_clk_bus;
-	}
+	phy->clk_mod = devm_clk_get(dev, "mod");
+	if (IS_ERR(phy->clk_mod))
+		return dev_err_probe(dev, PTR_ERR(phy->clk_mod),
+				     "Could not get mod clock\n");
 
 	if (phy->variant->has_phy_clk) {
-		phy->clk_pll0 = of_clk_get_by_name(node, "pll-0");
-		if (IS_ERR(phy->clk_pll0)) {
-			dev_err(dev, "Could not get pll-0 clock\n");
-			ret = PTR_ERR(phy->clk_pll0);
-			goto err_put_clk_mod;
-		}
+		phy->clk_pll0 = devm_clk_get(dev, "pll-0");
+		if (IS_ERR(phy->clk_pll0))
+			return dev_err_probe(dev, PTR_ERR(phy->clk_pll0),
+					     "Could not get pll-0 clock\n");
 
 		if (phy->variant->has_second_pll) {
-			phy->clk_pll1 = of_clk_get_by_name(node, "pll-1");
-			if (IS_ERR(phy->clk_pll1)) {
-				dev_err(dev, "Could not get pll-1 clock\n");
-				ret = PTR_ERR(phy->clk_pll1);
-				goto err_put_clk_pll0;
-			}
+			phy->clk_pll1 = devm_clk_get(dev, "pll-1");
+			if (IS_ERR(phy->clk_pll1))
+				return dev_err_probe(dev, PTR_ERR(phy->clk_pll1),
+						     "Could not get pll-1 clock\n");
 		}
 	}
 
-	phy->rst_phy = of_reset_control_get_shared(node, "phy");
-	if (IS_ERR(phy->rst_phy)) {
-		dev_err(dev, "Could not get phy reset control\n");
-		ret = PTR_ERR(phy->rst_phy);
-		goto err_put_clk_pll1;
-	}
+	phy->rst_phy = devm_reset_control_get_shared(dev, "phy");
+	if (IS_ERR(phy->rst_phy))
+		return dev_err_probe(dev, PTR_ERR(phy->rst_phy),
+				     "Could not get phy reset control\n");
 
 	platform_set_drvdata(pdev, phy);
 
-	return 0;
-
-err_put_clk_pll1:
-	clk_put(phy->clk_pll1);
-err_put_clk_pll0:
-	clk_put(phy->clk_pll0);
-err_put_clk_mod:
-	clk_put(phy->clk_mod);
-err_put_clk_bus:
-	clk_put(phy->clk_bus);
-
-	return ret;
-}
-
-static int sun8i_hdmi_phy_remove(struct platform_device *pdev)
-{
-	struct sun8i_hdmi_phy *phy = platform_get_drvdata(pdev);
-
-	reset_control_put(phy->rst_phy);
-
-	clk_put(phy->clk_pll0);
-	clk_put(phy->clk_pll1);
-	clk_put(phy->clk_mod);
-	clk_put(phy->clk_bus);
 	return 0;
 }
 
 struct platform_driver sun8i_hdmi_phy_driver = {
 	.probe  = sun8i_hdmi_phy_probe,
-	.remove = sun8i_hdmi_phy_remove,
 	.driver = {
 		.name = "sun8i-hdmi-phy",
 		.of_match_table = sun8i_hdmi_phy_of_table,
