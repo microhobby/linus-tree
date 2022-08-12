@@ -35,3 +35,23 @@
 		};
 	};
 };
+
+&de {
+	status = "okay";
+};
+
+&dsi {
+	pinctrl-0 = <&dsi_4lane_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	panel@0 {
+		compatible = "clockwork,cwd686";
+		reg = <0>;
+		backlight = <&backlight>;
+		reset-gpios = <&pio 3 19 GPIO_ACTIVE_LOW>; /* PD19/GPIO8 */
+		rotation = <90>;
+		iovcc-supply = <&reg_dcdc3>;
+		vci-supply = <&reg_aldo2>;
+	};
+};
