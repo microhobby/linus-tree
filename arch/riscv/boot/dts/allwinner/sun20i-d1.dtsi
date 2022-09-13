@@ -141,6 +141,7 @@
 			interconnects = <&mbus 4>;
 			interconnect-names = "dma-mem";
 			iommus = <&iommu 0>;
+			status = "disabled";
 		};
 
 		pio: pinctrl@2000000 {
