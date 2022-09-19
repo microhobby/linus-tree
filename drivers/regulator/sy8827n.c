@@ -28,6 +28,10 @@
 #define SY8827N_VSELMIN		600000
 #define SY8827N_VSELSTEP	12500
 
+#define SY8827N_DISCHARGE_MASK	(1<<7)
+#define SY8827N_DISCHARGE_ENABLE	(1<<7)
+#define SY8827N_DISCHARGE_DISABLE	0
+
 struct sy8827n_device_info {
 	struct device *dev;
 	struct regulator_desc desc;
@@ -82,6 +86,7 @@ static const struct regulator_ops sy8827n_regulator_ops = {
 	.is_enabled = regulator_is_enabled_regmap,
 	.set_mode = sy8827n_set_mode,
 	.get_mode = sy8827n_get_mode,
+	.set_active_discharge = regulator_set_active_discharge_regmap,
 };
 
 static int sy8827n_regulator_register(struct sy8827n_device_info *di,
@@ -102,6 +107,10 @@ static int sy8827n_regulator_register(struct sy8827n_device_info *di,
 	rdesc->vsel_reg = di->vsel_reg;
 	rdesc->vsel_mask = rdesc->n_voltages - 1;
 	rdesc->vsel_step = di->vsel_step;
+	rdesc->active_discharge_reg = SY8827N_CTRL;
+	rdesc->active_discharge_mask = SY8827N_DISCHARGE_MASK;
+	rdesc->active_discharge_on = SY8827N_DISCHARGE_ENABLE;
+	rdesc->active_discharge_off = SY8827N_DISCHARGE_DISABLE;
 	rdesc->owner = THIS_MODULE;
 
 	rdev = devm_regulator_register(di->dev, &di->desc, config);
