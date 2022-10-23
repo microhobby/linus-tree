@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "my Kernel",
+            "includePath": [
+                "${workspaceFolder}/arch/**",
+                "${workspaceFolder}/tools/arch/**",
+                "${workspaceFolder}/include/**",
+                "/home/castello/projects/T/yoctodir7/torizon/build-torizon-upstream/tmp/work-shared/nezha-allwinner-d1/kernel-build-artifacts/include/**"
+            ],
+            "dotConfig": "/home/castello/projects/T/yoctodir7/torizon/build-torizon-upstream/tmp/work-shared/nezha-allwinner-d1/kernel-build-artifacts/.config",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerPath": "/usr/bin/gcc-10",
+            "cStandard": "c99",
+            "browse": {
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
