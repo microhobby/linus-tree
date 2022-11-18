@@ -1,0 +1,221 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Break Kernel 🐧🪲",
+            "detail": "",
+            "command": "",
+            "type": "shell",
+            "presentation": {
+                "echo": false,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            "args": [
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "icon": {
+                "id": "bug",
+                "color": "terminal.ansiRed"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "break-to-debug"
+            ]
+        },
+        {
+            "label": "break-to-debug",
+            "detail": "hide",
+            "command": "sshpass",
+            "type": "shell",
+            "isBackground": true,
+            "presentation": {
+                "echo": false,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false,
+                "close": true
+            },
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": ".",
+                    }
+                }
+            ],
+            "args": [
+                "-p",
+                "${config:ssh_psswd}",
+                "ssh",
+                "-o",
+                "UserKnownHostsFile=/dev/null",
+                "-o",
+                "StrictHostKeyChecking=no",
+                "seadog@${config:ssh_ip}",
+                "echo \"${config:ssh_psswd}\" | sudo -S bash -c \"echo g > /proc/sysrq-trigger 2> breakErr.log &\""
+            ],
+            "icon": {
+                "id": "bug",
+                "color": "terminal.ansiRed"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ]
+        },
+        {
+            "label": "Start agent-proxy 🔌",
+            "detail": "",
+            "command": "",
+            "type": "shell",
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            "args": [
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "start-agent-proxy",
+                "connect-console",
+                "kill-agent"
+            ]
+        },
+        {
+            "label": "start-agent-proxy",
+            "detail": "hide",
+            "command": "/home/castello/tmp/agent-proxy/./agent-proxy",
+            "type": "shell",
+            "isBackground": true,
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": ".",
+                    }
+                }
+            ],
+            "args": [
+                "6060^6061",
+                "localhost",
+                "/dev/ttyUSB0,921600",
+            ],
+            "icon": {
+                "id": "vm-connect",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ]
+        },
+        {
+            "label": "connect-console",
+            "detail": "hide",
+            "command": "telnet",
+            "type": "shell",
+            "isBackground": true,
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            "args": [
+                "localhost",
+                "6060"
+            ],
+            "icon": {
+                "id": "debug-disconnect",
+                "color": "terminal.ansiBlue"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ]
+        },
+        {
+            "label": "kill-agent",
+            "detail": "hide",
+            "command": "pkill",
+            "type": "shell",
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            "args": [
+                "-9",
+                "-f",
+                "agent-proxy"
+            ],
+            "icon": {
+                "id": "debug-disconnect",
+                "color": "terminal.ansiBlue"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ]
+        },
+    ],
+    "inputs": [
+        {
+            "id": "sudo_psswd",
+            "type": "promptString",
+            "password": true,
+            "description": "SUPER COW POWERS",
+        }
+    ]
+}

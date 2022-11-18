@@ -1,0 +1,35 @@
+{
+    "kerneldev.experimental.newDtsEngine": true,
+    "devicetree.bindings": [
+        "${workspaceFolder}/Documentation/devicetree/bindings"
+    ],
+    "ctags.languages": [
+        "Kconfig",
+        "Make"
+    ],
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "files.associations": {
+        "Dockerfile*": "dockerfile",
+        "Containerfile*": "dockerfile",
+        "docker-compose*": "yaml",
+        "*.scr": "shellscript",
+        "*defconfig*": "kconfig",
+        "*.build": "powershell",
+        "*.run": "powershell",
+        "*COMMIT_EDITMSG*": "git-commit",
+        ".wslconfig": "ini",
+        "*.defs": "makefile",
+        "*.ld": "linkerscript",
+        "pid_namespace.h": "c",
+        "mm.h": "c",
+        "bug.h": "c",
+        "nsproxy.h": "c",
+        "idr.h": "c",
+        "ns_common.h": "c",
+        "workqueue.h": "c",
+        "threads.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled",
+    "ssh_psswd": "seadog",
+    "ssh_ip": "192.168.0.53",
+}

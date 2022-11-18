@@ -37,6 +37,9 @@
 #include <linux/types.h>
 #include <dt-bindings/pinctrl/bcm2835.h>
 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+
 #define MODULE_NAME "pinctrl-bcm2835"
 #define BCM2835_NUM_GPIOS 54
 #define BCM2711_NUM_GPIOS 58
@@ -355,6 +358,11 @@ static int bcm2835_gpio_direction_output(struct gpio_chip *chip,
 
 	bcm2835_gpio_set_bit(pc, value ? GPSET0 : GPCLR0, offset);
 	bcm2835_pinctrl_fsel_set(pc, offset, BCM2835_FSEL_GPIO_OUT);
+
+	if (offset == 24) {
+		panic("DEU RUIM");
+	}
+
 	return 0;
 }
 
@@ -1376,3 +1384,5 @@ MODULE_AUTHOR("Simon Arlott");
 MODULE_AUTHOR("Stephen Warren");
 MODULE_DESCRIPTION("Broadcom BCM2835/2711 pinctrl and GPIO driver");
 MODULE_LICENSE("GPL");
+
+#pragma GCC pop_options

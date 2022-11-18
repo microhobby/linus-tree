@@ -11,6 +11,9 @@
 # Normal rules (sorted alphabetically)
 #
 .*
+!.vscode
+.vscode/.*
+.vscode/*.db
 *.a
 *.asn1.[ch]
 *.bin

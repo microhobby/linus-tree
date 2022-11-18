@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "dotConfig",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include/**",
+                "/home/castello/linus-tree/seadog-gaia/kernel/rpi/artifacts/bcm2711-rpi-4b/include/**"
+            ],
+            "dotConfig": "/home/castello/linus-tree/seadog-gaia/kernel/rpi/artifacts/bcm2711-rpi-4b/.config",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "compilerPath": "/usr/bin/aarch64-linux-gnu-gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "browse": {
+                "databaseFilename": "${workspaceFolder}/.vscode/"
+            }
+        }
+    ],
+    "version": 4
+}
