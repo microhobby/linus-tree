@@ -2,21 +2,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "gdb",
-            "request": "attach",
-            "gdbpath": "/usr/bin/gdb-multiarch",
-            "name": "Debug Kernel",
-            "remote": true,
-            "target": "localhost:6061",
-            "executable": "/home/castello/linus-tree/seadog-gaia/kernel/rpi/artifacts/bcm2711-rpi-4b/vmlinux",
-            "cwd": "${workspaceRoot}",
-            "autorun": [
-            ],
-            "printCalls": false,
-            "valuesFormatting": "parseText",
-            "preLaunchTask": "break-to-debug"
-        },
-        {
             "type": "cppdbg",
             "name": "Kernel KDGB",
             "request": "launch",
@@ -38,31 +23,10 @@
                     "text": "set arch aarch64"
                 },
                 {
-                    "text": "target remote localhost:6061"
+                    "text": "target remote localhost:${config:kerneldev.kgdb_port}"
                 },
             ],
-            "preLaunchTask": "break-to-debug"
-        },
-        {
-            "type": "cppdbg",
-            "name": "Kernel Crash Dump",
-            "request": "launch",
-            "program": "/home/castello/linus-tree/seadog-gaia/kernel/rpi/artifacts/bcm2711-rpi-4b/vmlinux",
-            "cwd": "${workspaceFolder}",
-            "coreDumpPath": "/home/castello/linus-tree/mount/var/log/vmcore",
-            "symbolLoadInfo": {
-                "loadAll": false,
-                "exceptionList": ""
-            },
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb-multiarch",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-            ],
+            "preLaunchTask": "${command:embeddedLinuxDev.breakKernel}"
         },
         {
             "type": "crash",

@@ -29,7 +29,21 @@
         "workqueue.h": "c",
         "threads.h": "c"
     },
+    "editor.tabSize": 8,
+    "indentRainbow.ignoreErrorLanguages": [
+        "c",
+        "kconfig",
+        "defconfig",
+        "dts"
+    ],
+    "checkpatch.diagnosticLevel": "Warning",
     "C_Cpp.errorSquiggles": "disabled",
-    "ssh_psswd": "seadog",
-    "ssh_ip": "192.168.0.53",
+    "kerneldev.ssh_login": "seadog",
+    "kerneldev.ssh_psswd": "seadog",
+    "kerneldev.ssh_ip": "192.168.0.53",
+    "kerneldev.kgdb_port": "6061",
+    "kerneldev.serial_port": "6060",
+    "kerneldev.serial_baudRate": "921600",
+    "kerneldev.serial_dev": "ttyUSB0",
+    "kerneldev.breakBySysrq": true
 }
