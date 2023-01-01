@@ -286,8 +286,8 @@
 	};
 
 	aliases {
-		serial0 = &uart1;
-		serial1 = &uart0;
+		serial0 = &uart0;
+		serial1 = &uart1;
 		mmc0 = &emmc2;
 		mmc1 = &mmcnr;
 		mmc2 = &sdhost;
@@ -315,12 +315,17 @@
 };
 
 &uart0 {
-	pinctrl-0 = <&uart0_pins &bt_pins>;
+	pinctrl-0 = <&uart0_pins>;
 	status = "okay";
 };
 
 &uart1 {
 	pinctrl-0 = <&uart1_pins>;
+	status = "disabled";
+};
+
+&bt {
+	status = "disabled";
 };
 
 &spi0 {
@@ -444,16 +449,15 @@
 	};
 
 	bt_pins: bt_pins {
-		brcm,pins = "-"; // non-empty to keep btuart happy, //4 = 0
-				 // to fool pinctrl
-		brcm,function = <0>;
-		brcm,pull = <2>;
+		brcm,pins;
+		brcm,function;
+		brcm,pull;
 	};
 
 	uart0_pins: uart0_pins {
-		brcm,pins = <32 33>;
-		brcm,function = <BCM2835_FSEL_ALT3>;
-		brcm,pull = <0 2>;
+		brcm,pins;
+		brcm,function;
+		brcm,pull;
 	};
 
 	uart1_pins: uart1_pins {
