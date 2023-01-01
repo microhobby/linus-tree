@@ -17,7 +17,7 @@
 
 	chosen {
 		/* 8250 auxiliary UART instead of pl011 */
-		stdout-path = "serial1:115200n8";
+		stdout-path = "serial0:115200n8";
 	};
 
 	leds {
@@ -224,15 +224,15 @@
 /* uart0 communicates with the BT module */
 &uart0 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&uart0_ctsrts_gpio30 &uart0_gpio32>;
-	uart-has-rtscts;
+	pinctrl-0 = <&uart0_gpio14>;
+	status = "okay";
 };
 
 /* uart1 is mapped to the pin header */
 &uart1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart1_gpio14>;
-	status = "okay";
+	status = "disabled";
 };
 
 &vc4 {

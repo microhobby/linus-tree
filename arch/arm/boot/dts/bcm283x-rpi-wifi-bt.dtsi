@@ -30,5 +30,6 @@
 	bt: bluetooth {
 		compatible = "brcm,bcm43438-bt";
 		max-speed = <2000000>;
+		status = "disabled";
 	};
 };
