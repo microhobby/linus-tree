@@ -659,8 +659,8 @@ static int lt8912_parse_dt(struct lt8912 *lt)
 
 	lt->hdmi_port = of_drm_find_bridge(port_node);
 	if (!lt->hdmi_port) {
-		dev_err(lt->dev, "%s: Failed to get hdmi port\n", __func__);
-		ret = -ENODEV;
+		dev_dbg(lt->dev, "%s: Bridge not found\n", __func__);
+		ret = -EPROBE_DEFER;
 		goto err_free_host_node;
 	}
 
