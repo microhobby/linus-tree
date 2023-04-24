@@ -107,4 +107,13 @@ extern const u8 uuid_index[16];
 int guid_parse(const char *uuid, guid_t *u);
 int uuid_parse(const char *uuid, uuid_t *u);
 
+/* TODO: bad Matheus */
+static inline int uuid_le_cmp(const guid_t u1, const guid_t u2)
+{
+	return memcmp(&u1, &u2, sizeof(guid_t));
+}
+
+/* MEI UUID type, don't use anywhere else */
+#include <uapi/linux/uuid.h>
+
 #endif
