@@ -56,6 +56,8 @@ struct dxgdriver{
 extern struct dxgdriver dxgdrv;
 
 #define DXGDEV dxgdrv.dxgdev
+/* TODO: bad Matheus */
+#define _MAIN_KERNEL_ 1
 
 struct dxgk_device_types {
 	u32 post_device:1;
