@@ -1,12 +1,15 @@
 {
     "ctags.languages": [
-        "Kconfig"
     ],
     "kerneldev.useDocker": false,
     "devicetree.bindings": [
         "${workspaceFolder}/Documentation/devicetree/bindings"
     ],
+    "kconfig.env": {
+        "SRCARCH": "x86"
+    },
     "kerneldev.experimental.newDtsEngine": true,
+    "kerneldev.experimental.newKconfigEngine": true,
     "C_Cpp.intelliSenseCachePath": "${workspaceFolder}/.vscode/",
     "C_Cpp.intelliSenseEngine": "Tag Parser",
     "C_Cpp.enhancedColorization": "enabled",
@@ -14,8 +17,9 @@
         "Dockerfile*": "dockerfile",
         "Containerfile*": "dockerfile",
         "docker-compose*": "yaml",
+        "*_defconfig": "defconfig",
+        "defconfig": "defconfig",
         "*.scr": "shellscript",
-        "*defconfig*": "kconfig",
         "*.build": "powershell",
         "*.run": "powershell",
         "*COMMIT_EDITMSG*": "git-commit",
