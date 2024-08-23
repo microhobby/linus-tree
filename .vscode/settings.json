@@ -3,6 +3,7 @@
         "Kconfig"
     ],
     "kerneldev.useDocker": false,
+    "scm.showHistoryGraph": false,
     "devicetree.bindings": [
         "${workspaceFolder}/Documentation/devicetree/bindings"
     ],
@@ -10,6 +11,13 @@
     "C_Cpp.intelliSenseCachePath": "${workspaceFolder}/.vscode/",
     "C_Cpp.intelliSenseEngine": "Tag Parser",
     "C_Cpp.enhancedColorization": "enabled",
+    "C_Cpp.inlayHints.autoDeclarationTypes.enabled": true,
+    "C_Cpp.inlayHints.autoDeclarationTypes.showOnLeft": true,
+    "C_Cpp.inlayHints.parameterNames.enabled": true,
+    "C_Cpp.inlayHints.parameterNames.hideLeadingUnderscores": false,
+    "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": false,
+    "C_Cpp.inlayHints.referenceOperator.enabled": true,
+    "C_Cpp.inlayHints.referenceOperator.showSpace": true,
     "files.associations": {
         "Dockerfile*": "dockerfile",
         "Containerfile*": "dockerfile",
