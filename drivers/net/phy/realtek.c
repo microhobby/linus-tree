@@ -13,6 +13,7 @@
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/clk.h>
+#include <linux/netdevice.h>
 
 #define RTL821x_PHYSR				0x11
 #define RTL821x_PHYSR_DUPLEX			BIT(13)
@@ -22,11 +23,21 @@
 #define RTL8211B_INER_INIT			0x6400
 #define RTL8211E_INER_LINK_STATUS		BIT(10)
 #define RTL8211F_INER_LINK_STATUS		BIT(4)
+#define RTL8211F_INER_PME			BIT(7)
 
 #define RTL821x_INSR				0x13
 
 #define RTL821x_EXT_PAGE_SELECT			0x1e
 #define RTL821x_PAGE_SELECT			0x1f
+
+#define RTL8211F_WOL_CTRL			0x10
+#define  RTL8211F_WOL_MAGIC_EN			BIT(12)
+#define RTL8211F_WOL_CTRL2			0x11
+#define  RTL8211F_WOL_RG_RSTB			BIT(15)
+#define RTL8211F_WOL_ISO			0x13
+#define  RTL8211F_WOL_PAD_ISO_EN		BIT(15)
+#define RTL8211F_INTBCR				0x16
+#define  RTL8211F_INTBCR_PMEB			BIT(5)
 
 #define RTL8211F_PHYCR1				0x18
 #define RTL8211F_PHYCR2				0x19
@@ -486,11 +497,91 @@ static int rtl8211f_config_init(struct phy_device *phydev)
 	return 0;
 }
 
+static void rtl8211f_get_wol(struct phy_device *phydev,
+			     struct ethtool_wolinfo *wol)
+{
+	int val;
+
+	wol->supported = WAKE_MAGIC;
+	wol->wolopts = 0;
+
+	val = phy_read_paged(phydev, 0xd8a, RTL8211F_WOL_CTRL);
+	if (val < 0)
+		return;
+
+	if (val & RTL8211F_WOL_MAGIC_EN)
+		wol->wolopts |= WAKE_MAGIC;
+}
+
+static int rtl8211f_set_wol(struct phy_device *phydev,
+			    struct ethtool_wolinfo *wol)
+{
+	int err = 0, oldpage;
+
+	oldpage = phy_save_page(phydev);
+	if (oldpage < 0)
+		goto error;
+
+	if (wol->wolopts & WAKE_MAGIC) {
+		if (!phy_interrupt_is_valid(phydev)) {
+			rtl821x_write_page(phydev, 0xd40);
+			__phy_write(phydev, RTL8211F_INTBCR, RTL8211F_INTBCR_PMEB);
+		} else {
+			rtl821x_write_page(phydev, 0xa42);
+			__phy_modify(phydev, RTL821x_INER, 0, RTL8211F_INER_PME);
+		}
+
+		/* Set the mac address for the magic packet */
+		rtl821x_write_page(phydev, 0xd8c);
+		__phy_write(phydev, 18,
+				((phydev->attached_dev->dev_addr[5] << 8) |
+				 phydev->attached_dev->dev_addr[4]));
+		__phy_write(phydev, 17,
+				((phydev->attached_dev->dev_addr[3] << 8) |
+				 phydev->attached_dev->dev_addr[2]));
+		__phy_write(phydev, 16,
+				((phydev->attached_dev->dev_addr[1] << 8) |
+				 phydev->attached_dev->dev_addr[0]));
+
+		rtl821x_write_page(phydev, 0xd8a);
+		__phy_modify(phydev, RTL8211F_WOL_CTRL2, 0, RTL8211F_WOL_RG_RSTB);
+		__phy_write(phydev, RTL8211F_WOL_CTRL, RTL8211F_WOL_MAGIC_EN);
+	} else {
+		rtl821x_write_page(phydev, 0xd8a);
+		__phy_write(phydev, RTL8211F_WOL_CTRL, 0);
+		__phy_modify(phydev, RTL8211F_WOL_CTRL2, RTL8211F_WOL_RG_RSTB, 0);
+	}
+
+error:
+	return phy_restore_page(phydev, oldpage, err);
+}
+
+static void rtl8211f_enable_pad_isolation(struct phy_device *phydev)
+{
+	int oldpage, ret = 0;
+
+	oldpage = phy_select_page(phydev, 0xd8a);
+	if (oldpage < 0)
+		goto error;
+
+	ret = __phy_read(phydev, RTL8211F_WOL_CTRL);
+	if (ret < 0)
+		goto error;
+
+	/* enable pad isolation */
+	if (ret & RTL8211F_WOL_MAGIC_EN)
+		__phy_modify(phydev, RTL8211F_WOL_ISO, 0, RTL8211F_WOL_PAD_ISO_EN);
+
+error:
+	phy_restore_page(phydev, oldpage, ret);
+}
+
 static int rtl821x_suspend(struct phy_device *phydev)
 {
 	struct rtl821x_priv *priv = phydev->priv;
 	int ret = 0;
 
+	rtl8211f_enable_pad_isolation(phydev);
 	if (!phydev->wol_enabled) {
 		ret = genphy_suspend(phydev);
 
@@ -506,10 +597,34 @@ static int rtl821x_suspend(struct phy_device *phydev)
 static int rtl821x_resume(struct phy_device *phydev)
 {
 	struct rtl821x_priv *priv = phydev->priv;
-	int ret;
+	int oldpage, ret = 0;
 
 	if (!phydev->wol_enabled)
 		clk_prepare_enable(priv->clk);
+
+	oldpage = phy_select_page(phydev, 0xd8a);
+	if (oldpage < 0)
+		goto error;
+
+	ret = __phy_read(phydev, RTL8211F_WOL_CTRL);
+	if (ret < 0)
+		goto error;
+
+	if (ret & RTL8211F_WOL_MAGIC_EN) {
+		__phy_write(phydev, RTL8211F_WOL_CTRL, 0);
+
+		__phy_modify(phydev, RTL8211F_WOL_CTRL2, RTL8211F_WOL_RG_RSTB, 0);
+
+		/* disable pad isolation */
+		__phy_modify(phydev, RTL8211F_WOL_ISO, RTL8211F_WOL_PAD_ISO_EN, 0);
+	}
+
+	ret = 0;
+
+error:
+	ret = phy_restore_page(phydev, oldpage, ret);
+	if (ret < 0)
+	       return ret;
 
 	ret = genphy_resume(phydev);
 	if (ret < 0)
@@ -1337,6 +1452,8 @@ static struct phy_driver realtek_drvs[] = {
 		.read_status	= rtlgen_read_status,
 		.config_intr	= &rtl8211f_config_intr,
 		.handle_interrupt = rtl8211f_handle_interrupt,
+		.get_wol	= rtl8211f_get_wol,
+		.set_wol	= rtl8211f_set_wol,
 		.suspend	= rtl821x_suspend,
 		.resume		= rtl821x_resume,
 		.read_page	= rtl821x_read_page,
