@@ -14,6 +14,7 @@
 #include <linux/kernel.h>
 #include <linux/completion.h>
 #include <linux/slab.h>
+#include <linux/vmalloc.h>
 #include <linux/eventfd.h>
 #include <linux/hyperv.h>
 #include <linux/mman.h>
