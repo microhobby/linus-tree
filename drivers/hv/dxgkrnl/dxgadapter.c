@@ -12,6 +12,7 @@
  */
 
 #include <linux/module.h>
+#include <linux/vmalloc.h>
 #include <linux/hyperv.h>
 #include <linux/pagemap.h>
 #include <linux/eventfd.h>
