@@ -12,6 +12,7 @@
  */
 
 #include <linux/kernel.h>
+#include <linux/vmalloc.h>
 #include <linux/mutex.h>
 #include <linux/rwsem.h>
 
