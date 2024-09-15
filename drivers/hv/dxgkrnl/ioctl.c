@@ -16,6 +16,7 @@
 #include <linux/fs.h>
 #include <linux/anon_inodes.h>
 #include <linux/mman.h>
+#include <linux/vmalloc.h>
 
 #include "dxgkrnl.h"
 #include "dxgvmbus.h"
