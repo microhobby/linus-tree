@@ -25,6 +25,7 @@
 #define MV_SM_POWER_SYS_RESET			0xFF
 #define MV_SM_IR_Linuxready			30
 #define MV_SM_TEMP_SAMPLE			0xF0
+#define MV_SM_GET_SUSPEND_RESUME_TIME	0xF2
 
 typedef enum
 {
