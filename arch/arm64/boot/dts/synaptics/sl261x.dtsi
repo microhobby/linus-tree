@@ -347,6 +347,16 @@
 			pd-bypass;
 		};
 
+		gpu: gpu@f7980000 {
+			compatible = "arm,mali-midgard";
+			reg = <0xf7980000 0x4000>;
+			clocks = <&clk CLK_GPU>;
+			interrupts = <0 50 IRQ_TYPE_LEVEL_HIGH>, <0 51 IRQ_TYPE_LEVEL_HIGH>, <0 48 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "JOB", "MMU", "GPU";
+			system-coherency = <31>;
+			status = "disabled";
+		};
+
 		sdhci0: sdhci@f7a00000 {
 			compatible = "snps,dwcmshc-sdhci";
 			reg = <0xf7a00000 0x1000>;

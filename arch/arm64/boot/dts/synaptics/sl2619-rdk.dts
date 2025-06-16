@@ -303,3 +303,7 @@
 	pinctrl-0 = <&uart1_pmux>;
 	pinctrl-names = "default";
 };
+
+&gpu {
+	status = "okay";
+};

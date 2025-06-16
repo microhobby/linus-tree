@@ -389,3 +389,7 @@
 &uart0 {
 	status = "okay";
 };
+
+&gpu {
+	status = "okay";
+};
