@@ -27,6 +27,7 @@
 /memreserve/ 0x7f000000 0x01000000;
 
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/linux-event-codes.h>
 
 #include "platypus.dtsi"
 
@@ -115,6 +116,29 @@
 		bt-dev-wake-gpio = <&expander1 3 GPIO_ACTIVE_HIGH>;
 	};
 
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&vol_key_pmux>;
+
+		vol_up {
+			label = "volume_up";
+			gpio = <&portb 6 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_VOLUMEUP>;
+			linux,can-disable;
+			debounce-interval = <15>;
+		};
+
+		vol_down {
+			label = "volume_down";
+			gpio = <&portb 7 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_VOLUMEDOWN>;
+			linux,can-disable;
+			debounce-interval = <15>;
+		};
+	};
+
 };
 
 &pinctrl {
@@ -152,6 +176,10 @@
 		drive-strength = <3>;
 	};
 
+	vol_key_pmux: vol-key-pmux {
+		groups = "STS1_SOP", "STS1_CLK";
+		function = "gpio";
+	};
 };
 
 &sm_pinctrl {

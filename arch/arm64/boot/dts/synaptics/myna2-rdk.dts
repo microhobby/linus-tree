@@ -27,6 +27,7 @@
 /memreserve/ 0x3ff00000 0x00100000;
 
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/linux-event-codes.h>
 
 #include "myna2.dtsi"
 
@@ -121,6 +122,29 @@
 	bluesleep: bluesleep {
 		compatible = "syna,bluesleep";
 		bt-dev-wake-gpio = <&expander1 3 GPIO_ACTIVE_HIGH>;
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&vol_key_pmux>;
+
+		vol_up {
+			label = "volume_up";
+			gpio = <&portb 15 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_VOLUMEUP>;
+			linux,can-disable;
+			debounce-interval = <15>;
+		};
+
+		vol_down {
+			label = "volume_down";
+			gpio = <&portb 16 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_VOLUMEDOWN>;
+			linux,can-disable;
+			debounce-interval = <15>;
+		};
 	};
 };
 
@@ -390,7 +414,12 @@
 		groups = "SDIO_CDn";
 		function = "sdio";
 		drive-strength = <7>;
-        };
+    };
+
+	vol_key_pmux: vol-key-pmux {
+		groups = "GPIO_A2", "GPIO_A3";
+		function = "gpio";
+	};
 
 };
 
