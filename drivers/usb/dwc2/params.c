@@ -314,6 +314,9 @@ static void dwc2_set_berlin_params(struct dwc2_hsotg *hsotg)
 	p->lpm_clock_gating = false;
 	p->besl = false;
 	p->hird_threshold_en = false;
+	p->host_rx_fifo_size = 1944;
+	p->host_nperio_tx_fifo_size = 768;
+	p->host_perio_tx_fifo_size = 1536;
 }
 
 const struct of_device_id dwc2_of_match_table[] = {
