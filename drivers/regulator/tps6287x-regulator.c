@@ -20,6 +20,7 @@
 #define TPS6287X_VSET		0x00
 #define TPS6287X_CTRL1		0x01
 #define TPS6287X_CTRL1_VRAMP	GENMASK(1, 0)
+#define TPS6287X_CTRL1_DISCHEN	BIT(3)
 #define TPS6287X_CTRL1_FPWMEN	BIT(4)
 #define TPS6287X_CTRL1_SWEN	BIT(5)
 #define TPS6287X_CTRL2		0x02
@@ -108,6 +109,7 @@ static const struct regulator_ops tps6287x_regulator_ops = {
 	.set_voltage_sel = regulator_set_voltage_sel_pickable_regmap,
 	.list_voltage = regulator_list_voltage_pickable_linear_range,
 	.set_ramp_delay = regulator_set_ramp_delay_regmap,
+	.set_active_discharge = regulator_set_active_discharge_regmap,
 };
 
 static const struct regulator_desc tps6287x_reg = {
@@ -131,6 +133,9 @@ static const struct regulator_desc tps6287x_reg = {
 	.linear_ranges = tps6287x_voltage_ranges,
 	.n_linear_ranges = ARRAY_SIZE(tps6287x_voltage_ranges),
 	.linear_range_selectors_bitfield = tps6287x_voltage_range_sel,
+	.active_discharge_reg = TPS6287X_CTRL1,
+	.active_discharge_mask = TPS6287X_CTRL1_DISCHEN,
+	.active_discharge_on = TPS6287X_CTRL1_DISCHEN,
 };
 
 static int tps6287x_i2c_probe(struct i2c_client *i2c)
