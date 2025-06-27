@@ -27,7 +27,7 @@
 
 static bool tps6287x_volatile_reg(struct device *dev, unsigned int reg)
 {
-	return reg == TPS6287X_STATUS;
+	return reg == TPS6286X_STATUS;
 }
 
 static const struct regmap_config tps6286x_regmap_config = {
