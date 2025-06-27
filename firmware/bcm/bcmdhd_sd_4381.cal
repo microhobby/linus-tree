@@ -2,8 +2,8 @@
 # nvram copied and edited from bcm94381fcpagb_p203.txt
 # SSID generated using Alberto's boardssid.py script:
 #********************SUMMARY********************
-#Board Name: bcm94381wlpagbi
-#SSID: 0x0a33
+#Board Name: bcm94381wlsagbi
+#SSID: 0x0a32
 #macmid: 0x0461
 #Successfully made SSID entry in sromdefs.tcl.
 #Successfully made macmid entry in sromdefs.tcl.
@@ -28,8 +28,8 @@ NVRAMRev=$Rev: 884954 $
 # lines of an svn keyword line will cause patching errors in precommit.
 #
 sromrev=11
-boardrev=0x1302
-boardtype=0x0a33
+boardrev=0x1405
+boardtype=0x0a32
 boardflags=0x00400001
 boardflags2=0x00800000
 boardflags3=0x40002100
@@ -152,9 +152,9 @@ papd_rsttone=1
 nb_txattn=0,0,1,0
 nb_rxattn=0,0,1,0
 nb_eps_stopidx=63
-epsilonoff_5g20_c0=-2,-1,0,1
-epsilonoff_5g40_c0=-1,-1,1,1
-epsilonoff_5g80_c0=0,0,2,2
+epsilonoff_5g20_c0=-1,-1,-1,0
+epsilonoff_5g40_c0=-1,0,0,0
+epsilonoff_5g80_c0=1,1,1,1
 epsilonoff_2g20_c0=0
 epsilonoff_2g40_c0=1
 epsilonoff_6g20_c0=1,1,1,1,2,2
@@ -200,7 +200,7 @@ AvVmid_6g_c0=4,85,4,80,6,50,6,50,6,40,5,65
 pa2gccka0=-206,5900,-765
 pa2ga0=-140,6512,-761
 pa5ga0=-228,5363,-670,-225,5646,-697,-226,6010,-739,-224,6602,-802
-pa6ga0=-228,6867,-846,-219,6842,-824,-213,6755,-807,-207,6727,-793,-209,6586,-781,-206,6609,-777
+pa6ga0=-228,6611,-817,-219,6842,-824,-213,6755,-807,-207,6727,-793,-209,6586,-781,-206,6737,-790
 
 # Max power and offsets
 powoffs2gtna0=0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -214,8 +214,8 @@ pdoffset2g40mvalid=0
 pdoffset2g40ma0=0x2
 pdoffset40ma0=0x0000
 pdoffset80ma0=0x00FF
-pdoffset6g40ma0=0x0F0000
-pdoffset6g80ma0=0x0001FF
+pdoffset6g40ma0=0xFF0000
+pdoffset6g80ma0=0xF001FF
 #slice/1/pdoffset20mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 pdoffset20mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 pdoffset40mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -342,7 +342,7 @@ ruppr6g80qam64=0x28A5294A
 ruppr6g80qam256=0x30C6318C
 ruppr6g80qam1024=0x49294A52
 
-#OOB params for PCIe
+#OOB params
 #device_wake_opt=1
 host_wake_opt=0
 #ds_hc_enable=0
@@ -369,44 +369,38 @@ clb_swctrl_smask_ant0=0x37
 rxgains2gbkoffa0=0
 rxgains5gbkoffa0=0
 
-# Base K Values (For the VHT case 5G80/40/20/2G20)
-proxd_basekival=36013,34869,36520,36388
-proxd_basektval=36013,34869,36520,36388
+# Base K Values (For the VHT case 5G 80/40/20/2G20)
+proxd_basekival=35710,34551,36335,36374
+proxd_basektval=35710,34551,36335,36374
 # Offsets across channels (Upper nibble for target, lower nibble for initiator - saved in hex)
-proxd_160mkval=0x0c0c,0x0000
-proxd_80mkval=0x0d0d,0x1111,0x0606,0x0404,0x0000,0x0101
-proxd_40mkval=0x1e1e,0x1b1b,0x1616,0x1515,0x0b0b,0x0808,0x0808,0x0606,0x0404,0x0000,0x1818,0x0000
-proxd_20mkval=0x3030,0x3333,0x2a2a,0x2f2f,0x2626,0x2c2c,0x2222,0x2929,0x1616,0x1d1d,0x1313,0x2a2a,0x1212,0x1818,0x1010,0x1717,0x0b0b,0x1515,0x0c0c,0x1313,0x2929,0x3131,0x2424,0x0000,0x0404
-proxd_2gkval=0x397,0x55,0x24,0x0,0x47,0x50,0x1,0x3e,0x45,0x50,0x354,0x38a,0x392,0
+proxd_80mkval=0x0606,0x0b0b,0x0202,0x0404,0x0202,0x0000,0x0000
+proxd_40mkval=0x3535,0x3535,0,0,0,0,0,0,0,0,0x1d1d,0x0000
+proxd_20mkval=0x3131,0x3333,0x3e3e,0x3030,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0x3030,0x3f3f,0x3e3e,0x0e0e,0x0000
+proxd_2gkval=0x001a,0x0002,0x0006,0x0009,0x000d,0x000e,0x0004,0x0000,0x0001,0x0004,0x000b,0x000e,0x0010,0
 # Offsets across frame formats @ Initiator
 # Only for non-VHT frame (Leg6, Leg non-6, mcs0, non-mcs0)
 # Delta between the base values are adjusted here
-proxdi_rate160m=2424,7953,0,0
-proxdi_rate80m=2713,7954,0,0
-proxdi_rate40m=1648,7549,12,13
-proxdi_rate20m=2312,7750,66,62
-proxdi_rate2g=2250,7739,68,77
+proxdi_rate80m=2667,7951,0,0
+proxdi_rate40m=1509,7465,61,70
+proxdi_rate20m=2235,7756,72,75
+proxdi_rate2g=2296,2295,-4,-4
 proxdi_ack=0,0,0,0
 # Offsets across frame formats @ Responder
-proxdt_rate160m=2424,7953,0,0
-proxdt_rate80m=2713,7954,0,0
-proxdt_rate40m=1648,7549,12,13
-proxdt_rate20m=2312,7750,66,62
-proxdt_rate2g=2250,7739,68,77
+proxdt_rate80m=2667,7951,0,0
+proxdt_rate40m=1509,7465,61,70
+proxdt_rate20m=2235,7756,72,75
+proxdt_rate2g=2296,2295,-4,-4
 proxdt_ack=0,0,0,0
 # Offsets for sub-bands (VHT, Leg6, Leg non-6, mcs0, non-mcs0)
-proxd_sub160m80m=-20,-13,-19,0,0
-proxd_sub160m40m=980,-68,659,0,0
-proxd_sub160m20m=1640,79,1252,0,0
-proxd_sub80m40m=968,-83,656,0,0
-proxd_sub80m20m=1642,75,1334,0,0
-proxd_sub40m20m=186,-315,149,174,174
-# OOB Enabled for SDIO
-#sd_gpout=0
-#sd_gpval=0
-#sd_oobonly=1
-#muxenab=0x10
+proxd_sub80m20m=35710,33043,27759,0,0
+proxd_sub80m40m=35710,33043,27759,0,0
+proxd_sub40m20m=34551,33042,27086,34490,34481
 
+# OOB Enabled
+sd_gpout=0
+sd_gpval=0
+sd_oobonly=1
+muxenab=0x10
 wlbga_mil_war=1
 wrssi_offset_ovr=3,3
 tia_cmfb_zero_comp=7
