@@ -16,6 +16,7 @@
 #define TPS6286X_VOUT1_VO1_SET	GENMASK(7, 0)
 
 #define TPS6286X_CONTROL	0x03
+#define TPS6286X_CONTROL_DISCH	BIT(3)
 #define TPS6286X_CONTROL_FPWM	BIT(4)
 #define TPS6286X_CONTROL_SWEN	BIT(5)
 
@@ -77,6 +78,7 @@ static const struct regulator_ops tps6286x_regulator_ops = {
 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
 	.list_voltage = regulator_list_voltage_linear,
+	.set_active_discharge = regulator_set_active_discharge_regmap,
 };
 
 static unsigned int tps6286x_of_map_mode(unsigned int mode)
@@ -106,6 +108,9 @@ static const struct regulator_desc tps6286x_reg = {
 	.vsel_mask = TPS6286X_VOUT1_VO1_SET,
 	.enable_reg = TPS6286X_CONTROL,
 	.enable_mask = TPS6286X_CONTROL_SWEN,
+	.active_discharge_reg = TPS6286X_CONTROL,
+	.active_discharge_mask = TPS6286X_CONTROL_DISCH,
+	.active_discharge_on = TPS6286X_CONTROL_DISCH,
 	.ramp_delay = 1000,
 	/* tDelay + tRamp, rounded up */
 	.enable_time = 3000,
