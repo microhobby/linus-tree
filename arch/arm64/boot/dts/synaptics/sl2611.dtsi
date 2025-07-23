@@ -374,6 +374,15 @@
 			pd-bypass;
 		};
 
+		smmu: iommu@f7800000 {
+			compatible = "arm,smmu-v3";
+			reg = <0xf7800000 0x80000>;
+			#iommu-cells = <1>;
+			interrupts = <0 120 IRQ_TYPE_LEVEL_HIGH>, <0 121 IRQ_TYPE_LEVEL_HIGH>, <0 125 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "eventq", "priq", "gerror";
+			status = "disabled";
+		};
+
 		sdhci0: sdhci@f7a00000 {
 			compatible = "snps,dwcmshc-sdhci";
 			reg = <0xf7a00000 0x1000>;

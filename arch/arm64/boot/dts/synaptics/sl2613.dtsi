@@ -11,6 +11,21 @@
 	compatible = "syna,sl2613";
 
 	soc {
+
+		synpu: synpu@f7600000 {
+			compatible = "syna,npu";
+			reg = <0xf7600000 0x200000>;
+			reg-names = "npu_region";
+			clocks = <&clk CLK_NPU>;
+			clock-names = "core";
+			resets = <&chip 0x378 1 1 0>;
+			reset-names = "core_rst";
+			interrupts = <0 52 IRQ_TYPE_LEVEL_HIGH>, <0 207 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "job", "fault";
+			iommus = <&smmu 0x1>, <&smmu 0x2>, <&smmu 0x3>, <&smmu 0x4>;
+			status = "disabled";
+		};
+
 		gpu: gpu@f7980000 {
 			compatible = "arm,mali-midgard";
 			reg = <0xf7980000 0x4000>;
@@ -19,6 +34,8 @@
 			reset-names = "core_rst";
 			interrupts = <0 50 IRQ_TYPE_LEVEL_HIGH>, <0 51 IRQ_TYPE_LEVEL_HIGH>, <0 48 IRQ_TYPE_LEVEL_HIGH>;
 			interrupt-names = "JOB", "MMU", "GPU";
+			iommus = <&smmu 0x0>;
+			iommu-passthrough;
 			system-coherency = <31>;
 			status = "disabled";
 		};
