@@ -235,6 +235,8 @@ static void i2c_dw_of_configure(struct device *device)
 	struct platform_device *pdev = to_platform_device(device);
 	struct dw_i2c_dev *dev = dev_get_drvdata(device);
 
+	if (of_property_read_bool(device->of_node, "no-irq-suspend"))
+		dev->flags |= ACCESS_NO_IRQ_SUSPEND;
 	switch (dev->flags & MODEL_MASK) {
 	case MODEL_MSCC_OCELOT:
 		dev->ext = devm_platform_ioremap_resource(pdev, 1);
