@@ -819,7 +819,8 @@ static int i2c_dw_suspend(struct device *device)
 {
 	struct dw_i2c_dev *dev = dev_get_drvdata(device);
 
-	i2c_mark_adapter_suspended(&dev->adapter);
+	if (!(dev->flags & ACCESS_NO_IRQ_SUSPEND))
+		i2c_mark_adapter_suspended(&dev->adapter);
 
 	return i2c_dw_runtime_suspend(device);
 }
@@ -843,7 +844,8 @@ static int i2c_dw_resume(struct device *device)
 	struct dw_i2c_dev *dev = dev_get_drvdata(device);
 
 	i2c_dw_runtime_resume(device);
-	i2c_mark_adapter_resumed(&dev->adapter);
+	if (!(dev->flags & ACCESS_NO_IRQ_SUSPEND))
+		i2c_mark_adapter_resumed(&dev->adapter);
 
 	return 0;
 }
