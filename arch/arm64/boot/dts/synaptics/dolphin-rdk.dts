@@ -182,12 +182,6 @@
 				#gpio-cells = <2>;
 			};
 
-			rtc0: rtc@68 {
-				compatible = "dallas,ds1339";
-				wakeup-source;
-				reg = <0x68>;
-			};
-
 			ina220@40 {
 				compatible = "ti,ina220";
 				reg = <0x40>;
