@@ -386,12 +386,6 @@
 		#gpio-cells = <2>;
 		shutdown-mask = /bits/ 8 <0x1>;
 		shutdown-val = /bits/ 8 <0x0>;
-
-		soc_global_rstn {
-			gpio-hog;
-			gpios = <0 GPIO_ACTIVE_HIGH>;
-			output-high;
-		};
 	};
 
 	rtc0: rtc@68 {
