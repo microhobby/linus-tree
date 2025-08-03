@@ -455,12 +455,6 @@ static bool dxgdmafence_enable_signaling(struct dma_fence *fence)
 	return true;
 }
 
-static void dxgdmafence_value_str(struct dma_fence *fence,
-				  char *str, int size)
-{
-	snprintf(str, size, "%lld", fence->seqno);
-}
-
 static void dxgdmafence_timeline_value_str(struct dma_fence *fence,
 					   char *str, int size)
 {
@@ -476,6 +470,5 @@ static const struct dma_fence_ops dxgdmafence_ops = {
 	.enable_signaling = dxgdmafence_enable_signaling,
 	.signaled = dxgdmafence_signaled,
 	.release = dxgdmafence_release,
-	.fence_value_str = dxgdmafence_value_str,
 	.timeline_value_str = dxgdmafence_timeline_value_str,
 };
