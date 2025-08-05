@@ -135,6 +135,8 @@ static int fxl6408_probe(struct i2c_client *client)
 	chip->regmap = gpio_config.regmap;
 	i2c_set_clientdata(client, chip);
 
+	device_disable_async_suspend(dev);
+
 	/* Disable High-Z of outputs, so that our OUTPUT updates actually take effect. */
 	ret = regmap_write(gpio_config.regmap, FXL6408_REG_OUTPUT_HIGH_Z, 0);
 	if (ret)
