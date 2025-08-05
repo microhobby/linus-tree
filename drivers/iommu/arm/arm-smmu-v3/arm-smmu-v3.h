@@ -784,6 +784,7 @@ struct arm_smmu_master {
 	bool				stall_enabled;
 	bool				sva_enabled;
 	bool				iopf_enabled;
+	bool                            force_passthrough;
 	unsigned int			ssid_bits;
 };
 
