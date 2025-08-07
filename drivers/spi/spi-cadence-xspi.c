@@ -21,8 +21,9 @@
 #include <linux/limits.h>
 #include <linux/log2.h>
 #include <linux/bitrev.h>
+#include <linux/reset.h>
 
-#define CDNS_XSPI_MAGIC_NUM_VALUE	0x6522
+#define CDNS_XSPI_MAGIC_NUM_VALUE	0x6523
 #define CDNS_XSPI_MAX_BANKS		8
 #define CDNS_XSPI_NAME			"cadence-xspi"
 
@@ -356,6 +357,10 @@ struct cdns_xspi_dev {
 	void __iomem *auxbase;
 	void __iomem *sdmabase;
 	void __iomem *xferbase;
+
+	struct reset_control *arstn;
+	struct reset_control *prstn;
+	struct reset_control *srstn;
 
 	int irq;
 	int cur_cs;
@@ -1140,6 +1145,18 @@ static int cdns_xspi_transfer_one_message_b0(struct spi_controller *controller,
 	return 0;
 }
 
+static void cdns_xspi_sw_reset(struct cdns_xspi_dev *cdns_xspi)
+{
+	reset_control_assert(cdns_xspi->arstn);
+	reset_control_assert(cdns_xspi->prstn);
+	reset_control_assert(cdns_xspi->srstn);
+
+	udelay(10);
+	reset_control_deassert(cdns_xspi->arstn);
+	reset_control_deassert(cdns_xspi->prstn);
+	reset_control_deassert(cdns_xspi->srstn);
+}
+
 static int cdns_xspi_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -1231,6 +1248,24 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 		}
 	}
 
+	cdns_xspi->arstn = devm_reset_control_get_optional(&pdev->dev, "arstn");
+	if (IS_ERR(cdns_xspi->arstn)) {
+		dev_err(dev, "Failed to get arstn!\n");
+		return PTR_ERR(cdns_xspi->arstn);
+	}
+
+	cdns_xspi->prstn = devm_reset_control_get_optional(&pdev->dev, "prstn");
+	if (IS_ERR(cdns_xspi->prstn)) {
+		dev_err(dev, "Failed to get prstn!\n");
+		return PTR_ERR(cdns_xspi->prstn);
+	}
+
+	cdns_xspi->srstn = devm_reset_control_get_optional(&pdev->dev, "srstn");
+	if (IS_ERR(cdns_xspi->srstn)) {
+		dev_err(dev, "Failed to get srstn!\n");
+		return PTR_ERR(cdns_xspi->srstn);
+	}
+
 	cdns_xspi->irq = platform_get_irq(pdev, 0);
 	if (cdns_xspi->irq < 0)
 		return -ENXIO;
@@ -1241,6 +1276,8 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 		dev_err(dev, "Failed to request IRQ: %d\n", cdns_xspi->irq);
 		return ret;
 	}
+
+	cdns_xspi_sw_reset(cdns_xspi);
 
 	if (cdns_xspi->driver_data->mrvl_hw_overlay) {
 		cdns_mrvl_xspi_setup_clock(cdns_xspi, MRVL_DEFAULT_CLK);
