@@ -124,6 +124,12 @@
 			ranges = <0 0 0xffffffff>;
 			dma-ranges = <0xa0000000 0x00000000 0x10000000>;
 
+			sm_chip: sm_chip-control@e5025404 {
+				compatible = "marvell,berlin4ct-chip-ctrl";
+				reg = <0xe5025404 0x0c>;
+				#reset-cells = <4>;
+			};
+
 			sm_pinctrl: pinctrl@e5025b00 {
 				compatible = "syna,sl261x-system-pinctrl";
 				reg = <0xe5025b00 0x10>, <0x48025c00 0xa4>;
@@ -270,6 +276,22 @@
 					ngpios = <8>;
 					reg = <0>;
 				};
+			};
+
+			xspi0: xspi@e5050000 {
+				compatible = "cdns,xspi-nor";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0xe5050000 0x2000>,
+				      <0xe6000000 0x100000>,
+				      <0xe5052000 0x1000>;
+				reg-names = "io", "sdma", "aux";
+				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&apbcoreclk>;
+				clock-names = "ref_clk";
+				resets = <&sm_chip 0x0 0 1 0>, <&sm_chip 0x0 1 1 0>, <&sm_chip 0x0 2 1 0>;
+				reset-names = "arstn", "prstn", "srstn";
+				status = "disabled";
 			};
 
 			pdma1: dma-controller@e5104000 {
