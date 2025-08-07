@@ -50,6 +50,12 @@
 		groups = "SM_GPIO0";
 		function = "gpio";
 	};
+
+	xspi0_pmux: xspi0-pmux {
+		groups = "SM_GPIO18", "SM_GPIO19", "SM_GPIO20", "SM_GPIO21", "SM_GPIO22", "SM_GPIO23", "SM_GPIO24",
+			 "SM_GPIO25","SM_GPIO26", "SM_GPIO27", "SM_GPIO28", "SM_GPIO29", "SM_GPIO30";
+		function = "xspi";
+	};
 };
 
 &uart0 {
@@ -91,4 +97,35 @@
 	no-mmc;
 	no-sdio;
 	no-1-8-v;
+};
+
+&xspi0 {
+	status = "okay";
+	pinctrl-0 = <&xspi0_pmux>;
+	pinctrl-names = "default";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		status = "okay";
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "bootloader";
+				reg = <0x00000000 0x00020000>; // 128KB
+			};
+			partition@10000 {
+				label = "kernel";
+				reg = <0x00020000 0x007E0000>; // 8064KB
+			};
+			partition@800000 {
+				label = "rootfs";
+				reg = <0x00800000 0x00800000>; // 8192KB
+			};
+		};
+	};
 };
