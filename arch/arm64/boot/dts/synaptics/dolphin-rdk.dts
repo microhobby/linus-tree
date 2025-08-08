@@ -587,6 +587,10 @@
 	status = "okay";
 };
 
+&m2m {
+	status = "okay";
+};
+
 &h1 {
 	status = "okay";
 };

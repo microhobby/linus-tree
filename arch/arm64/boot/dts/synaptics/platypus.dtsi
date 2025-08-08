@@ -463,6 +463,13 @@
 			status = "disabled";
 		};
 
+		m2m: m2m@f7a4db44 {
+			compatible = "syna,berlin-m2m";
+			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0xf7a4db44 0x40>;
+			status = "disabled";
+		};
+
 		sdhci0: sdhci@f7aa0000 {
 			compatible = "snps,dwcmshc-sdhci";
 			reg = <0xf7aa0000 0x1000>;

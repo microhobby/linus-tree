@@ -498,6 +498,15 @@
 			status = "disabled";
 		};
 
+		m2m: m2m@f7a4db44 {
+			compatible = "syna,berlin-m2m";
+			clocks = <&clk CLK_TSP>, <&clk CLK_TSPREF>;
+			clock-names = "core", "ref";
+			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0xf7a4db44 0x40>;
+			status = "disabled";
+		};
+
 		shm: shm {
 			compatible = "syna,berlin-shm";
 			status = "disabled";

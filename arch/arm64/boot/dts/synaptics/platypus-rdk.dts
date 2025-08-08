@@ -742,6 +742,10 @@
 	status = "okay";
 };
 
+&m2m {
+	status = "okay";
+};
+
 &sm {
 	status = "okay";
 };
