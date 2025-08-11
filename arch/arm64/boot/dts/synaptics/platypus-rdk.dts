@@ -212,11 +212,6 @@
 		function = "i2s1";
 	};
 
-	falcon_gpio_pmux: falcon_gpio-pmux {
-		groups = "I2S1_DO1";
-		function = "gpio";
-	};
-
 	i2s2_pmux: i2s2-pmux {
 		groups = "I2S2_BCLKIO", "I2S2_LRCKIO", "I2S2_DI0";
 		function = "i2s2";
@@ -289,17 +284,6 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_pmux>;
-
-	falcon: cx9000@33 {
-		compatible = "cnxt,cx9000";
-		pinctrl-names = "default";
-		pinctrl-0 = <&falcon_gpio_pmux>;
-
-		#sound-dai-cells = <0>;
-		reg = <0x33>;
-		enable-gpios = <&porta 17 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
 
 	ina3221@40{
 		compatible = "ti,ina3221";
