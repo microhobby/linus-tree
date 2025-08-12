@@ -839,6 +839,8 @@
 		link-name = "soc-i2so1";
 		format = "i2s";
 		continuous-clock;
+		bitclock-master;
+		frame-master;
 		bitclock-inversion;
 		frame-inversion;
 		cpu-node = <&i2s_pri>;
@@ -852,8 +854,6 @@
 		stream-name = "soc-i2so3";
 		link-name = "soc-i2so3";
 		format = "dsp_b";
-		bitclock-master;
-		frame-master;
 		cpu-node = <&i2s_sec>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -875,8 +875,6 @@
 		stream-name = "soc-i2si2";
 		link-name = "soc-i2si2";
 		format = "i2s";
-		bitclock-master;
-		frame-master;
 		cpu-node = <&i2s_mic1>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -888,8 +886,6 @@
 		stream-name = "btsco-in";
 		link-name = "btsco-in";
 		format = "dsp_b";
-		bitclock-master;
-		frame-master;
 		continuous-clock;
 		cpu-node = <&i2s_mic2>;
 		codec-name = "snd-soc-dummy";
@@ -924,6 +920,8 @@
 		stream-name = "soc-hdmio";
 		link-name = "soc-hdmio";
 		format = "i2s";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&hdmi_out>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -934,6 +932,8 @@
 		status = "okay";
 		stream-name = "soc-hdmii";
 		link-name = "soc-hdmii";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&hdmi_in>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";

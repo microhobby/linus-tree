@@ -623,6 +623,8 @@
 		stream-name = "asoc-i2s1";
 		link-name = "asoc-i2s1";
 		format = "i2s";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&i2s1_dai>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -634,6 +636,8 @@
 		stream-name = "asoc-i2s2";
 		link-name = "asoc-i2s2";
 		format = "i2s";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&i2s2_dai>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -645,6 +649,8 @@
 		stream-name = "asoc-i2s3";
 		link-name = "asoc-i2s3";
 		format = "i2s";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&i2s3_dai>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";

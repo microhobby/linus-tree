@@ -848,6 +848,8 @@
 		link-name = "soc-i2so1";
 		format = "i2s";
 		continuous-clock;
+		bitclock-master;
+		frame-master;
 		bitclock-inversion;
 		frame-inversion;
 		cpu-node = <&i2s_pri>;
@@ -894,8 +896,6 @@
 		format = "i2s";
 		bitclock-inversion;
 		frame-inversion;
-		bitclock-master;
-		frame-master;
 		cpu-node = <&i2s_mic1>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -941,6 +941,8 @@
 		stream-name = "soc-hdmio";
 		link-name = "soc-hdmio";
 		format = "i2s";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&hdmi_out>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
