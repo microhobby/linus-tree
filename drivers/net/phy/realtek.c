@@ -544,6 +544,7 @@ static int rtl8211f_set_wol(struct phy_device *phydev,
 				 phydev->attached_dev->dev_addr[0]));
 
 		rtl821x_write_page(phydev, 0xd8a);
+		__phy_modify(phydev, RTL8211F_WOL_CTRL2, RTL8211F_WOL_RG_RSTB, 0);
 		__phy_modify(phydev, RTL8211F_WOL_CTRL2, 0, RTL8211F_WOL_RG_RSTB);
 		__phy_write(phydev, RTL8211F_WOL_CTRL, RTL8211F_WOL_MAGIC_EN);
 	} else {
@@ -611,9 +612,8 @@ static int rtl821x_resume(struct phy_device *phydev)
 		goto error;
 
 	if (ret & RTL8211F_WOL_MAGIC_EN) {
-		__phy_write(phydev, RTL8211F_WOL_CTRL, 0);
-
 		__phy_modify(phydev, RTL8211F_WOL_CTRL2, RTL8211F_WOL_RG_RSTB, 0);
+		__phy_modify(phydev, RTL8211F_WOL_CTRL2, 0, RTL8211F_WOL_RG_RSTB);
 
 		/* disable pad isolation */
 		__phy_modify(phydev, RTL8211F_WOL_ISO, RTL8211F_WOL_PAD_ISO_EN, 0);
