@@ -1,9 +1,9 @@
 # syn4612 WLBGA SDIO reference board, iTR, iPA/iLNA version.
-# nvram copied and edited from syn94612wlsagbi_p101.txt //
-# syn94612wlsagbi_p102.txt
+# nvram copied and edited from syn94612wlsagbi_p110.txt //
+# syn94612wlsagbi_p201.txt
 #
 # ********************SUMMARY********************
-# Board Name: syn94612wlsagbi_p102
+# Board Name: syn94612wlsagbi_p201
 # SSID: 0x0a82
 # macmid:0x02df
 # *************************************************
@@ -12,7 +12,7 @@
 
 NVRAMRev=$Rev: 874188 $
 sromrev=11
-boardrev=0x1102
+boardrev=0x1201
 boardtype=0x0a82
 boardflags=0x00400001
 boardflags2=0xc0800000
@@ -67,26 +67,47 @@ rssicorrnorm_c0=7,7
 rssicorrnorm5g_c0=8,8,8,8,7,8,8,6,6,7,5,6
 rssicorrnorm6g_c0=9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
 
+# SWDIV related
+#swdiv_en=1
+#swdiv_swctrl_en=0
+#swdiv_antmap2g_main=0x3
+#swdiv_antmap5g_main=0x3
+#swdiv_snrthresh=8
+#swdiv_thresh=500
+#swdiv_log2avg=3
+#swdiv_settle=60
+#swdiv_snrdrop_delta=24
+#swdiv_snrdrop_lmt=72
+#swdiv_snrdrop_txfail=1000
+#swdiv_snrdrop_prd=3
+#swdiv_poll_prd=10
+#swdiv_snrlim=160
+#swdiv_weight=0
+#swdiv_gpio=6
+#swdiv_rx_policy=0x33
+#swdiv_tx_policy=0x33
+#swdiv_bt_rssi_thresh=-255
+
 # HWRSSI related
 rssi_cal_rev=1
 rxgaincal_rssical=1
 gain_cal_temp=25
 rssi_cal_freq_grp_2g=0x08,0x01,0x91,0x2a,0x23,0xb3,0xc4
-rssi_delta_2gb0=8,8,8,8
-rssi_delta_2gb1=8,8,8,8
-rssi_delta_2gb2=8,8,8,8
-rssi_delta_2gb3=8,8,8,8
-rssi_delta_2gb4=8,8,8,8
-rssi_delta_5gl=18,18,18,18
-rssi_delta_5gml=15,15,15,15
-rssi_delta_5gmu=15,15,15,15
-rssi_delta_5gh=12,12,12,12
-rssi_delta_6gb0=14,14,14,14
-rssi_delta_6gb1=13,13,13,13
-rssi_delta_6gb2=12,12,12,12
-rssi_delta_6gb3=8,8,8,8
-rssi_delta_6gb4=8,8,8,8
-rssi_delta_6gb5=8,8,8,8
+rssi_delta_2gb0=-8,-8,-8,-8
+rssi_delta_2gb1=-8,-8,-8,-8
+rssi_delta_2gb2=-8,-8,-8,-8
+rssi_delta_2gb3=-8,-8,-8,-8
+rssi_delta_2gb4=-8,-8,-8,-8
+rssi_delta_5gl=-10,-10,-10,-10
+rssi_delta_5gml=-12,-12,-12,-12
+rssi_delta_5gmu=-10,-10,-10,-10
+rssi_delta_5gh=-6,-6,-6,-6
+rssi_delta_6gb0=-10,-10,-10,-10
+rssi_delta_6gb1=-11,-11,-11,-11
+rssi_delta_6gb2=-12,-12,-12,-12
+rssi_delta_6gb3=-14,-14,-14,-14
+rssi_delta_6gb4=-14,-14,-14,-14
+rssi_delta_6gb5=-14,-14,-14,-14
 
 # TSSI related
 extpagain2g=2
@@ -99,16 +120,16 @@ lowpowerrange2g=0
 lowpowerrange5g=0
 low_adc_rate_en=1
 paparambwver=3
-AvVmid_c0=5,94,5,90,5,99,5,99,5,100
-AvVmid_6g_c0=5,105,5,119,5,125,5,128,5,128,5,118
+AvVmid_c0=4,101,5,80,5,85,5,90,5,91
+AvVmid_6g_c0=5,102,5,93,5,96,5,94,5,104,5,105
 idletssi_disable = 1
 idletssi_5gant0 = -400
 
 # PA parameters
-pa2gccka0=-227,5820,-707
-pa2ga0=-206,5483,-665
-pa5ga0=-185,5631,-737,-163,6060,-743,-142,6452,-787,-139,6303,-756
-pa6ga0=-123,6571,-767,-105,6923,-748,-70,7776,-811,-59,7956,-808,-27,8472,-841,-77,6943,-751
+pa2gccka0=-165,6175,-716
+pa2ga0=-191,5837,-693
+pa5ga0=-170,5515,-709,-160,5782,-715,-149,5931,-709,-140,5898,-696
+pa6ga0=-133,6246,-719,-158,5516,-672,-177,5349,-662,-169,5356,-659,-167,5819,-720,-142,5905,-705
 
 # MISC Core related
 bandcap=7
@@ -135,20 +156,20 @@ temps_period=15
 temps_hysteresis=15
 
 # Max power and offsets
-maxp2ga0=78
-maxp5ga0=76,76,76,76
+maxp2ga0=76
+maxp5ga0=68,68,68,68
 cckpwroffset0=0
 powoffs2gtna0=1,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 # HWOLPC
 disable_olpc=0
-olpc_thresh2g=40
-olpc_anchor2g=52
+olpc_thresh2g=44
+olpc_anchor2g=56
 olpc_thresh5g=40
 olpc_anchor5g=52
 olpc_thresh6g=40
 olpc_anchor6g=52
-hwolpc_offset_c0=-1,-5,-5,-5,-5
+hwolpc_offset_c0=0,-5,-5,-5,-5
 hwolpc_offset6g_c0=-7,-7,-7,-7,-7,-7
 
 # 5G power offset per channel for band edge channel
@@ -160,12 +181,14 @@ cckbw20ul2gpo=0
 mcsbw202gpo=0x44000000
 dot11agofdmhrbw202gpo=0x6666
 ofdmlrbw202gpo=0x0022
-mcsbw205glpo=0x86420000
+mcsbw205glpo=0x86431000
+mcsbw205gmpo=0x86420000
+mcsbw205ghpo=0x86420000
 mcs8poexp=0
 mcs9poexp=0
 
 # 6G SU Power Per Rate
-maxp6ga0=76,76,76,76,76,76
+maxp6ga0=76,60,60,60,60,60
 mcsbw206gb1po=0xCA660000
 
 #OOB params
@@ -197,22 +220,20 @@ txwbpapden=0
 # NB PAPD Cal params
 nb_eps_offset=470,470
 nb_bbmult=66,66
-nb_papdcalidx=30,30,21,14,26,26
-nb_papdcalidx2g=18,18
-nb_papdcalidx5g_20=22,20,24,26
-nb_papdcalidx6g_20=14,22,24,26,26,26
+nb_papdcalidx2g=8,8
+nb_papdcalidx5g_20=15,15,15,15
+nb_papdcalidx6g_20=15,15,15,15,11,13
 nb_txattn=2,2
 nb_rxattn=1,1
 nb_eps_stopidx=63
-epsilonoff_5g20_c0=-1,-1,0,-1
+epsilonoff_5g20_c0=5,5,5,6
 epsilonoff_2g20_c0=-1
-epsilonoff_6g20_c0=0,0,0,0,0,0
+epsilonoff_6g20_c0=7,6,6,6,4,4
 
 #TX-IQLO related
 iqcaloff_2g20=10
 iqcaloff_5g20=1,1,3,3
 iqcaloff_6g20=5,6,6,6,8,10
-
 
 #PAPR related
 paprdis=1
