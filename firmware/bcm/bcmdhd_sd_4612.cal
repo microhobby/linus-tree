@@ -22,7 +22,7 @@ macaddr=00:90:4c:12:d0:01
 jtag_irw=38
 
 # Regulatory specific
-ccode=0
+ccode=US
 regrev=0
 
 # Ant related

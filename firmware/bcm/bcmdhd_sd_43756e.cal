@@ -1,9 +1,9 @@
 # syn43756 C0 WLBGA reference board, iPA version.
 # nvram copied and edited from BCM4361_B0 fcbga BU board //
-# syn943756wlpagbi_p201_C0.txt
+# syn943756wlsagbi_p200_C0.txt
 # SSID generated using Alberto's boardssid.py script:
 # ********************SUMMARY********************
-# Board Name: syn943756wlpagbi
+# Board Name: syn943756wlsagbi
 #SSID: 0x086d
 #macmid: 0x02df
 # Successfully made SSID entry in sromdefs.tcl.
@@ -17,7 +17,7 @@
 NVRAMRev=$Rev: 874188 $
 sromrev=11
 boardrev=0x1201
-boardtype=0x0a40
+boardtype=0x0a42
 boardflags=0x00400201
 boardflags2=0xc0800000
 boardflags3=0x40002180
@@ -165,16 +165,16 @@ pa2gccka1=-190,6727,-812
 paparambwver=3
 pa2ga0=-124,7013,-788
 pa2ga1=-96,7448,-805
-pa5ga0=-135,6636,-763,-123,6757,-763,-128,6706,-766,-103,6923,-769
-pa5ga1=-135,6636,-763,-123,6821,-767,-162,6463,-765,-151,7022,-823
-pa6ga0=-158,5969,-730,-151,6094,-737,-129,6386,-750,-126,6173,-735,-108,6468,-757,-58,6741,-752
-pa6ga1=-163,6677,-810,-170,6505,-796,-161,6587,-801,-157,6550,-801,-135,6818,-815,-95,7187,-838
+pa5ga0=-135,6508,-755,-123,6629,-755,-128,6706,-766,-103,6795,-763
+pa5ga1=-135,6508,-755,-123,6693,-759,-162,6335,-755,-151,6894,-814
+pa6ga0=-158,6097,-740,-151,6094,-737,-129,6386,-750,-126,6429,-751,-108,6468,-757,-58,6869,-755
+pa6ga1=-163,6677,-810,-170,6505,-796,-161,6587,-801,-157,6678,-811,-135,6818,-815,-95,7315,-844
 
 
 # 2G/5G/6G power offset
 cckpwroffset0=0
 cckpwroffset1=0
-powoffs2gtna0=0,2,2,1,0,0,-4,-2,-1,0,0,-1,-2,-3
+powoffs2gtna0=0,2,2,1,0,-2,-4,-2,-1,0,0,-1,-2,-3
 powoffs2gtna1=0,0,1,2,1,0,-1,0,0,1,0,0,-2,-5
 subband5gver=0x4
 pdoffset40ma0=0x2211
@@ -184,8 +184,8 @@ pdoffset80ma1=0x1000
 subband6gver=0x1
 pdoffset6g40ma0=0x233121
 pdoffset6g40ma1=0x223221
-pdoffset6g80ma0=0x231001
-pdoffset6g80ma1=0x021100
+pdoffset6g80ma0=0x231011
+pdoffset6g80ma1=0x221100
 
 # 2G/5G/6G OLPC
 disable_olpc=0
@@ -193,12 +193,12 @@ olpc_thresh2g=40
 olpc_anchor2g=48
 olpc_thresh5g=42
 olpc_anchor5g=52
-olpc_thresh6g=32
-olpc_anchor6g=42
+olpc_thresh6g=42
+olpc_anchor6g=52
 hwolpc_offset_c0=1,-3,-2,-2,-2
 hwolpc_offset_c1=-3,-3,-3,-2,-2
-hwolpc_offset6g_c0=4,3,3,3,3,1
-hwolpc_offset6g_c1=4,4,4,3,3,1
+hwolpc_offset6g_c0=4,4,6,3,3,4
+hwolpc_offset6g_c1=4,2,4,3,3,3
 
 # 5G power offset per channel for band edge channel
 powoffs5g20mtna0=0,0,0,0,0,0,0
@@ -279,9 +279,7 @@ ltecxfnsel=0x44
 ltecxgcigpio=0x04
 #OOB params
 #device_wake_opt=1
-host_wake_opt=1
-wowl_gpio=0
-wowl_gpiopol=1
+host_wake_opt=0
 
 # SWCTRL Related
 
@@ -305,7 +303,7 @@ clb5gslice1core1=0x000
 btc_prisel_ant_mask=0x2
 clb_swctrl_smask_ant0=0x27f
 clb_swctrl_smask_ant1=0x2f7
-muxenab=3
+muxenab=0x10
 
 #BT Coex 1:TDM
 btc_mode=1
@@ -511,7 +509,7 @@ ruppr6g80qam1024a0=0x49294A52
 #eu_edthresh6g=-67
 
 # Base K Values (For the VHT case 5G 80/40/20/2G20)
-proxd_basekival=35373,34708,36113,35119
+proxd_basekival=35373,34722,36113,37535
 proxd_basektval=35367,34708,36113,35119
 # Offsets across channels (Upper nibble for target, lower nibble for initiator - saved in hex)
 proxd_80mkval=0x1515,0,0,0,0,0x0000

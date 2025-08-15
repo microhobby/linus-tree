@@ -47,6 +47,9 @@ ltecxgcigpio=0x32
 maxp2ga0=80
 ofdmlrbw202gpo=0x0022
 dot11agofdmhrbw202gpo=0x4442
+# worldwide country code, X2/0
+ccode=US
+regrev=0
 mcsbw202gpo=0x98444422
 mcsbw402gpo=0x98444422
 maxp5ga0=82,82,82,82
