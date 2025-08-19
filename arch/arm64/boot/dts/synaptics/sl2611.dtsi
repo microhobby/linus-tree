@@ -780,6 +780,40 @@
 			status = "disabled";
 		};
 
+		i2s1_dai: i2s1-soc-dai {
+			compatible = "syna,klamath-i2s-soc";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <0>, <1>, <22>;
+			interrupt-names = "tx", "rx", "status";
+			status = "disabled";
+		};
+
+		i2s2_dai: i2s2-soc-dai {
+			compatible = "syna,klamath-i2s-soc";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <2>, <3>, <22>;
+			interrupt-names = "tx", "rx", "status";
+			status = "disabled";
+		};
+
+		i2s3_dai: i2s3-soc-dai {
+			compatible = "syna,klamath-i2s-soc";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <4>, <5>, <22>;
+			interrupt-names = "tx", "rx", "status";
+			status = "disabled";
+		};
+
+		klamath_pcm: klamath-pcm {
+			compatible = "syna,klamath-pcm";
+			status = "disabled";
+		};
+
+		klamath_asoc: klamath-asoc {
+			compatible = "syna,klamath-asoc";
+			status = "disabled";
+		};
+
 		gpio1: gpio@f7f0e000 {
 			compatible = "snps,dw-apb-gpio";
 			dev_name = "gpio_soc_0";
