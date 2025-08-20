@@ -786,6 +786,7 @@
 	pinctrl-names = "default";
 	duplex;
 	disablemicmute;
+	sample-period = <16>;
 };
 
 &i2s_mic6 {
@@ -826,7 +827,7 @@
 	pinctrl-0 = <&i2s3_pmux>;
 	pinctrl-names = "default";
 	duplex;
-	sample-period = <32>;
+	sample-period = <16>;
 };
 
 

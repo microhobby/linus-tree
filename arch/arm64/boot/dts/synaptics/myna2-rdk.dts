@@ -605,6 +605,7 @@
 	pinctrl-names = "default";
 	clk_src = "APLL";
 	clk_feed = "I2S3_DI";
+	sample-period=<16>;
 };
 
 &dmic {

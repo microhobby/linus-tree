@@ -827,8 +827,11 @@
 
 &i2s_mic2 {
 	status = "okay";
+	pinctrl-0 = <&i2s3_pmux>;
+	pinctrl-names = "default";
 	duplex;
 	disablemicmute;
+	sample-period = <16>;
 };
 
 &i2s_sec {
@@ -836,7 +839,7 @@
 	pinctrl-0 = <&i2s3_pmux>;
 	pinctrl-names = "default";
 	duplex;
-	sample-period = <32>;
+	sample-period = <16>;
 };
 
 &platypus_asoc {
