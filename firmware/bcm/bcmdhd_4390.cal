@@ -1,0 +1,670 @@
+# nvram for USI G8 module(4390B1) V1.3 2025.05.01
+# nvram copied and edited from bcm94390f10ref.txt
+# SSID generated using Alberto's boardssid.py script:
+#********************SUMMARY********************
+#Board Name: bcm94390b1GGmodUSIG8BB
+#SSID: 0x0b3c
+#macmid: 0x05fa
+#Successfully made SSID entry in sromdefs.tcl.
+#Successfully made macmid entry in sromdefs.tcl.
+#Successfully made SSID entry in tblssid.py.
+#*************************************************
+# $ Copyright Broadcom $
+#
+#
+# <<Broadcom-WL-IPTag/Vendor1007>>
+#
+#
+#
+NVRAMRev=$Rev: 947350 $
+#
+#
+sromrev=11
+boardrev=0x1103
+boardtype=0x0b3c
+boardflags=0x10401001
+boardflags2=0x00800000
+boardflags3=0x40002900
+boardflags4=0x200000
+#boardnum=57410
+jtag_irw=38
+
+#Regulatory specific
+ccode=0
+regrev=0
+
+# Board specific
+vendid=0x14e4
+devid=0x4438
+manfid=0x2d0
+antswitch=0
+pdgain5g=0
+pdgain2g=0
+aa2g=3
+aa5g=3
+agbg0=0
+agbg1=0
+aga0=0
+aga1=0
+ag6ga0=0
+ag6ga1=0
+extpagain5g=0
+slice/1/extpagain2g=0
+rxgains2gelnagaina0=16
+rxgains2gtrisoa0=17
+rxgains2gtrelnabypa0=1
+rxgains5gelnagaina0=15
+rxgains5gtrisoa0=17
+rxgains5gtrelnabypa0=1
+rxgains5gmelnagaina0=15
+rxgains5gmtrisoa0=17
+rxgains5gmtrelnabypa0=1
+rxgains5ghelnagaina0=15
+rxgains5ghtrisoa0=17
+rxgains5ghtrelnabypa0=1
+rxgains2gelnagaina1=16
+rxgains2gtrisoa1=17
+rxgains2gtrelnabypa1=1
+rxgains5gelnagaina1=15
+rxgains5gtrisoa1=17
+rxgains5gtrelnabypa1=1
+rxgains5gmelnagaina1=15
+rxgains5gmtrisoa1=17
+rxgains5gmtrelnabypa1=1
+rxgains5ghelnagaina1=15
+rxgains5ghtrisoa1=17
+rxgains5ghtrelnabypa1=1
+
+rxgains2gfelossa0=2
+rxgains2gfelossa1=2
+rxgains5gfelossa0=2
+rxgains5gfelossa1=2
+rxgains5gmfelossa0=1
+rxgains5gmfelossa1=1
+rxgains5ghfelossa0=1
+rxgains5ghfelossa1=1
+rxgains5gbkoffa0=9
+rxgains5gbkoffa1=9
+
+rxgains6gelnagaina0=15
+rxgains6gtrisoa0=17
+rxgains6gtrelnabypa0=1
+rxgains6gmelnagaina0=15
+rxgains6gmtrisoa0=17
+rxgains6gmtrelnabypa0=1
+rxgains6ghelnagaina0=15
+rxgains6ghtrisoa0=17
+rxgains6ghtrelnabypa0=1
+rxgains6gfelossa0=1
+#rxgains6gbkoffa0=16
+
+rxgains6gelnagaina1=15
+rxgains6gtrisoa1=17
+rxgains6gtrelnabypa1=1
+rxgains6gmelnagaina1=15
+rxgains6gmtrisoa1=17
+rxgains6gmtrelnabypa1=1
+rxgains6ghelnagaina1=15
+rxgains6ghtrisoa1=17
+rxgains6ghtrelnabypa1=1
+rxgains6gfelossa1=1
+#rxgains6gbkoffa1=16
+
+#RSSI related for dedicated mode in qdBm (Calibrated on USI 60 pin EVB 2023/10/31)
+rssi_cal_freq_grp_2g=0x08,0x01,0x91,0x2a,0x23,0xb3,0xc4
+rssi_cal_rev=1
+rxgaincal_rssical=1
+rssi_delta_2gb0=1,2,2,0,1,2,2,0,0,4,2,1,0,4,2,1
+rssi_delta_2gb1=1,2,2,0,1,2,2,0,1,4,2,1,1,4,2,1
+rssi_delta_2gb2=1,2,2,0,1,2,2,0,0,4,2,1,0,4,2,1
+rssi_delta_2gb3=1,2,2,0,1,2,2,0,1,5,3,1,1,5,3,1
+rssi_delta_2gb4=1,2,2,0,1,2,2,0,1,5,3,2,1,5,3,2
+rssi_delta_2gb0_fbc=1,1,2,0,1,1,2,0,1,1,2,0,1,1,2,0
+rssi_delta_2gb1_fbc=1,1,2,0,1,1,2,0,1,1,2,0,1,1,2,0
+rssi_delta_2gb2_fbc=0,1,2,0,0,1,2,0,0,1,2,0,0,1,2,0
+rssi_delta_2gb3_fbc=1,1,2,0,1,1,2,0,1,1,2,0,1,1,2,0
+rssi_delta_2gb4_fbc=1,2,2,0,1,2,2,0,1,2,2,0,1,2,2,0
+rssi_delta_5gl=-10, 1, -6, -5, -10, 1, -6, -5, -10, 1, -6, -5, -10, 1, -6, -5, -13, 1, -8, -6, -13, 1, -8, -6, -13, 1, -8, -6, -13, 1, -8, -6
+rssi_delta_5gml=-5, 5, -2, -1, -5, 5, -2, -1, -5, 5, -2, -1, -5, 5, -2, -1, -5, 8, 0, 2, -5, 8, 0, 2, -5, 8, 0, 2, -5, 8, 0, 2
+rssi_delta_5gmu=-6, 6, -1, 0, -6, 6, -1, 0, -6, 6, -1, 0, -6, 6, -1, 0, -8, 7, -2, 0, -8, 7, -2, 0, -8, 7, -2, 0, -8, 7, -2, 0
+rssi_delta_5gh=-5, 7, 1, 2, -5, 7, 1, 2, -5, 7, 1, 2, -5, 7, 1, 2, -8, 7, -2, 1, -8, 7, -2, 1, -8, 7, -2, 1, -8, 7, -2, 1
+rssi_delta_6gb0=-6,8,2,3,-6,8,2,3,-6,8,2,3,-6,8,2,3,-8,8,1,3,-8,8,1,3,-8,8,1,3,-8,8,1,3
+rssi_delta_6gb1=-6, 9, 3, 4, -6, 9, 3, 4, -6, 9, 3, 4, -6, 9, 3, 4, -7, 10, 2, 4, -7, 10, 2, 4, -7, 10, 2, 4, -7, 10, 2, 4
+rssi_delta_6gb2=-3, 12, 6, 7, -3, 12, 6, 7, -3, 12, 6, 7, -3, 12, 6, 7, -6, 11, 4, 5, -6, 11, 4, 5, -6, 11, 4, 5, -6, 11, 4, 5
+rssi_delta_6gb3=-3, 12, 6, 6, -3, 12, 6, 6, -3, 12, 6, 6, -3, 12, 6, 6, -4, 12, 6, 6, -4, 12, 6, 6, -4, 12, 6, 6, -4, 12, 6, 6
+rssi_delta_6gb4=0, 13, 9, 8, 0, 13, 9, 8, 0, 13, 9, 8, 0, 13, 9, 8, 3, 16, 11, 11, 3, 16, 11, 11, 3, 16, 11, 11, 3, 16, 11, 11
+rssi_delta_6gb5=1, 14, 10, 9, 1, 14, 10, 9, 1, 14, 10, 9, 1, 14, 10, 9, 2, 14, 10, 10, 2, 14, 10, 10, 2, 14, 10, 10, 2, 14, 10, 10
+slice/2/rssicorrnorm5g_c0=3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3
+slice/2/rssicorrnorm6g_c0=8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8
+slice/1/tone_to_pkt_rssi_offset=-4,-4,-4,-4
+tone_to_pkt_rssi_offset=-12,-8,-12,-8,-8,-8,-8,-4,-12,-8,-12,-8,-8,-8,-8,-4
+tone_to_pkt_rssi_offset_6g=-8,-8,-8,-8,-8,-8,-8,-4,-8,-8,-8,-8,-8,-8,-8,-4
+gain_cal_temp=36
+slice/1/rxgain_tempcoeff2g_sub=0,0,0,0,0,0,0,0,0,0
+rxgain_tempcoeff5gl=0,0
+rxgain_tempcoeff5gml=0,0
+rxgain_tempcoeff5gmu=0,0
+rxgain_tempcoeff5gh=0,0
+slice/1/rxgain_tempcoeff2g_sub_elnaoff=0,0,0,0,0,0,0,0,0,0
+rxgain_tempcoeff5gl_elnaoff=0,0
+rxgain_tempcoeff5gml_elnaoff=0,0
+rxgain_tempcoeff5gmu_elnaoff=0,0
+rxgain_tempcoeff5gh_elnaoff=0,0
+
+#TSSI Related
+low_adc_rate_en=0
+slice/1/low_adc_rate_en=0
+
+# Base K values
+#20 to 80MHz on Main
+az_offset_perbw=0,18000,14500,10000,0
+# Base K Values (For the VHT case 5G 160 & 5G80/40/20/2G20)
+proxd_basekival_5g_160=13181
+proxd_basektval_5g_160=13181
+proxd_basekival=15611,0,55574,0
+proxd_basektval=15611,0,55574,0
+# Offsets across channels (Upper nibble for target, lower nibble for initiator - saved in hex)
+proxd_160mkval=0x0000,0x0000
+proxd_80mkval=0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
+proxd_40mkval=0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
+proxd_20mkval=0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000
+proxd_2gkval=0
+# Offsets across frame formats @ Initiator
+# Only for non-VHT frame (Leg6, Leg non-6, mcs0, non-mcs0)
+# Delta between the base values are adjusted here
+proxdi_rate80m=0,0,0,0
+proxdi_rate40m=0,0,0,0
+proxdi_rate20m=0,0,0,0
+proxdi_rate2g=0,0,0,0
+proxdi_ack=0,0,0,0
+# Offsets across frame formats @ Responder
+proxdt_rate80m=0,0,0,0
+proxdt_rate40m=0,0,0,0
+proxdt_rate20m=0,0,0,0
+proxdt_rate2g=0,0,0,0
+proxdt_ack=0,0,0,0
+# Offsets for sub-bands (VHT, Leg6, Leg non-6, mcs0, non-mcs0)
+proxd_sub80m40m=0,0,0,0,0
+proxd_sub80m20m=0,0,0,0,0
+proxd_sub40m20m=0,0,0,0,0
+proxd_sub80m40m_ch_off=0,0,0,0,0,0
+proxd_sub80m20m_ch_off=0,0,0,0,0,0
+proxd_sub40m20m_ch_off=0,0,0,0,0,0,0,0,0,0,0
+proxd_sub160m80m_ch_off=0,0,0
+proxd_sub160m40m_ch_off=0,0,0
+proxd_sub160m20m_ch_off=0,0,0
+
+
+nocrc=1
+otpimagesize=502
+
+xtalfreq=76800
+
+txchain=3
+rxchain=3
+
+## --- 11b ANT selection Diversity ---
+cck_onecore_tx=1
+
+cckdigfilttype=0
+
+bandcap=6
+slice/1/bandcap=1
+slice/3/bandcap=1
+
+
+#FDSS Related
+fdss_level_5g=0,0
+fdss_level_6g=0,0
+slice/1/fdss_level_2g=0,0
+slice/1/fdss_bandedge_2g_en=1
+slice/1/fdss_profile_2g=7,0,0,5,17,28,36,47,59,152,-90,-320,-140,0,140,320,90,128
+slice/1/fdss_profile_2g_ch13=8,0,0,5,17,24,28,36,47,59,151,-90,-320,-140,132,-136,140,320,90,128
+slice/1/fdss_profile_11ax_2g=7,0,0,28,88,120,136,168,228,147,-20,-64,-32,0,32,64,20,128,128
+slice/1/fdss_profile_11ax_2g_ch13=8,0,0,28,88,112,128,136,168,228,147,-20,-64,8,120,-392,32,64,20,128,128
+
+paprdis=1
+slice/1/paprdis=1
+
+slice/1/txshaper_en=1
+
+#Tempsense Related
+tempthresh=255
+tempoffset=32
+rawtempsense=0x1ff
+phycal_tempdelta=15
+temps_period=15
+temps_hysteresis=0xf
+
+#olpc
+olpc_idx_in_use=1
+disable_olpc=1
+olpc_thresh5g=40
+olpc_anchor5g=40
+olpc_anchor6g=40
+olpc_thresh6g=40
+slice/1/olpc_idx_in_use=1
+slice/1/disable_olpc=1
+slice/1/olpc_thresh2g=40
+slice/1/olpc_anchor2g=40
+slice/1/olpc_thresh2g_hi=0x7f7f
+
+# olpc temp offset
+slice/1/olpc_tempslope2g=-78,-78
+olpc_tempslope5g=-78,-78
+olpc_tempslope6g=-78,-78
+
+# 20231218 Updated on the module socket board
+hwolpc_offset_c0=0x00,0x03FFFF01,0x03FF0001,0x02FEFF00,0x02FF0101
+hwolpc_offset6g_c0=0x00FE0000,0x04000000,0x01000001,0x02FF0100,0x02FF0000,0x03FF0000
+hwolpc_offset_c1=0xFF,0x02FF0000,0x02FEFF00,0x03FF0000,0x02FF0001
+hwolpc_offset6g_c1=0x02FF0100,0x04000001,0x02FFFFFF,0x04000201,0x03000101,0x03FF0101
+# Disable Idle TSSI for both Aux and Main slice
+idletssi_disable=1
+disable_tpc=0
+
+### To delay TSSI sampling, in nvram:
+tssisampledelayen=1
+
+tssipos2g=1
+tssipos5g=0
+
+etssi_inv_gain=357,357,300,300
+AvVmid_c0=0,178,0,178,0,179,0,185,0,191
+AvVmid_c1=0,180,0,180,0,181,0,186,0,191
+AvVmid_6g_c0=0,194,0,199,0,200,0,200,0,202,0,202
+AvVmid_6g_c1=0,194,0,200,0,200,0,201,0,205,0,203
+slice/1/AvVmid_c0=0,158
+slice/1/AvVmid_c1=0,165
+
+pacalver_nvram=0x1
+pacal_pwroffseta0=0,2,4,-2,0,4,4,6,7,6,9
+pacal_pwroffseta1=0,-3,-1,0,3,3,3,-2,-1,3,4
+
+# 20231211 adjust PA slope by BRCM
+## 2024/01/22 Shifted
+slice/1/pa2ga0=117,9077,-1054
+slice/1/pa2ga1=56,9311,-1072
+
+# 2024/01/22 Shifted
+pa5ga0=77,8030,-1137,76,8056,-1168,88,8380,-1128,67,8226,-1122
+pa5ga1=80,8208,-1136,99,8327,-1173,94,8390,-1137,82,8359,-1133
+
+# 2024/01/22 Shifted
+pa6ga0=94,8381,-1118,87,8380,-1132,96,8390,-1110,102,8419,-1131,94,8384,-1118,100,8267,-1149
+pa6ga1=134,8548,-1117,112,8512,-1147,94,8347,-1132,92,8472,-1133,101,8328,-1150,75,8149,-1152
+
+# TPC offset for 11ax ajustments
+slice/1/tpc_shaper_offset_mcs3_below=-4
+# Max power and offsets
+slice/1/powoffs2gtna0=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/1/powoffs2gtna1=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+# 20231218 updated
+slice/1/pdoffsetcckma0=0x04
+slice/1/pdoffsetcckma1=0x04
+
+maxp2ga0=74
+maxp2ga1=74
+maxp5ga0=76,76,76,76
+maxp5ga1=76,76,76,76
+maxp6ga0=76,76,76,76,76,76
+maxp6ga1=76,76,76,76,76,76
+subband5gver=0x4
+subband6gver=0x3
+paparambwver=3
+
+## 20231218 updated
+pdoffset40ma0=0x6555
+pdoffset80ma0=0x4234
+pdoffset160ma0=0x5555
+pdoffset40ma1=0x6656
+pdoffset80ma1=0x4334
+pdoffset160ma1=0x5666
+pdoffset6g40ma0=0x666567
+pdoffset6g80ma0=0x443344
+pdoffset6g160ma0=0x665775
+pdoffset6g40ma1=0x777667
+pdoffset6g80ma1=0x444444
+pdoffset6g160ma1=0x666766
+
+slice/1/cckpwroffset0=0
+slice/1/cckpwroffset1=0
+
+slice/1/pdoffset20mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/1/pdoffset20mRU_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset20mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset20mRU_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset40mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset40mRU_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset80mRUset1_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset80mRUset2_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset80mRUset1_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset80mRUset2_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g20mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g20mRU_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g40mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g40mRU_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g80mRUset1_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g80mRUset2_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g80mRUset1_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+pdoffset6g80mRUset2_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+# 5G power offset per channel for band edge channel
+powoffs5g20mtna0=0,0,0,0,0,0,0
+powoffs5g20mtna1=0,0,0,0,0,0,0
+powoffs5g40mtna0=0,0,0,0,0
+powoffs5g40mtna1=0,0,0,0,0
+powoffs5g80mtna0=0,0,0,0,0
+powoffs5g80mtna1=0,0,0,0,0
+#2G/5G related PPR params
+cckbw202gpo=0x00
+mcsbw202gpo=0x32000000
+dot11agofdmhrbw202gpo=0x00000
+ofdmlrbw202gpo=0x0000
+mcs1024qam2gpo=0x55
+
+mcsbw205glpo=0x54210000
+mcsbw205gmpo=0x65320000
+mcsbw205ghpo=0x43110000
+mcsbw405glpo=0x53210000
+mcsbw405gmpo=0x54210000
+mcsbw405ghpo=0x43100000
+mcsbw805glpo=0x54210000
+mcsbw805gmpo=0x54210000
+mcsbw805ghpo=0x43100000
+mcsbw1605glpo=0x75320000
+mcsbw1605gmpo=0x76420000
+mcsbw1605ghpo=0x43100000
+mcs1024qam5glpo=0x99666677
+mcs1024qam5gmpo=0x99776688
+mcs1024qam5ghpo=0x66555555
+mcs4096qam5glpo=0xBB998899
+mcs4096qam5gmpo=0xBB9988EE
+mcs4096qam5ghpo=0x88777777
+mcs10poexp=0x00000000
+mcs11poexp=0x00000000
+mcs12poexp=0x00000000
+mcs13poexp=0x00000000
+## 6G related PPR params
+mcsbw206gb1po=0x54210000
+mcsbw206gb2po=0x54210000
+mcsbw206gb3po=0x53210000
+mcsbw206gb4po=0x54210000
+mcsbw206gb5po=0x65210000
+mcsbw206gb6po=0x54210000
+mcsbw406gb1po=0x43100000
+mcsbw406gb2po=0x43210000
+mcsbw406gb3po=0x53210000
+mcsbw406gb4po=0x44210000
+mcsbw406gb5po=0x54310000
+mcsbw406gb6po=0x43210000
+mcsbw806gb1po=0x54200000
+mcsbw806gb2po=0x43210000
+mcsbw806gb3po=0x43210000
+mcsbw806gb4po=0x43210000
+mcsbw806gb5po=0x53100000
+mcsbw806gb6po=0x43200000
+mcsbw1606gb1po=0x53100000
+mcsbw1606gb2po=0x54210000
+mcsbw1606gb3po=0x54310000
+mcsbw1606gb4po=0x54220000
+mcsbw1606gb5po=0x54320000
+mcsbw1606gb6po=0x54320000
+mcs1024qam6gb1po=0x66AA6666
+mcs1024qam6gb2po=0x77556666
+mcs1024qam6gb3po=0x77556666
+mcs1024qam6gb4po=0x66556666
+mcs1024qam6gb5po=0x77667788
+mcs1024qam6gb6po=0x77556677
+mcs4096qam6gb1po=0x88CC8888
+mcs4096qam6gb2po=0xAA888888
+mcs4096qam6gb3po=0xAA777788
+mcs4096qam6gb4po=0x88998888
+mcs4096qam6gb5po=0xAAAAAABB
+mcs4096qam6gb6po=0x9988CC99
+mcs10poexp6g=0x00000000
+mcs11poexp6g=0x00000000
+mcs12poexp6g=0x00000000
+mcs13poexp6g=0x00000000
+
+## ULOFDMA Board limit PPRs for 2g20 ##
+ruppr2g20bpsk=0x00000000,0x00000000
+ruppr2g20qpsk=0x00000000,0x00000000
+ruppr2g20qam16=0x00000000,0x00000000
+ruppr2g20qam64=0x00000000,0x00000000
+ruppr2g20qam256=0x00008464,0x00083000
+ruppr2g20qam1024=0x000294C7,0x00185000
+ruppr2g20qam4096=0x00000000,0x00000000
+## ULOFDMA Board limit PPRs for 5g20 ##
+ruppr5g20bpsk=0x00000000,0x00000000
+ruppr5g20qpsk=0x00000000,0x00000000
+ruppr5g20qam16=0x00000000,0x00000000
+ruppr5g20qam64=0x00000000,0x00000000
+ruppr5g20qam256=0x00021083,0x00082000
+ruppr5g20qam1024=0x000318C6,0x00144000
+ruppr5g20qam4096=0x00052929,0x00248000
+## ULOFDMA Board limit PPRs for 5g40 ##
+ruppr5g40bpsk=0x00000000,0x00000000
+ruppr5g40qpsk=0x00000000,0x00000000
+ruppr5g40qam16=0x00000000,0x00000000
+ruppr5g40qam64=0x00000000,0x00000000
+ruppr5g40qam256=0x00521084,0x000C3000
+ruppr5g40qam1024=0x00731CE7,0x00145000
+ruppr5g40qam4096=0x0094292A,0x00208000
+## ULOFDMA Board limit PPRs for 5g80 ##
+ruppr5g80bpsk=0x00000000,0x00000000
+ruppr5g80qpsk=0x00000000,0x00000000
+ruppr5g80qam16=0x00000000,0x00000000
+ruppr5g80qam64=0x00000000,0x01000000
+ruppr5g80qam256=0x144294C4,0x04083000
+ruppr5g80qam1024=0x1C63A107,0x081C6000
+ruppr5g80qam4096=0x3095294A,0x0D289000
+## ULOFDMA Board limit PPRs for 5g160 ##
+ruppr5g160bpsk=0x00000000,0x00000000,0x00000000
+ruppr5g160qpsk=0x00000000,0x00000000,0x00000000
+ruppr5g160qam16=0x00000000,0x00000000,0x00000000
+ruppr5g160qam64=0x00100000,0x01000002,0x00000082
+ruppr5g160qam256=0x187190E5,0x040C3006,0x00000185
+ruppr5g160qam1024=0x24A31D69,0x0720800A,0x00000288
+ruppr5g160qam4096=0x34F52DCD,0x0C34D00F,0x000003CC
+## ULOFDMA Board limit PPRs for 6g20 ##
+ruppr6g20bpsk=0x00000000,0x00000000
+ruppr6g20qpsk=0x00000000,0x00000000
+ruppr6g20qam16=0x00000000,0x00000000
+ruppr6g20qam64=0x00008421,0x00041000
+ruppr6g20qam256=0x000314C6,0x00103000
+ruppr6g20qam1024=0x00051D2A,0x00185000
+ruppr6g20qam4096=0x0005ADAF,0x00287000
+## ULOFDMA Board limit PPRs for 6g40 ##
+ruppr6g40bpsk=0x00000001,0x00000000
+ruppr6g40qpsk=0x00000001,0x00000000
+ruppr6g40qam16=0x00000001,0x00000000
+ruppr6g40qam64=0x00108421,0x00041000
+ruppr6g40qam256=0x005294A5,0x00103000
+ruppr6g40qam1024=0x00839D08,0x00185000
+ruppr6g40qam4096=0x00C5A98C,0x00248000
+## ULOFDMA Board limit PPRs for 6g80 ##
+ruppr6g80bpsk=0x00000000,0x00000000
+ruppr6g80qpsk=0x00000000,0x00000000
+ruppr6g80qam16=0x00000000,0x00000000
+ruppr6g80qam64=0x04110822,0x02041000
+ruppr6g80qam256=0x145294A5,0x05104000
+ruppr6g80qam1024=0x24742108,0x06185000
+ruppr6g80qam4096=0x34B6AD8C,0x0B28A000
+## ULOFDMA Board limit PPRs for 6g160 ##
+ruppr6g160bpsk=0x00000000,0x00000000,0x00000000
+ruppr6g160qpsk=0x00000000,0x00000000,0x00000000
+ruppr6g160qam16=0x00000000,0x00000003,0x000000C3
+ruppr6g160qam64=0x00000000,0x01001002,0x00000082
+ruppr6g160qam256=0x146210A5,0x030C4006,0x00000184
+ruppr6g160qam1024=0x2083A509,0x0718700A,0x00000288
+ruppr6g160qam4096=0x30C635AD,0x0C28A00E,0x0000038D
+#OOB params
+#device_wake_opt=1
+host_wake_opt=0
+# temporarily disable deepsleep health check
+ds_hc_enable=0
+
+# SWCTRL Format - TXHEc1TXHEc0(16+16 bits), TXHLc1TXHLc0(16+16 bits),
+#        RXHGc1RXHGc0(16+16 bits), RXBYPc1RXBYPc0(16+16 bits), Mask(16 bits)
+# SWCTRL Ext Format - TXHEc1TXHEc0(4+4 bits), TXHLc1TXHLc0(4+4 bits), RXHGc1RXHGc0(4+4 bits),
+#        RXBYPc1RXBYPc0(4+4 bits), Mask(4 bits)
+
+# 5G Main SWCTRL
+swctrlmap_5g=0x00000020,0x00000020,0x00000020,0x00040024,0xFFFF
+swctrlmapext_5g=0x11,0x11,0x11,0x00,0xF
+
+# 6G Main SWCTRL
+swctrlmap_6g=0x00000020,0x00000020,0x00000020,0x00040024,0xFFFF
+swctrlmapext_6g=0x11,0x11,0x11,0x00,0xF
+
+# 2G Aux SWCTRL
+slice/1/swctrlmap_2g=0x80008000,0x80008000,0x80008000,0x00010001,0xFFFF
+slice/1/swctrlmapext_2g=0x0,0x0,0x0,0x00,0xF
+
+# 5G WL Scan SWCTRL
+slice/2/swctrlmap_5g=0x00000000,0x00000000,0x00000020,0x00040024,0xFFFF
+slice/2/swctrlmapext_5g=0x11,0x11,0x11,0x00,0xF
+
+# 6G WL Scan SWCTRL
+slice/2/swctrlmap_6g=0x00000000,0x00000000,0x00000020,0x00040024,0xFFFF
+slice/2/swctrlmapext_6g=0x11,0x11,0x11,0x00,0xF
+
+# 2G WL Scan SWCTRL
+slice/2/swctrlmap_2g=0x00000000,0x00000000,0x80008000,0x00010001,0xFFFF
+slice/2/swctrlmapext_2g=0x0,0x0,0x0,0x00,0xF
+
+# Init (default) values for FEM Control LUT Entries - 2G, 5G, 6G
+fem_table_init_val=0x00010001,0x00000020,0x00000020
+fem_table_init_val_ext=0x00,0x11,0x11
+
+# Slice0=WLMain, Slice1=Aux, Slice2=WLScan
+clb5gslice0core0=0x10024
+clb5gslice0core1=0x10024
+clb5gslice2core0=0x10024
+clb5gslice2core1=0x10024
+
+clb2gslice1core0=0x08001
+clb2gslice1core1=0x08001
+clb2gslice2core0=0x08001
+clb2gslice2core1=0x08001
+
+# rfem CMAPT
+rFEM_hw_mppc_en_2g=1
+rFEM_cmapt_swpt_pwr_thresh_qdBm_2g=-128,20
+slice/1/mppc_gaindelta_pa1=44
+
+rFEM_hw_mppc_en_5g=1
+rFEM_cmapt_swpt_pwr_thresh_qdBm_5g=-128,12
+mppc_gaindelta_pa1=0,29,29,32,30,31,26,26,27,32,28
+
+# Gen9 5G/6G rFEM States:
+# OFFc1_OFFc0_TX1c1_TX1c0, TX2c1_TX2c0_TX4c1_TX4c0, TX5c1_TX5c0_TX10c1_TX10c0,
+# RX1c1_RX1c0_RX2Bc1_RX2Bc0, RX2c1_RX2c0_TX3c1_TX3c0, TX7c1_TX7c0_TX8c1_TX8c0,
+# IDLEc1_IDLEc0_TEMPc1_TEMPc0, SISOc1_SISOc0_BTNc1_BTNc0, TX6c1_TX6c0_TX9c1_TX9c0
+# BRCM rFEM EMLSR - Link0 uses TX1,TX4,TX7 config, Link1 uses TX2,TX5,TX8 config
+remoteFEMlut_5g=0x93938181, 0xA0A08484, 0xA1A18A8A, 0x8B8B8D8D, 0x8C8C8383, 0x8484A1A1, 0x8E8E8F8F, 0x90909191, 0x86868989
+
+# Gen9 2G rFEM States:
+# OFFc1_OFFc0_TX1c1_TX1c0, 00_00_TX2c1_TX2c0, 00_00_BTTX1c1_BTTX1c0, RXHGc1_RXHGc0_RXHGSCANc1_RXHGSCANc0,
+# 00_00_00_00, TX3c1_TX3c0_00_00, 00_00_TEMPc1_TEMPc0, 00_00_BTNc1_BTNc0, 00_00_00_00
+remoteFEMlut_2g=0x80808181, 0x00008383, 0x00008787, 0x85858686, 0x00000000, 0x83830000, 0x00008484, 0x00008A8A, 0x00000000
+
+# rFEM Type: 1 = BRCM rFEMs, 2 = BRCM Gen9 rFEMs, 3 = Gen8 Murata/Skyworks rFEMs, 4 = Gen9 Murata/Skyworks rFEMs
+rFEM_2G_type=2
+rFEM_5G_type=2
+
+# RFFE VIO SWCTRL Number: 5GC1,5GC0,2GC1,2GC0
+# 23 is actual line but GCI needs 23+4
+# 22 is actual line but GCI needs 22+4
+rFEM_VIO_swctrl=27,10,26,9
+
+# Drives strength of core 0,1 rffe pads at attach
+rffe_drive_strength_init=0x2
+
+muxenab=1
+
+# [31:24] - rts; [23:16] - cts; [15:8] - Tx; [7:0] - Rx;
+fuart_sig2pin_map=0x0b0a0908
+
+###Comment out BT section for initial bringup
+#BT Coex
+btc_mode=0x1
+#btc_params82=0x1a0
+# BT shared ant configuration
+btc_prisel_ant_mask=0x0
+btc_prisel_mask=0x1
+clb_swctrl_smask_ant0=0x18025
+clb_swctrl_smask_ant1=0x18025
+
+# energy detect threshold
+ed_thresh2g=-63
+ed_thresh5g=-63
+ed_thresh6g=-72,-72
+ed_thresh_sec5g=-72
+ed_thresh_sec6g=-72,-72
+# energy detect threshold for EU
+eu_edthresh2g=-63
+eu_edthresh5g=-72
+eu_edthresh6g=-72,-72
+eu_edthresh_sec5g=-72
+eu_edthresh_sec6g=-72,-72
+
+#Feature flags
+femctrl=17
+
+# FE Loss comp parameters
+slice/1/felossTx2ga0=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/1/felossTx2ga1=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/1/felossRx2ga0=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/1/felossRx2ga1=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+felossTx5ga0=0,0,0,0
+felossTx5ga1=0,0,0,0
+felossRx5ga0=0,0,0,0
+felossRx5ga1=0,0,0,0
+felossTx6ga0=0,0,0,0,0,0
+felossTx6ga1=0,0,0,0,0,0
+felossRx6ga0=0,0,0,0,0,0
+felossRx6ga1=0,0,0,0,0,0
+slice/2/felossRx2ga0=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/2/felossRx2ga1=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slice/2/felossRx5ga0=0,0,0,0
+slice/2/felossRx5ga1=0,0,0,0
+slice/2/felossRx6ga0=0,0,0,0,0,0
+slice/2/felossRx6ga1=0,0,0,0,0,0
+
+# Spur canceller DTX spurs for some channels in Main slice
+txspurcan_en=1
+slice/1/txspurcan_en=0
+
+# ABUCK Votage mapping check (BCM4397_switcher_tbls in pmu.tcl)
+# 0 --> 0.87V, 1--> 0.88V, 2-->0.89V,..,5-->0.92V.,.., 15 --> 1.02V
+# -1 --> 0.86V, -2 --> 0.85V, -3 --> 0.67V, -4 --> 0.66V,.. -16 --> 0.54
+abuck_volt=5
+slice/1/abuck_volt=5
+slice/2/abuck_volt=5
+# CBUCK Votage mapping check (BCM4397_switcher_tbls in pmu.tcl)
+# 0 --> 0.60V, 1--> 0.61V, 2-->0.62V,...., 15 --> 0.75V, 16 --> 0.76V
+# 31 --> 0.59V, 30 --> 0.58V, 29 --> 0.57V, 28 --> 0.56V,.. 22 --> 0.50V
+# 21 --> 0.83V, 20 --> 0.81V, 19 --> 0.79V, 18 --> 0.78V, 17 --> 0.77V
+#cbuck_volt=21
+
+##Dynamic SAR related Params
+dynsar_fcc_rev=0xFF
+
+###LPC EPABYPASS MODE
+lpc_epabypass_en=1
+lpc_epabypass_maxpwr=-10
+lpc_epagain=60
+
+#LESI desense
+lesi_desoffset=49,48,48
+lesi_desoffset_20MHzextra=1,1,1
+
+#tvpm params
+tvpm=1
+slice/1/tvpm=1
+tvpm_dc_cltm=100,100,90,90,80,80,70,70,60,60,50,50,40,40,30,30,20,20,1,1
+
+## List of duty cycle temperature thresholds in descending order (num = 3)
+tvpm_dc_temp_threshold=110,105,100
+slice/1/tvpm_dc_temp_threshold=110,105,100
