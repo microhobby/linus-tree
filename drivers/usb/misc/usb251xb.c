@@ -302,6 +302,8 @@ static int usb251xb_connect(struct usb251xb *hub)
 		return 0;
 	}
 
+	memset(i2c_wb, 0, USB251XB_I2C_REG_SZ);
+
 	if (hub->skip_config) {
 		dev_info(dev, "Skip hub configuration, only attach.\n");
 		i2c_wb[0] = 0x01;
@@ -798,7 +800,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(usb251xb_plat_pm_ops, usb251xb_plat_suspend, usb
 static struct platform_driver usb251xb_plat_driver = {
 	.driver = {
 		.name = DRIVER_NAME,
-		.of_match_table = of_match_ptr(usb251xb_of_match),
+		.of_match_table = usb251xb_of_match,
 		.pm = pm_ptr(&usb251xb_plat_pm_ops),
 	},
 	.probe		= usb251xb_plat_probe,
