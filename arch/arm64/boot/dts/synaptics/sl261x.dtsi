@@ -26,11 +26,11 @@
 		i2c1 = &i2c1;
 		i2c2 = &i2c2;
 		i2c3 = &i2c3;
-		spi0 = &spi0;
 		spi1 = &spi1;
 		spi2 = &spi2;
 		spi3 = &spi3;
 		spi4 = &spi4;
+		spi5 = &spi5;
 	};
 
 	psci {
@@ -179,7 +179,7 @@
 				status = "disabled";
 			};
 
-			spi4: spi@e5034000 {
+			spi1: spi@e5034000 {
 				compatible = "snps,dw-apb-ssi";
 				reg = <0xe5034000 0x100>;
 				#address-cells = <1>;
@@ -545,7 +545,7 @@
 			status = "disabled";
 		};
 
-		spi0: spi@f7f04000 {
+		spi2: spi@f7f04000 {
 			compatible = "snps,dw-apb-ssi";
 			reg = <0xf7f04000 0x100>;
 			#address-cells = <1>;
@@ -602,7 +602,7 @@
 			};
 		};
 
-		spi1: spi@f7f0b000 {
+		spi3: spi@f7f0b000 {
 			compatible = "snps,dw-apb-ssi";
 			reg = <0xf7f0b000 0x100>;
 			#address-cells = <1>;
@@ -615,7 +615,7 @@
 			status = "disabled";
 		};
 
-		spi2: spi@f7f0c000 {
+		spi4: spi@f7f0c000 {
 			compatible = "snps,dw-apb-ssi";
 			reg = <0xf7f0c000 0x100>;
 			#address-cells = <1>;
@@ -628,7 +628,7 @@
 			status = "disabled";
 		};
 
-		spi3: spi@f7f0d000 {
+		spi5: spi@f7f0d000 {
 			compatible = "snps,dw-apb-ssi";
 			reg = <0xf7f0d000 0x100>;
 			#address-cells = <1>;
