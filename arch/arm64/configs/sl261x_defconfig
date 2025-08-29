@@ -6,10 +6,8 @@ CONFIG_HIGH_RES_TIMERS=y
 CONFIG_PREEMPT=y
 # CONFIG_CPU_ISOLATION is not set
 CONFIG_BLK_DEV_INITRD=y
-# CONFIG_RD_GZIP is not set
 # CONFIG_RD_BZIP2 is not set
 # CONFIG_RD_LZMA is not set
-# CONFIG_RD_XZ is not set
 # CONFIG_RD_LZO is not set
 # CONFIG_RD_LZ4 is not set
 CONFIG_EXPERT=y
