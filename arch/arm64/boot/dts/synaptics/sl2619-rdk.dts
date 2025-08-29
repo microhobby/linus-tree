@@ -16,8 +16,8 @@
 #include "sl261x.dtsi"
 
 / {
-	model = "Synaptics SL2610 RDK";
-	compatible = "syna,sl2610-rdk", "syna,sl2610";
+	model = "Synaptics SL2619 RDK";
+	compatible = "syna,sl2619-rdk", "syna,sl2619";
 
 	cpus {
 		cpu@0 {
