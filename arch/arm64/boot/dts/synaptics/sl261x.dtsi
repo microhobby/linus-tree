@@ -426,7 +426,7 @@
 			phy-names = "usb2-phy";
 			resets = <&chip 0x360 1 1 0>, <&chip 0x360 2 1 0>, <&chip 0x350 4 0 0>;
 			reset-names = "dwc2", "dwc2-ecc", "dwc2-sync";
-			dr_mode = "peripheral";
+			dr_mode = "otg";
 			status = "disabled";
 		};
 
