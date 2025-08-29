@@ -192,7 +192,7 @@
 				status = "disabled";
 			};
 
-			i2c2: i2c@e5035000 {
+			i2c0: i2c@e5035000 {
 				compatible = "snps,designware-i2c";
 				#address-cells = <1>;
 				#size-cells = <0>;
@@ -205,7 +205,7 @@
 				status = "disabled";
 			};
 
-			i2c3: i2c@e5036000 {
+			i2c1: i2c@e5036000 {
 				compatible = "snps,designware-i2c";
 				#address-cells = <1>;
 				#size-cells = <0>;
@@ -558,7 +558,7 @@
 			status = "disabled";
 		};
 
-		i2c0: i2c@f7f05000 {
+		i2c2: i2c@f7f05000 {
 			compatible = "snps,designware-i2c";
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -571,7 +571,7 @@
 			status = "disabled";
 		};
 
-		i2c1: i2c@f7f06000 {
+		i2c3: i2c@f7f06000 {
 			compatible = "snps,designware-i2c";
 			#address-cells = <1>;
 			#size-cells = <0>;

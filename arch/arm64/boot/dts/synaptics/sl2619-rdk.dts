@@ -114,13 +114,13 @@
 		function = "gpio";
 	};
 
-	i2c2_pmux: i2c2-pmux {
+	i2c0_pmux: i2c0-pmux {
 		groups = "SM_GPIO12", "SM_GPIO13";
 		function = "tw0";
 		drive-strength = <7>;
 	};
 
-	i2c3_pmux: i2c3-pmux {
+	i2c1_pmux: i2c1-pmux {
 		groups = "SM_GPIO3", "SM_GPIO4";
 		function = "tw1";
 		drive-strength = <7>;
@@ -181,10 +181,10 @@
 	status = "okay";
 };
 
-&i2c2 {
+&i2c0 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c2_pmux>;
+	pinctrl-0 = <&i2c0_pmux>;
 	no-irq-suspend;
 
 	expander0: gpio@43 {
@@ -214,10 +214,10 @@
 	};
 };
 
-&i2c3 {
+&i2c1 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c3_pmux>;
+	pinctrl-0 = <&i2c1_pmux>;
 
 	vcore: regulator@60 {
 		compatible = "silergy,sy8827n";
