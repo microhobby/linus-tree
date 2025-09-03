@@ -26,6 +26,39 @@
 		device_type = "memory";
 		reg = <0 0x1000000 0 0x3f000000>;
 	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		vdev0vring0: vdev0vring0@7f00000 {
+			compatible = "shared-dma-pool";
+			reg = <0 0x7f00000 0 0x8000>;
+			no-map;
+		};
+
+		vdev0vring1: vdev0vring1@7f08000 {
+			compatible = "shared-dma-pool";
+			reg = <0 0x7f08000 0 0x8000>;
+			no-map;
+		};
+
+		vdevbuffer: vdevbuffer {
+			compatible = "shared-dma-pool";
+			reg = <0 0x7f10000 0 0xf0000>;
+			no-map;
+		};
+	};
+
+	rpmsg {
+		compatible = "syna,rpmsg";
+		mbox-names = "rpmsg";
+		mboxes = <&ipc 0>;
+		syna,vdev-nums = <1>;
+		reg = <0x0 0x7f00000 0x0 0x10000>;
+		memory-region = <&vdevbuffer>;
+	};
 };
 
 &pinctrl {
@@ -82,6 +115,10 @@
 			max-speed = <100>;
 		};
 	};
+};
+
+&ipc {
+	status = "okay";
 };
 
 &sdhci0 {
