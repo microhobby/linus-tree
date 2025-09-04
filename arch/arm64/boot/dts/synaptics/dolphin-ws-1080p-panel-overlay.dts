@@ -32,6 +32,10 @@
 
 		__overlay__ {
 			i2c0: i2c@1800 {
+				rpi_panel_regulator: rpi_panel_regulator@45 {
+					status= "disabled";
+				};
+
 				waveshare: waveshare@45 {
 					compatible = "waveshare,13.3inch-4lane-panel";
 					reg = <0x45>;
@@ -46,11 +50,10 @@
 		target-path = "/soc";
 
 		__overlay__ {
-			drm: drm {
-				disp-mode = <1>;
-				disp1-res-id = <102>;
-				disp1-type = <3>;
+			drm: drm{
 				dsi_panel {
+					power-supply = <>;
+
 					backlight = <&waveshare>;
 					compatible_panel="waveshare,13.3inch-4lane-panel";
 					ACTIVE_WIDTH = <1920>;
