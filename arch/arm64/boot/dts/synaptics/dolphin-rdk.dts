@@ -618,7 +618,9 @@
 	disp1-type = <0>;
 	disp2-res-id = <102>;
 	disp2-type = <3>;
-	logo_parition = <14>;
+	sw_partition = <14>;
+	devnum = <0>;
+	hw_partition = <0>; //0 - Default; 4 - 7 For GP1 to GP4
 
 	dsi_panel {
 		status= "okay";

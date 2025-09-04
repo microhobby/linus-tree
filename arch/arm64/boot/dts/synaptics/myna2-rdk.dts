@@ -677,7 +677,9 @@
 
 	pinctrl-0 = <&lcdc_pmux>, <&lcdc_pmux1>, <&lcdc_gpio_pmux>;
 	pinctrl-names = "default", "default", "default", "default";
-	logo_parition = <14>;
+	sw_partition = <14>;
+	devnum = <0>;
+	hw_partition = <0>; //0 - Default; 4 - 7 For GP1 to GP4
 
 	lcdc_panel {
 		status= "okay";
