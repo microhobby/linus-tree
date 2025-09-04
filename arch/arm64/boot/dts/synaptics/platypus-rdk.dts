@@ -453,7 +453,7 @@
 	 * 		  	3 - MIPI-DSI
 	 */
 	disp-mode = <0>;
-	disp1-res-id = <24>;
+	disp1-res-id = <61>;
 	disp1-type = <0>;
 
 	dsi_panel {
