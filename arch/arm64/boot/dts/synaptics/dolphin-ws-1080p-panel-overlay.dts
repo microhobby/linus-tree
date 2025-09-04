@@ -1,0 +1,98 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
+/*
+* Copyright (C) 2016~2025 Synaptics Incorporated. All rights reserved.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 2 or
+* later as published by the Free Software Foundation.
+*
+* INFORMATION CONTAINED IN THIS DOCUMENT IS PROVIDED "AS-IS," AND
+* SYNAPTICS EXPRESSLY DISCLAIMS ALL EXPRESS AND IMPLIED WARRANTIES,
+* INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE, AND ANY WARRANTIES OF NON-INFRINGEMENT OF ANY
+* INTELLECTUAL PROPERTY RIGHTS. IN NO EVENT SHALL SYNAPTICS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR
+* CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE
+* OF THE INFORMATION CONTAINED IN THIS DOCUMENT, HOWEVER CAUSED AND
+* BASED ON ANY THEORY OF LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+* NEGLIGENCE OR OTHER TORTIOUS ACTION, AND EVEN IF SYNAPTICS WAS
+* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. IF A TRIBUNAL OF
+* COMPETENT JURISDICTION DOES NOT PERMIT THE DISCLAIMER OF DIRECT
+* DAMAGES OR ANY OTHER DAMAGES, SYNAPTICS' TOTAL CUMULATIVE LIABILITY
+* TO ANY PARTY SHALL NOT EXCEED ONE HUNDRED U.S. DOLLARS.
+*/
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+
+		target-path = "/soc/apb@f7e80000";
+
+		__overlay__ {
+			i2c0: i2c@1800 {
+				waveshare: waveshare@45 {
+					compatible = "waveshare,13.3inch-4lane-panel";
+					reg = <0x45>;
+					status= "okay";
+				};
+			};
+		};
+	};
+
+	fragment@1 {
+
+		target-path = "/soc";
+
+		__overlay__ {
+			drm: drm {
+				disp-mode = <1>;
+				disp1-res-id = <102>;
+				disp1-type = <3>;
+				dsi_panel {
+					backlight = <&waveshare>;
+					compatible_panel="waveshare,13.3inch-4lane-panel";
+					ACTIVE_WIDTH = <1920>;
+					HFP = <88>;
+					HSYNCWIDTH = <44>;
+					HBP = <148>;
+					ACTIVE_HEIGHT = <1080>;
+					VFP = <4>;
+					VSYNCWIDTH = <5>;
+					VBP = <36>;
+					FREQ = <148500>;
+					bits_per_pixel = <24>;
+					busformat = <0>;
+
+					HTOTAL = <2200>;
+					Lanes = /bits/ 8 <4>;
+					Vid_mode = /bits/ 8 <2>;
+					virtual_chan = /bits/ 8 <0>;
+					Clk_Lane_Polarity = /bits/ 8 <0>;
+					Data_Lane_Polarity = /bits/ 8 <0>;
+					Recv_ack = /bits/ 8 <0>;
+					Loosely_18 = /bits/ 8 <0>;
+					H_polarity = /bits/ 8 <1>;
+					V_Polarity = /bits/ 8 <1>;
+					Data_Polarity = /bits/ 8 <1>;
+					Eotp_tx = /bits/ 8 <1>;
+					Eotp_rx = /bits/ 8 <0>;
+					non-Continuous_clk = /bits/ 8 <0>;
+					dpi_lp_cmd = /bits/ 8 <1>;
+					Color_coding = /bits/ 8 <5>;
+					Chunks = <0>;
+					Null_Pkt = <0>;
+					Byte_clk = <148500>;
+
+					command = /bits/ 8 <0xFF  0x10 0x27  0x00  0x00>;
+				};
+
+				dsi_hdmi_lt9611_bridge {
+					status = "disabled";
+				};
+			};
+		};
+	};
+};
+
