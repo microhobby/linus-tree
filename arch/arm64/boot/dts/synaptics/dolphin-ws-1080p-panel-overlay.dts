@@ -91,6 +91,10 @@
 					command = /bits/ 8 <0xFF  0x10 0x27  0x00  0x00>;
 				};
 
+				hdmi_tx {
+					status = "disabled";
+				};
+
 				dsi_hdmi_lt9611_bridge {
 					status = "disabled";
 				};
