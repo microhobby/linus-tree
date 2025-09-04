@@ -618,6 +618,7 @@
 	disp1-type = <0>;
 	disp2-res-id = <102>;
 	disp2-type = <3>;
+	logo_parition = <14>;
 
 	dsi_panel {
 		status= "okay";

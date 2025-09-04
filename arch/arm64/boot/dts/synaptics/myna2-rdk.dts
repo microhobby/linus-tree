@@ -677,6 +677,7 @@
 
 	pinctrl-0 = <&lcdc_pmux>, <&lcdc_pmux1>, <&lcdc_gpio_pmux>;
 	pinctrl-names = "default", "default", "default", "default";
+	logo_parition = <14>;
 
 	lcdc_panel {
 		status= "okay";

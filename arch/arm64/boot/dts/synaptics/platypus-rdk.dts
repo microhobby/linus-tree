@@ -455,6 +455,7 @@
 	disp-mode = <0>;
 	disp1-res-id = <61>;
 	disp1-type = <0>;
+	logo_parition = <14>;
 
 	dsi_panel {
 		status= "okay";
