@@ -616,7 +616,7 @@
 };
 
 &fb {
-	status = "okay";
+	status = "disabled";
 };
 
 &tsp {
@@ -653,8 +653,8 @@
  	 * Supported types:	0 - HDMI
 	 * 		  	3 - MIPI-DSI
 	 */
-	disp-mode = <2>;
-	disp1-res-id = <61>;
+	disp-mode = <0>;
+	disp1-res-id = <115>;
 	disp1-type = <0>;
 	disp2-res-id = <102>;
 	disp2-type = <3>;
@@ -757,8 +757,9 @@
 		   ID to res mapping as below
 		   1280x720P30=10 1280x720P60=13
 		   1920x1080P24=22 1920x1080P25=21 1920x1080P30=19 1920x1080P50=26 1920x1080P59.94=25 1920x1080P60=24
-		   3840x2160P24=57 3840x2160P25=59 3840x2160P30=61 3840x2160P50=62 3840x2160P59.94=63 3840x2160P60=64 */
-		hdtx-supported-formats = /bits/ 8 <12 10 13 22 21 19 26 25 24 61 62 64>;
+		   3840x2160P24=57 3840x2160P25=59 3840x2160P30=61 3840x2160P50=62 3840x2160P59.94=63 3840x2160P60=64
+		   1280x800P60=115 */
+		hdtx-supported-formats = /bits/ 8 <13 10 13 15 22 21 19 26 25 24 61 111 115>;
 	};
 };
 
