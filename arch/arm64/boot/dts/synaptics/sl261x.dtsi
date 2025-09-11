@@ -124,9 +124,9 @@
 			ranges = <0 0 0xffffffff>;
 			dma-ranges = <0xa0000000 0x00000000 0x10000000>;
 
-			sm_chip: sm_chip-control@e5025404 {
+			sm_chip: sm_chip-control@e5025400 {
 				compatible = "marvell,berlin4ct-chip-ctrl";
-				reg = <0xe5025404 0x0c>;
+				reg = <0xe5025400 0x0c>;
 				#reset-cells = <4>;
 			};
 
@@ -289,7 +289,7 @@
 				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
 				clocks = <&apbcoreclk>;
 				clock-names = "ref_clk";
-				resets = <&sm_chip 0x0 0 1 0>, <&sm_chip 0x0 1 1 0>, <&sm_chip 0x0 2 1 0>;
+				resets = <&sm_chip 0x4 0 1 0>, <&sm_chip 0x4 1 1 0>, <&sm_chip 0x4 2 1 0>;
 				reset-names = "arstn", "prstn", "srstn";
 				status = "disabled";
 			};
