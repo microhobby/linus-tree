@@ -218,6 +218,18 @@
 				status = "disabled";
 			};
 
+			i3c0: i3c-master@e5037000 {
+				compatible = "snps,dw-i3c-master-1.00a";
+				#address-cells = <3>;
+				#size-cells = <0>;
+				reg = <0xe5037000 0x1000>;
+				interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
+				resets = <&sm_chip 0x0 13 1 0>, <&sm_chip 0x0 12 1 0>;
+				reset-names = "core_rst", "apb_rst";
+				clocks = <&osc>;
+				status = "disabled";
+			};
+
 			sm_gpio0: gpio@e5038000 {
 				compatible = "snps,dw-apb-gpio";
 				dev_name = "gpio_sm_0";
