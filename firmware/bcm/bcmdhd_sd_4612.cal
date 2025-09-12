@@ -193,8 +193,10 @@ mcsbw206gb1po=0xCA660000
 
 #OOB params
 #device_wake_opt=1
-host_wake_opt=0
-muxenab=0x10
+#host_wake_opt=0
+muxenab=0x0
+wowl_gpio=0
+wowl_gpiopol=1
 
 #PMU
 btldopu=1
