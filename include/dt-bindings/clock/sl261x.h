@@ -73,3 +73,4 @@
 #define CLK_APBTIMERS		21
 #define CLK_APBSYSCNT		22
 #define CLK_APBWDT		23
+#define CLK_APBDMA		24
