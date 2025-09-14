@@ -29,6 +29,10 @@
 	};
 };
 
+&pdma0 {
+	status = "okay";
+};
+
 &sdhci0 {
 	status = "okay";
 	sdclkdl-dc = /bits/ 8 <20>;
