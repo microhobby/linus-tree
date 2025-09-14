@@ -27,10 +27,16 @@
 		reg = <0x0 0x01000000 0x0 0xdf000000>,
 		      <0x1 0xe0000000 0x0 0x20000000>;
 	};
+};
 
+&sdhci0 {
+	status = "okay";
+	sdclkdl-dc = /bits/ 8 <20>;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
+	mmc-hs400-1_8v;
 };
 
 &uart0 {
 	status = "okay";
 };
-
