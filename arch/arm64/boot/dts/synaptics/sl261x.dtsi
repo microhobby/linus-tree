@@ -127,7 +127,7 @@
 
 			sm_pinctrl: pinctrl@e5025b00 {
 				compatible = "syna,sl261x-system-pinctrl";
-				reg = <0xe5025b00 0x10>, <0x48025c00 0xa4>;
+				reg = <0xe5025b00 0x10>, <0xe5025c00 0xa4>;
 			};
 
 			uart0: uart@e5030000 {
