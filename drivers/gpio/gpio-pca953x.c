@@ -1086,7 +1086,8 @@ static int pca953x_probe(struct i2c_client *client)
 		 * using "reset" GPIO. Otherwise any of those platform
 		 * must use _DSD method with corresponding property.
 		 */
-		reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+		reset_gpio = devm_gpiod_get_optional(dev, "reset",
+				GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
 		if (IS_ERR(reset_gpio))
 			return PTR_ERR(reset_gpio);
 	}
