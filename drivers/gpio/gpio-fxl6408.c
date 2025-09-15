@@ -8,6 +8,7 @@
  */
 
 #include <linux/err.h>
+#include <linux/gpio/consumer.h>
 #include <linux/gpio/regmap.h>
 #include <linux/i2c.h>
 #include <linux/kernel.h>
@@ -45,6 +46,7 @@
 
 struct fxl6408_chip {
 	struct regmap *regmap;
+	struct gpio_desc *reset_gpio;
 };
 
 static const struct regmap_range rd_range[] = {
@@ -122,6 +124,11 @@ static int fxl6408_probe(struct i2c_client *client)
 	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
 	if (!chip)
 		return -ENOMEM;
+
+	chip->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+			GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
+	if (IS_ERR(chip->reset_gpio))
+		return PTR_ERR(chip->reset_gpio);
 
 	gpio_config.regmap = devm_regmap_init_i2c(client, &regmap);
 	if (IS_ERR(gpio_config.regmap))
