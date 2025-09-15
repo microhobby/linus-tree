@@ -89,9 +89,33 @@
 };
 
 &pinctrl {
+	eth_mdio_pmux: eth-mdio-pmux {
+		groups = "GPIO31", "GPIO32";
+		function = "rgmii";
+		drive-strength = <7>;
+	};
+
+	eth0_pmux: eth0-pmux {
+		groups = "GPIO33", "GPIO34", "GPIO35", "GPIO36", "GPIO37", "GPIO38", "GPIO39", "GPIO40", "GPIO41", "GPIO42", "GPIO43", "GPIO44";
+		function = "rgmii1";
+		drive-strength = <7>;
+	};
+
+	eth1_pmux: eth1-pmux {
+		groups = "GPIO48", "GPIO49", "GPIO50", "GPIO51", "GPIO52", "GPIO53", "GPIO54", "GPIO55", "GPIO56", "GPIO57", "GPIO58", "GPIO59";
+		function = "rgmii2";
+		drive-strength = <7>;
+	};
+
 	i2c2_pmux: i2c2-pmux {
 		groups = "GPIO23", "GPIO24";
 		function = "tw2";
+		drive-strength = <8>;
+	};
+
+	i2c3_pmux: i2c3-pmux {
+		groups = "GPIO27", "GPIO28";
+		function = "tw3";
 		drive-strength = <8>;
 	};
 
@@ -103,9 +127,94 @@
 };
 
 &sm_pinctrl {
+	eth1_gpio_pmux: eth1-gpio-pmux {
+		groups = "SM_GPIO35";
+		function = "gpio";
+	};
+
+	i2c0_pmux: i2c0-pmux {
+		groups = "SM_GPIO12", "SM_GPIO13";
+		function = "tw0";
+		drive-strength = <7>;
+	};
+
+	i2c1_pmux: i2c1-pmux {
+		groups = "SM_GPIO3", "SM_GPIO4";
+		function = "tw1";
+		drive-strength = <7>;
+	};
+
 	tca6416_u98_pmux: tca6416_u98-pmux {
 		groups = "SM_GPIO24";
 		function = "gpio";
+	};
+};
+
+&i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_pmux>;
+
+	fxl6408_u95: gpio@43 {
+		compatible = "fcs,fxl6408";
+		reg = <0x43>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	fxl6408_u96: gpio@44 {
+		compatible = "fcs,fxl6408";
+		reg = <0x44>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	tca6416_u97: gpio@20 {
+		compatible = "ti,tca6416";
+		reg = <0x20>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pmux>;
+
+	tca9539_u100: gpio@74 {
+		compatible = "ti,tca9539";
+		reg = <0x74>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	tca9539_u101: gpio@75 {
+		compatible = "ti,tca9539";
+		reg = <0x75>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	tca9539_u102: gpio@76 {
+		compatible = "ti,tca9539";
+		reg = <0x76>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	tca9539_u103: gpio@77 {
+		compatible = "ti,tca9539";
+		reg = <0x77>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
 	};
 };
 
@@ -123,6 +232,12 @@
 		gpio-controller;
 		#gpio-cells = <2>;
 	};
+};
+
+&i2c3 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c3_pmux>;
 };
 
 &ipc {
@@ -155,6 +270,44 @@
 	pad-sn = /bits/ 8 <12>;
 	vmmc-supply = <&vmmc_sdhci1>;
 	vqmmc-supply = <&vqmmc_sdhci1>;
+};
+
+&ethernet0 {
+	pinctrl-0 = <&eth_mdio_pmux>, <&eth0_pmux>;
+	pinctrl-names = "default";
+	phy-handle = <&ethernet_phy0>;
+	phy-mode = "rgmii-id";
+	snps,reset-gpio = <&fxl6408_u96 6 GPIO_ACTIVE_LOW>;
+	snps,reset-delays-us = <0 10000 50000>;
+
+	mdio {
+		compatible = "snps,dwmac-mdio";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethernet_phy0: ethernet-phy@0 {
+			reg = <0>;
+			realtek,clkout-disable;
+			realtek,rxc-ssc-enable;
+			realtek,sysclk-ssc-enable;
+		};
+
+		ethernet_phy1: ethernet-phy@1 {
+			reg = <2>;
+			realtek,clkout-disable;
+			realtek,rxc-ssc-enable;
+			realtek,sysclk-ssc-enable;
+		};
+	};
+};
+
+&ethernet1 {
+	pinctrl-0 = <&eth1_pmux>, <&eth1_gpio_pmux>;
+	pinctrl-names = "default";
+	phy-handle = <&ethernet_phy1>;
+	phy-mode = "rgmii-id";
+	snps,reset-gpio = <&portf 3 GPIO_ACTIVE_HIGH>;
+	snps,reset-delays-us = <0 10000 50000>;
 };
 
 &uart0 {
