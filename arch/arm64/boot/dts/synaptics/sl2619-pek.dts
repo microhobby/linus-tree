@@ -58,6 +58,71 @@
 		reg = <0x0 0x7f00000 0x0 0x10000>;
 		memory-region = <&vdevbuffer>;
 	};
+
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		vmmc_sdhci1: vmmc_sdhci1 {
+			compatible = "regulator-fixed";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vmmc_sdio";
+			enable-active-high;
+			regulator-boot-on;
+			gpio = <&tca6416_u98 12 GPIO_ACTIVE_HIGH>;
+		};
+
+		vqmmc_sdhci1: vqmmc_sdhci1 {
+			compatible = "regulator-gpio";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vqmmc_sdio";
+			regulator-type = "voltage";
+			enable-active-high;
+			gpios = <&tca6416_u98 13 GPIO_ACTIVE_HIGH>;
+			states = <1800000 0x0
+				 3300000 0x1>;
+		};
+	};
+};
+
+&pinctrl {
+	i2c2_pmux: i2c2-pmux {
+		groups = "GPIO23", "GPIO24";
+		function = "tw2";
+		drive-strength = <8>;
+	};
+
+	sdhci1_pmux: sdhci1-pmux {
+		groups = "GPIO46", "GPIO47";
+		function = "sdio1";
+		drive-strength = <7>;
+	};
+};
+
+&sm_pinctrl {
+	tca6416_u98_pmux: tca6416_u98-pmux {
+		groups = "SM_GPIO24";
+		function = "gpio";
+	};
+};
+
+&i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2_pmux>;
+
+	tca6416_u98: gpio@21 {
+		compatible = "ti,tca6416";
+		pinctrl-names = "default";
+		pinctrl-0 = <&tca6416_u98_pmux>;
+		reg = <0x21>;
+		reset-gpios = <&porte 0 GPIO_ACTIVE_LOW>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
 };
 
 &ipc {
@@ -74,6 +139,22 @@
 	mmc-ddr-1_8v;
 	mmc-hs200-1_8v;
 	mmc-hs400-1_8v;
+};
+
+&sdhci1 {
+	status = "okay";
+	pinctrl-0 = <&sdhci1_pmux>;
+	pinctrl-names = "default";
+	bus-width = <4>;
+	no-sdio;
+	no-mmc;
+	broken-cd;
+	wp-inverted;
+	sdclkdl-dc = /bits/ 8 <50>;
+	pad-sp = /bits/ 8 <12>;
+	pad-sn = /bits/ 8 <12>;
+	vmmc-supply = <&vmmc_sdhci1>;
+	vqmmc-supply = <&vqmmc_sdhci1>;
 };
 
 &uart0 {
