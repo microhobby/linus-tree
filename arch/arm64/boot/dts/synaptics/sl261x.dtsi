@@ -84,7 +84,7 @@
 		clock-frequency = <2000000>;
 	};
 
-	mcu_uartclk: mcu_uartclk {
+	mcu_clk_100m: mcu_clk_100m {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
 		clock-frequency = <100000000>;
@@ -145,7 +145,7 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5031000 0x100>;
 				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_uartclk>;
+				clocks = <&mcu_clk_100m>;
 				reg-shift = <2>;
 				dmas = <&pdma1 1>, <&pdma1 11>;
 				dma-names = "rx", "tx";
@@ -156,7 +156,7 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5032000 0x100>;
 				interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_uartclk>;
+				clocks = <&mcu_clk_100m>;
 				reg-shift = <2>;
 				dmas = <&pdma1 2>, <&pdma1 12>;
 				dma-names = "rx", "tx";
@@ -167,7 +167,7 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5033000 0x100>;
 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_uartclk>;
+				clocks = <&mcu_clk_100m>;
 				reg-shift = <2>;
 				dmas = <&pdma1 3>, <&pdma1 13>;
 				dma-names = "rx", "tx";
@@ -192,7 +192,7 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <0xe5035000 0x100>;
-				clocks = <&osc>;
+				clocks = <&mcu_clk_100m>;
 				i2c-sda-hold-time-ns = <449>;
 				i2c-sda-falling-time-ns = <425>;
 				i2c-scl-falling-time-ns = <205>;
@@ -205,7 +205,7 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <0xe5036000 0x100>;
-				clocks = <&osc>;
+				clocks = <&mcu_clk_100m>;
 				i2c-sda-hold-time-ns = <449>;
 				i2c-sda-falling-time-ns = <425>;
 				i2c-scl-falling-time-ns = <205>;
