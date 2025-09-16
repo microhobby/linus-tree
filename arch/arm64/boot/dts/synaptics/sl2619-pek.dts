@@ -64,6 +64,12 @@
 		memory-region = <&vdevbuffer>;
 	};
 
+	sdhci1_pwrseq: sdhci1-pwrseq {
+		compatible = "mmc-pwrseq-simple";
+		reset-gpios = <&fxl6408_u96 2 GPIO_ACTIVE_LOW>;
+		post-power-on-delay-ms = <50>;
+	};
+
 	regulators {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -76,28 +82,6 @@
 			regulator-max-microvolt = <5000000>;
 			gpio = <&tca6416_u98 14 GPIO_ACTIVE_HIGH>;
 			enable-active-high;
-		};
-
-		vmmc_sdhci1: vmmc_sdhci1 {
-			compatible = "regulator-fixed";
-			regulator-min-microvolt = <3300000>;
-			regulator-max-microvolt = <3300000>;
-			regulator-name = "vmmc_sdio";
-			enable-active-high;
-			regulator-boot-on;
-			gpio = <&tca6416_u98 12 GPIO_ACTIVE_HIGH>;
-		};
-
-		vqmmc_sdhci1: vqmmc_sdhci1 {
-			compatible = "regulator-gpio";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <3300000>;
-			regulator-name = "vqmmc_sdio";
-			regulator-type = "voltage";
-			enable-active-high;
-			gpios = <&tca6416_u98 13 GPIO_ACTIVE_HIGH>;
-			states = <1800000 0x0
-				 3300000 0x1>;
 		};
 	};
 
@@ -180,12 +164,6 @@
 		groups = "GPIO27", "GPIO28";
 		function = "tw3";
 		drive-strength = <8>;
-	};
-
-	sdhci1_pmux: sdhci1-pmux {
-		groups = "GPIO46", "GPIO47";
-		function = "sdio1";
-		drive-strength = <7>;
 	};
 };
 
@@ -325,18 +303,17 @@
 };
 
 &sdhci1 {
-	pinctrl-0 = <&sdhci1_pmux>;
-	pinctrl-names = "default";
+	status = "okay";
 	bus-width = <4>;
-	no-sdio;
-	no-mmc;
-	broken-cd;
-	wp-inverted;
 	sdclkdl-dc = /bits/ 8 <50>;
 	pad-sp = /bits/ 8 <12>;
 	pad-sn = /bits/ 8 <12>;
-	vmmc-supply = <&vmmc_sdhci1>;
-	vqmmc-supply = <&vqmmc_sdhci1>;
+	no-sd;
+	no-mmc;
+	non-removable;
+	mmc-pwrseq = <&sdhci1_pwrseq>;
+	mode1-tune;
+	keep-power-in-suspend;
 };
 
 &ethernet0 {
