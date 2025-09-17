@@ -489,7 +489,7 @@
 			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&gateclk CLK_USB1CORE>;
 			clock-names = "core";
-			phys = <&usb_phy0>;
+			phys = <&usb_phy1>;
 			phy-names = "usb2-phy";
 			resets = <&chip 0x360 4 1 0>, <&chip 0x360 5 1 0>, <&chip 0x350 8 0 0>;
 			reset-names = "dwc2", "dwc2-ecc", "dwc2-sync";
