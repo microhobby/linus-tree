@@ -64,6 +64,15 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 
+		reg_usb1_vbus: usb1_vbus {
+			compatible = "regulator-fixed";
+			regulator-name = "usb0_vbus";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			gpio = <&tca6416_u98 14 GPIO_ACTIVE_HIGH>;
+			enable-active-high;
+		};
+
 		vmmc_sdhci1: vmmc_sdhci1 {
 			compatible = "regulator-fixed";
 			regulator-min-microvolt = <3300000>;
@@ -85,6 +94,11 @@
 			states = <1800000 0x0
 				 3300000 0x1>;
 		};
+	};
+
+	usb2513b {
+		compatible = "microchip,usb2513b";
+		reset-gpios = <&tca6416_u98 0 GPIO_ACTIVE_LOW>;
 	};
 };
 
@@ -257,7 +271,6 @@
 };
 
 &sdhci1 {
-	status = "okay";
 	pinctrl-0 = <&sdhci1_pmux>;
 	pinctrl-names = "default";
 	bus-width = <4>;
@@ -280,19 +293,30 @@
 	snps,reset-gpio = <&fxl6408_u96 6 GPIO_ACTIVE_LOW>;
 	snps,reset-delays-us = <0 10000 50000>;
 
+};
+
+&ethernet1 {
+	status = "okay";
+	pinctrl-0 = <&eth_mdio_pmux>, <&eth1_pmux>, <&eth1_gpio_pmux>;
+	pinctrl-names = "default";
+	phy-handle = <&ethernet_phy1>;
+	phy-mode = "rgmii-id";
+	snps,reset-gpio = <&portf 3 GPIO_ACTIVE_HIGH>;
+	snps,reset-delays-us = <0 10000 50000>;
+
 	mdio {
 		compatible = "snps,dwmac-mdio";
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		ethernet_phy0: ethernet-phy@0 {
-			reg = <0>;
+		ethernet_phy0: ethernet-phy@3 {
+			reg = <3>;
 			realtek,clkout-disable;
 			realtek,rxc-ssc-enable;
 			realtek,sysclk-ssc-enable;
 		};
 
-		ethernet_phy1: ethernet-phy@1 {
+		ethernet_phy1: ethernet-phy@2 {
 			reg = <2>;
 			realtek,clkout-disable;
 			realtek,rxc-ssc-enable;
@@ -301,13 +325,14 @@
 	};
 };
 
-&ethernet1 {
-	pinctrl-0 = <&eth1_pmux>, <&eth1_gpio_pmux>;
-	pinctrl-names = "default";
-	phy-handle = <&ethernet_phy1>;
-	phy-mode = "rgmii-id";
-	snps,reset-gpio = <&portf 3 GPIO_ACTIVE_HIGH>;
-	snps,reset-delays-us = <0 10000 50000>;
+&usb1 {
+	status = "okay";
+	vbus-supply = <&reg_usb1_vbus>;
+	dr_mode = "host";
+};
+
+&usb_phy1{
+	status = "okay";
 };
 
 &uart0 {
