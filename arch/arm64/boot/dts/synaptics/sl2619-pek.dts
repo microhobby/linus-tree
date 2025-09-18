@@ -141,7 +141,7 @@
 };
 
 &sm_pinctrl {
-	eth1_gpio_pmux: eth1-gpio-pmux {
+	eth1_phy_rst_pmux: eth1_phy_rst-pmux {
 		groups = "SM_GPIO35";
 		function = "gpio";
 	};
@@ -286,23 +286,11 @@
 };
 
 &ethernet0 {
+	status = "okay";
 	pinctrl-0 = <&eth_mdio_pmux>, <&eth0_pmux>;
 	pinctrl-names = "default";
 	phy-handle = <&ethernet_phy0>;
 	phy-mode = "rgmii-id";
-	snps,reset-gpio = <&fxl6408_u96 6 GPIO_ACTIVE_LOW>;
-	snps,reset-delays-us = <0 10000 50000>;
-
-};
-
-&ethernet1 {
-	status = "okay";
-	pinctrl-0 = <&eth_mdio_pmux>, <&eth1_pmux>, <&eth1_gpio_pmux>;
-	pinctrl-names = "default";
-	phy-handle = <&ethernet_phy1>;
-	phy-mode = "rgmii-id";
-	snps,reset-gpio = <&portf 3 GPIO_ACTIVE_HIGH>;
-	snps,reset-delays-us = <0 10000 50000>;
 
 	mdio {
 		compatible = "snps,dwmac-mdio";
@@ -310,19 +298,37 @@
 		#size-cells = <0>;
 
 		ethernet_phy0: ethernet-phy@3 {
+			compatible = "ethernet-phy-id001c.c916";
 			reg = <3>;
 			realtek,clkout-disable;
 			realtek,rxc-ssc-enable;
 			realtek,sysclk-ssc-enable;
+			reset-assert-us = <20000>;
+			reset-deassert-us = <100000>;
+			reset-gpios = <&fxl6408_u96 6 GPIO_ACTIVE_LOW>;
 		};
 
 		ethernet_phy1: ethernet-phy@2 {
+			compatible = "ethernet-phy-id001c.c916";
 			reg = <2>;
+			pinctrl-0 = <&eth1_phy_rst_pmux>;
+			pinctrl-names = "default";
 			realtek,clkout-disable;
 			realtek,rxc-ssc-enable;
 			realtek,sysclk-ssc-enable;
+			reset-assert-us = <20000>;
+			reset-deassert-us = <100000>;
+			reset-gpios = <&portf 3 GPIO_ACTIVE_HIGH>;
 		};
 	};
+};
+
+&ethernet1 {
+	status = "okay";
+	pinctrl-0 = <&eth_mdio_pmux>, <&eth1_pmux>;
+	pinctrl-names = "default";
+	phy-handle = <&ethernet_phy1>;
+	phy-mode = "rgmii-id";
 };
 
 &usb1 {
