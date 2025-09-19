@@ -756,15 +756,16 @@
 		timer@f7f3e000 {
 			compatible = "arm,sse-timer";
 			reg = <0xf7f3e000 0x2000>;
-			clocks = <&gateclk CLK_APBSYSCNT>;
+			clocks = <&gateclk CLK_APBSYSCNT>, <&gateclk CLK_APBTIMERS>, <&gateclk CLK_APBWDT>;
+			clock-names = "counter", "timers", "watchdogs";
 			#address-cells = <1>;
 			#size-cells = <1>;
+			clock-frequency = <25000000>;
 			ranges;
 
 			frame@f7f20000 {
 				reg = <0xf7f20000 0x1000>;
 				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-				status = "disabled";
 			};
 
 			frame@f7f21000 {
