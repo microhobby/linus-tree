@@ -168,6 +168,7 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_pmux>;
+	clock-frequency = <100000>;
 
 	fxl6408_u95: gpio@43 {
 		compatible = "fcs,fxl6408";
