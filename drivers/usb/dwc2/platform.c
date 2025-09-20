@@ -144,6 +144,17 @@ static int __dwc2_lowlevel_hw_enable(struct dwc2_hsotg *hsotg)
 	reset_control_deassert(hsotg->reset_ecc);
 	udelay(50);
 
+	switch (hsotg->dr_mode) {
+	case USB_DR_MODE_HOST:
+		phy_set_mode(hsotg->phy, PHY_MODE_USB_HOST);
+		break;
+	case USB_DR_MODE_PERIPHERAL:
+		phy_set_mode(hsotg->phy, PHY_MODE_USB_DEVICE);
+		break;
+	default:
+		break;
+	}
+
 	return 0;
 
 err_dis_clk:
