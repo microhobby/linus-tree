@@ -332,6 +332,15 @@
 	phy-mode = "rgmii-id";
 };
 
+&usb0 {
+	status = "okay";
+	dr_mode = "peripheral";
+};
+
+&usb_phy0{
+	status = "okay";
+};
+
 &usb1 {
 	status = "okay";
 	vbus-supply = <&reg_usb1_vbus>;
