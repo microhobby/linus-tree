@@ -150,6 +150,15 @@
 		};
 	};
 
+	bt_reg_on: bt_reg_on {
+		compatible = "syna,rfkill";
+		bt-power-gpio = <&expander1 5 GPIO_ACTIVE_HIGH>;
+	};
+
+	bluesleep: bluesleep {
+		compatible = "syna,bluesleep";
+		bt-dev-wake-gpio = <&expander1 3 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &pinctrl {
@@ -198,7 +207,7 @@
 	uart1_pmux: uart1-pmux {
 		groups = "SM_GPIO7", "SM_GPIO8", "SM_GPIO14", "SM_GPIO15";
 		function = "uart1";
-		drive-strength = <3>;
+		drive-strength = <7>;
 	};
 
 	xspi0_pmux: xspi0-pmux {
@@ -275,6 +284,7 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_pmux>;
+	clock-frequency = <100000>;
 	no-irq-suspend;
 	clock-frequency = <100000>;
 

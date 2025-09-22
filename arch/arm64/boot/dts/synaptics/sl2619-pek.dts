@@ -141,6 +141,16 @@
 			};
 		};
 	};
+
+	bt_reg_on: bt_reg_on {
+		compatible = "syna,rfkill";
+		bt-power-gpio = <&fxl6408_u96 5 GPIO_ACTIVE_HIGH>;
+	};
+
+	bluesleep: bluesleep {
+		compatible = "syna,bluesleep";
+		bt-dev-wake-gpio = <&fxl6408_u96 3 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &pinctrl {
@@ -196,6 +206,12 @@
 	tca6416_u98_pmux: tca6416_u98-pmux {
 		groups = "SM_GPIO24";
 		function = "gpio";
+	};
+
+	uart1_pmux: uart1-pmux {
+		groups = "SM_GPIO7", "SM_GPIO8", "SM_GPIO14", "SM_GPIO15";
+		function = "uart1";
+		drive-strength = <7>;
 	};
 };
 
@@ -387,5 +403,11 @@
 };
 
 &synpu {
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-0 = <&uart1_pmux>;
+	pinctrl-names = "default";
 	status = "okay";
 };
