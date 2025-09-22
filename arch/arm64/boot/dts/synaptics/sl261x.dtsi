@@ -193,9 +193,8 @@
 				#size-cells = <0>;
 				reg = <0xe5035000 0x100>;
 				clocks = <&mcu_clk_100m>;
-				i2c-sda-hold-time-ns = <449>;
-				i2c-sda-falling-time-ns = <425>;
-				i2c-scl-falling-time-ns = <205>;
+				i2c-sda-falling-time-ns = <510>;
+				i2c-scl-falling-time-ns = <510>;
 				interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
 				status = "disabled";
 			};
@@ -206,9 +205,8 @@
 				#size-cells = <0>;
 				reg = <0xe5036000 0x100>;
 				clocks = <&mcu_clk_100m>;
-				i2c-sda-hold-time-ns = <449>;
-				i2c-sda-falling-time-ns = <425>;
-				i2c-scl-falling-time-ns = <205>;
+				i2c-sda-falling-time-ns = <510>;
+				i2c-scl-falling-time-ns = <510>;
 				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
 				status = "disabled";
 			};
