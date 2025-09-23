@@ -16,6 +16,11 @@
 	model = "Synaptics SL2619 PEK";
 	compatible = "syna,sl2619-pek", "syna,sl2619";
 
+	aliases {
+		ethernet0 = &ethernet0;
+		ethernet1 = &ethernet1;
+	};
+
 	chosen {
 		stdout-path = "serial0:115200n8";
 	};
@@ -100,6 +105,50 @@
 		compatible = "microchip,usb2513b";
 		reset-gpios = <&tca6416_u98 0 GPIO_ACTIVE_LOW>;
 	};
+
+	mdio-demux {
+		compatible = "mdio-demux";
+		mux-controls = <&mux 0>;
+		mdio-parent-bus = <&mdio0>, <&mdio1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		mdio@0 {
+			reg = <0x0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			ethernet_phy0: ethernet-phy@3 {
+				compatible = "ethernet-phy-id001c.c916";
+				reg = <3>;
+				realtek,clkout-disable;
+				realtek,rxc-ssc-enable;
+				realtek,sysclk-ssc-enable;
+				reset-assert-us = <20000>;
+				reset-deassert-us = <100000>;
+				reset-gpios = <&fxl6408_u96 6 GPIO_ACTIVE_LOW>;
+			};
+		};
+
+		mdio@1 {
+			reg = <0x1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			ethernet_phy1: ethernet-phy@2 {
+				compatible = "ethernet-phy-id001c.c916";
+				reg = <2>;
+				pinctrl-0 = <&eth1_phy_rst_pmux>;
+				pinctrl-names = "default";
+				realtek,clkout-disable;
+				realtek,rxc-ssc-enable;
+				realtek,sysclk-ssc-enable;
+				reset-assert-us = <20000>;
+				reset-deassert-us = <100000>;
+				reset-gpios = <&portf 3 GPIO_ACTIVE_HIGH>;
+			};
+		};
+	};
 };
 
 &pinctrl {
@@ -162,6 +211,10 @@
 		groups = "SM_GPIO24";
 		function = "gpio";
 	};
+};
+
+&mux {
+	status = "okay";
 };
 
 &i2c0 {
@@ -293,34 +346,10 @@
 	phy-handle = <&ethernet_phy0>;
 	phy-mode = "rgmii-id";
 
-	mdio {
+	mdio0: mdio {
 		compatible = "snps,dwmac-mdio";
 		#address-cells = <1>;
 		#size-cells = <0>;
-
-		ethernet_phy0: ethernet-phy@3 {
-			compatible = "ethernet-phy-id001c.c916";
-			reg = <3>;
-			realtek,clkout-disable;
-			realtek,rxc-ssc-enable;
-			realtek,sysclk-ssc-enable;
-			reset-assert-us = <20000>;
-			reset-deassert-us = <100000>;
-			reset-gpios = <&fxl6408_u96 6 GPIO_ACTIVE_LOW>;
-		};
-
-		ethernet_phy1: ethernet-phy@2 {
-			compatible = "ethernet-phy-id001c.c916";
-			reg = <2>;
-			pinctrl-0 = <&eth1_phy_rst_pmux>;
-			pinctrl-names = "default";
-			realtek,clkout-disable;
-			realtek,rxc-ssc-enable;
-			realtek,sysclk-ssc-enable;
-			reset-assert-us = <20000>;
-			reset-deassert-us = <100000>;
-			reset-gpios = <&portf 3 GPIO_ACTIVE_HIGH>;
-		};
 	};
 };
 
@@ -330,6 +359,12 @@
 	pinctrl-names = "default";
 	phy-handle = <&ethernet_phy1>;
 	phy-mode = "rgmii-id";
+
+	mdio1: mdio {
+		compatible = "snps,dwmac-mdio";
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
 };
 
 &usb0 {
