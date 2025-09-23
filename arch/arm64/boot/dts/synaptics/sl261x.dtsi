@@ -547,6 +547,14 @@
 			clocks = <&syspll0 0>, <&apll0 0>, <&syspll0 1>, <&apll0 1>, <&syspll1 0>, <&syspll1 1>;
 		};
 
+		mux: mux-controller@f7e10a00 {
+			compatible = "reg-mux";
+			reg = <0xf7e10a00 0x8>;
+		        #mux-control-cells = <1>;
+		        mux-reg-masks = <0x4 0x10>;
+			status = "disabled";
+		};
+
 		pinctrl: pinctrl@f7e18000 {
 			compatible = "syna,sl261x-soc-pinctrl";
 			reg = <0xf7e18000 0x18>, <0xf7e18800 0xf0>;
