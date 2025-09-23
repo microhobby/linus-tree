@@ -171,26 +171,24 @@
 
 &sdhci0 {
 	status = "okay";
-	sdclkdl-dc = /bits/ 8 <26>;
+	sdclkdl-dc = /bits/ 8 <20>;
 	mmc-ddr-1_8v;
 	mmc-hs200-1_8v;
 	mmc-hs400-1_8v;
-	dll-calibration;
 };
 
 &sdhci1 {
 	status = "okay";
 	bus-width = <4>;
-	sdclkdl-dc = /bits/ 8 <75>;
-	pad-sp = /bits/ 8 <4>;
-	pad-sn = /bits/ 8 <4>;
+	sdclkdl-dc = /bits/ 8 <50>;
+	pad-sp = /bits/ 8 <12>;
+	pad-sn = /bits/ 8 <12>;
 	no-sd;
 	no-mmc;
 	non-removable;
 	mmc-pwrseq = <&sdhci1_pwrseq>;
 	mode1-tune;
 	keep-power-in-suspend;
-	cap-power-off-card;
 };
 
 &sdhci2 {
@@ -201,9 +199,9 @@
 	no-sdio;
 	no-mmc;
 	disable-wp;
-	sdclkdl-dc = /bits/ 8 <75>;
-	pad-sp = /bits/ 8 <4>;
-	pad-sn = /bits/ 8 <4>;
+	sdclkdl-dc = /bits/ 8 <50>;
+	pad-sp = /bits/ 8 <12>;
+	pad-sn = /bits/ 8 <12>;
 	vmmc-supply = <&vmmc_sdhci1>;
 	vqmmc-supply = <&vqmmc_sdhci1>;
 };
