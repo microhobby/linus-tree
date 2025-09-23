@@ -8,8 +8,6 @@
 
 /dts-v1/;
 
-/memreserve/ 0x7f000000 0x01000000;
-
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/linux-event-codes.h>
 
