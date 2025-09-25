@@ -81,7 +81,7 @@
 	mcu_xspiclk: mcu_xspiclk {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
-		clock-frequency = <2000000>;
+		clock-frequency = <20000000>;
 	};
 
 	mcu_clk_100m: mcu_clk_100m {
@@ -288,7 +288,7 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <0xe5050000 0x2000>,
-				      <0xe6000000 0x100000>,
+				      <0xe7000000 0x100000>,
 				      <0xe5052000 0x1000>;
 				reg-names = "io", "sdma", "aux";
 				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
