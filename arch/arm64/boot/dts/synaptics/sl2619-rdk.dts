@@ -108,7 +108,7 @@
 				realtek,sysclk-ssc-enable;
 				reset-assert-us = <20000>;
 				reset-deassert-us = <100000>;
-				reset-gpios = <&portd 3 GPIO_ACTIVE_HIGH>;
+				reset-gpios = <&portf 3 GPIO_ACTIVE_HIGH>;
 			};
 		};
 	};
