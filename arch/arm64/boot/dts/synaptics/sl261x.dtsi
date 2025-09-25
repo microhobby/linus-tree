@@ -351,6 +351,8 @@
 			compatible = "arm,mali-midgard";
 			reg = <0xf7980000 0x4000>;
 			clocks = <&clk CLK_GPU>;
+			resets = <&chip 0x378 0 1 0>;
+			reset-names = "core_rst";
 			interrupts = <0 50 IRQ_TYPE_LEVEL_HIGH>, <0 51 IRQ_TYPE_LEVEL_HIGH>, <0 48 IRQ_TYPE_LEVEL_HIGH>;
 			interrupt-names = "JOB", "MMU", "GPU";
 			system-coherency = <31>;
