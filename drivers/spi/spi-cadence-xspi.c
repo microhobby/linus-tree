@@ -41,8 +41,14 @@
 /* PHY gate loopback control register */
 #define CDNS_XSPI_CCP_PHY_GATE_LPBCK_CTRL	0x0008
 
+/* PHY DLL master control register */
+#define CDNS_XSPI_CCP_PHY_DLL_MASTER_CTRL	0x000c
+
 /* PHY DLL slave control register */
 #define CDNS_XSPI_CCP_PHY_DLL_SLAVE_CTRL	0x0010
+
+/* PHY DLL CTB control register */
+#define CDNS_XSPI_CCP_PHY_CTRL_REG		0x0080
 
 /* DLL PHY control register */
 #define CDNS_XSPI_DLL_PHY_CTRL			0x1034
@@ -247,6 +253,13 @@
 
 #define CDNS_XSPI_DLL_RST_N BIT(24)
 #define CDNS_XSPI_DLL_LOCK  BIT(0)
+
+#define LPBK_DQS_SET_POS     20
+#define INTERNAL_LPBK_DQS   0b011
+#define DQS_FROM_DEVICE     0b000
+
+#define RD_DEL_SEL_POS   19
+#define RD_DELAY         4
 
 /* Marvell overlay registers - clock */
 #define MRVL_XSPI_CLK_CTRL_AUX_REG   0x2020
@@ -930,6 +943,23 @@ static int cdns_xspi_of_get_plat_data(struct platform_device *pdev)
 	return 0;
 }
 
+static bool cdns_xspi_phy_config(struct cdns_xspi_dev *cdns_xspi, int rd_dly)
+{
+	writel(0x80000101, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DQ_TIMING);
+
+	writel(0x00000404 | (INTERNAL_LPBK_DQS << LPBK_DQS_SET_POS), cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DQS_TIMING);
+
+	writel(0x00000030 | (rd_dly << RD_DEL_SEL_POS), cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_GATE_LPBCK_CTRL);
+
+	writel(0x00000013, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DLL_MASTER_CTRL);
+	writel(0x00000f3f, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DLL_SLAVE_CTRL);
+	writel(0x00000000, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_CTRL_REG);
+
+	cdns_xspi_reset_dll(cdns_xspi);
+
+	return cdns_xspi_is_dll_locked(cdns_xspi);
+}
+
 static void cdns_xspi_print_phy_config(struct cdns_xspi_dev *cdns_xspi)
 {
 	struct device *dev = cdns_xspi->dev;
@@ -1163,6 +1193,7 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 	struct spi_controller *host = NULL;
 	struct cdns_xspi_dev *cdns_xspi = NULL;
 	struct resource *res;
+	int rd_dly = 3;
 	int ret;
 
 	host = devm_spi_alloc_host(dev, sizeof(*cdns_xspi));
@@ -1266,6 +1297,9 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 		return PTR_ERR(cdns_xspi->srstn);
 	}
 
+	device_property_read_u32(&pdev->dev, "cdns,phy-rd-delay", &rd_dly);
+	dev_info(dev, "xspi phy-rd-delay = %u\n", rd_dly);
+
 	cdns_xspi->irq = platform_get_irq(pdev, 0);
 	if (cdns_xspi->irq < 0)
 		return -ENXIO;
@@ -1278,6 +1312,8 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 	}
 
 	cdns_xspi_sw_reset(cdns_xspi);
+
+	cdns_xspi_phy_config(cdns_xspi, rd_dly);
 
 	if (cdns_xspi->driver_data->mrvl_hw_overlay) {
 		cdns_mrvl_xspi_setup_clock(cdns_xspi, MRVL_DEFAULT_CLK);
