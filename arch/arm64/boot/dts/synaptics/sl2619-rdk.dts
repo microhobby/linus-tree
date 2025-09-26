@@ -129,7 +129,7 @@
 	};
 
 	sdhci2_pmux: sdhci2-pmux {
-		groups = "GPIO16", "GPIO17", "GPIO18", "GPIO19", "GPIO20", "GPIO21";
+		groups = "GPIO16", "GPIO17", "GPIO18", "GPIO19", "GPIO20", "GPIO21", "GPIO22";
 		function = "sdio2";
 		drive-strength = <7>;
 	};
@@ -203,7 +203,6 @@
 };
 
 &sdhci2 {
-	status = "okay";
 	pinctrl-0 = <&sdhci2_pmux>;
 	pinctrl-names = "default";
 	bus-width = <4>;
