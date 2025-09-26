@@ -317,7 +317,7 @@
 };
 
 &xspi0 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-0 = <&xspi0_pmux>;
 	pinctrl-names = "default";
 
