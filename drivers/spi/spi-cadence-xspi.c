@@ -945,6 +945,14 @@ static int cdns_xspi_of_get_plat_data(struct platform_device *pdev)
 
 static bool cdns_xspi_phy_config(struct cdns_xspi_dev *cdns_xspi, int rd_dly)
 {
+	u32 dll_cntrl;
+
+	writel(0x00000000, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_CTRL_REG);
+	udelay(10);
+	dll_cntrl = readl(cdns_xspi->iobase + CDNS_XSPI_RF_MINICTRL_REGS_DLL_PHY_CTRL);
+	dll_cntrl &= ~CDNS_XSPI_DLL_RST_N;
+	writel(dll_cntrl, cdns_xspi->iobase + CDNS_XSPI_RF_MINICTRL_REGS_DLL_PHY_CTRL);
+
 	writel(0x80000101, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DQ_TIMING);
 
 	writel(0x00000404 | (INTERNAL_LPBK_DQS << LPBK_DQS_SET_POS), cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DQS_TIMING);
@@ -952,8 +960,8 @@ static bool cdns_xspi_phy_config(struct cdns_xspi_dev *cdns_xspi, int rd_dly)
 	writel(0x00000030 | (rd_dly << RD_DEL_SEL_POS), cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_GATE_LPBCK_CTRL);
 
 	writel(0x00000013, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DLL_MASTER_CTRL);
+
 	writel(0x00000f3f, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_DLL_SLAVE_CTRL);
-	writel(0x00000000, cdns_xspi->auxbase + CDNS_XSPI_CCP_PHY_CTRL_REG);
 
 	cdns_xspi_reset_dll(cdns_xspi);
 
