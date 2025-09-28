@@ -238,6 +238,7 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_pmux>;
 	no-irq-suspend;
+	clock-frequency = <100000>;
 
 	expander0: gpio@43 {
 		compatible = "fcs,fxl6408";
