@@ -33,6 +33,19 @@
 		      <0x1 0xe0000000 0x0 0x20000000>;
 	};
 
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reg = <0x00 0x5c000000 0x00 0x20000000>;
+			linux,cma-default;
+			reusable;
+		};
+	};
+
 	dmabuf_heap {
 		compatible = "syna,berlin-heaps";
 		pool-num = <2>;
