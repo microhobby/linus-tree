@@ -303,7 +303,7 @@
 
 &usb0 {
 	status = "okay";
-	vbus-supply = <&reg_usb0_vbus>;
+	dr_mode = "peripheral";
 };
 
 &usb_phy0 {
