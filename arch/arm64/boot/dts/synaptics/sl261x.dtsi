@@ -304,9 +304,9 @@
 				status = "disabled";
 			};
 
-			pdma1: dma-controller@e5104000 {
+			pdma1: dma-controller@e6004000 {
 				compatible = "arm,dma-250";
-				reg = <0xe5104000 0x4000>;
+				reg = <0xe6004000 0x4000>;
 				clocks = <&osc>;
 				#dma-cells = <1>;
 				dev-offset = <0x9d000000>;
