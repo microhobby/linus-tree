@@ -2,3 +2,5 @@
 # Berlin SoC Family
 dtb-$(CONFIG_ARCH_BERLIN) += berlin4ct-dmp.dtb
 dtb-$(CONFIG_ARCH_BERLIN) += berlin4ct-stb.dtb
+dtb-$(CONFIG_ARCH_BERLIN) += dolphin-rdk.dtb
+dtb-$(CONFIG_ARCH_BERLIN) += sl1680-winglet.dtb

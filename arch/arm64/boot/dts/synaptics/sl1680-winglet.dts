@@ -1,0 +1,1115 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
+/*
+* Copyright (C) 2016~2023 Synaptics Incorporated. All rights reserved.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 2 or
+* later as published by the Free Software Foundation.
+*
+* INFORMATION CONTAINED IN THIS DOCUMENT IS PROVIDED "AS-IS," AND
+* SYNAPTICS EXPRESSLY DISCLAIMS ALL EXPRESS AND IMPLIED WARRANTIES,
+* INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE, AND ANY WARRANTIES OF NON-INFRINGEMENT OF ANY
+* INTELLECTUAL PROPERTY RIGHTS. IN NO EVENT SHALL SYNAPTICS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR
+* CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE
+* OF THE INFORMATION CONTAINED IN THIS DOCUMENT, HOWEVER CAUSED AND
+* BASED ON ANY THEORY OF LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+* NEGLIGENCE OR OTHER TORTIOUS ACTION, AND EVEN IF SYNAPTICS WAS
+* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. IF A TRIBUNAL OF
+* COMPETENT JURISDICTION DOES NOT PERMIT THE DISCLAIMER OF DIRECT
+* DAMAGES OR ANY OTHER DAMAGES, SYNAPTICS' TOTAL CUMULATIVE LIABILITY
+* TO ANY PARTY SHALL NOT EXCEED ONE HUNDRED U.S. DOLLARS.
+*/
+
+/dts-v1/;
+
+/memreserve/ 0x7f000000 0x01000000;
+
+#include <dt-bindings/gpio/gpio.h>
+
+#include "dolphin.dtsi"
+
+/ {
+	model = "Toradex Winglet SL1680";
+	compatible = "syna,dolphin-evk", "syna,dolphin";
+
+	aliases {
+		i2c3 = &i2cdemux3_i2c;
+	};
+
+	cpus {
+		cpu@0 {
+			cpu0-supply = <&vcpu>;
+		};
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0 0x01000000 0 0x7f000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		ramoops@f901c000{
+			compatible = "ramoops";
+			reg = <0x0 0xf901c000 0x0 0x4000>;
+			record-size = <0x4000>;
+		};
+	};
+
+	panel0-backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm0 1 1000000 0>;
+		brightness-levels = <0 4 8 16 32 64 128 255>;
+		default-brightness-level = <6>;
+		enable-gpio = <&expander0 1 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+
+	dmabuf_heap {
+		compatible = "syna,berlin-heaps";
+		pool-num = <2>;
+		reg-names = "NonSecure", "Secure";
+		reg = <0 0x7f000000 0 0x00800000>,
+		      <0 0x7f800000 0 0x00800000>;
+		attributes-num-per-pool = <2>;
+		pool-attributes = <0x00000105 0x00000F3A 0x00000102 0x00000F3D>;
+	};
+
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		vmmc_sdhci1: vmmc_sdhci1 {
+			compatible = "regulator-fixed";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vmmc_sdio";
+			enable-active-high;
+			gpio = <&portb 12 GPIO_ACTIVE_HIGH>;
+		};
+
+		reg_usb0_vbus: usb0_vbus {
+			compatible = "regulator-fixed";
+			regulator-name = "usb0_vbus";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			gpio = <&expander0 5 GPIO_ACTIVE_HIGH>;
+			enable-active-high;
+		};
+	};
+
+	bt_reg_on: bt_reg_on {
+		compatible = "syna,rfkill";
+		bt-power-gpio = <&expander1 5 GPIO_ACTIVE_HIGH>;
+	};
+
+	bluesleep: bluesleep {
+		compatible = "syna,bluesleep";
+		bt-dev-wake-gpio = <&expander1 3 GPIO_ACTIVE_HIGH>;
+	};
+
+	gpioi2c3: gpioi2c3 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "i2c-gpio";
+		gpios = <&portd 10 GPIO_ACTIVE_HIGH /* sda */
+			 &portd 9 GPIO_ACTIVE_HIGH /* scl */
+			>;
+		i2c-gpio,delay-us = <5>;
+	};
+
+	i2cdemux3 {
+		compatible = "i2c-dyndmx-pinctrl";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		i2c-parent = <&i2c3>, <&gpioi2c3>;
+
+		pinctrl-names = "i2c3", "gpioi2c3";
+		pinctrl-0 = <&i2c3_pmux>;
+		pinctrl-1 = <&gpioi2c3_pmux>;
+
+		i2cdemux3_i2c: i2c@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			expander0: gpio@43 {
+				compatible = "fcs,fxl6408";
+				reg = <0x43>;
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			expander1: gpio@44 {
+				compatible = "fcs,fxl6408";
+				reg = <0x44>;
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			rtc0: rtc@68 {
+				compatible = "dallas,ds1339";
+				wakeup-source;
+				reg = <0x68>;
+			};
+
+			ina220@40 {
+				compatible = "ti,ina220";
+				reg = <0x40>;
+			};
+
+			ina220@41 {
+				compatible = "ti,ina220";
+				reg = <0x41>;
+			};
+		};
+
+		i2c@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+	};
+};
+
+&pinctrl {
+	gmac0_pmux: gmac0-pmux {
+		groups = "RGMII_MDC", "RGMII_MDIO", "RGMII_TXC", "RGMII_TXD0", "RGMII_TXD1", "RGMII_TXD2", "RGMII_TXD3", "RGMII_TXCTL", "RGMII_RXC", "RGMII_RXD0", "RGMII_RXD1", "RGMII_RXD2", "RGMII_RXD3", "RGMII_RXCTL";
+		function = "rgmii";
+		drive-strength = <3>;
+	};
+
+	i2c0_pmux: i2c0-pmux {
+		groups = "TW0_SCL", "TW0_SDA";
+		function = "tw0";
+		drive-strength = <7>;
+	};
+
+	i2c1_pmux: i2c1-pmux {
+		groups = "SPI1_SS2n", "SPI1_SS3n";
+		function = "tw1b";
+		drive-strength = <3>;
+	};
+
+	sdhci1_pmux: sdhci1-pmux {
+		groups = "SDIO_CDn";
+		function = "sdio";
+		drive-strength = <7>;
+	};
+
+	sdhci1_gpio_pmux: sdhci1-gpio-pmux {
+		groups = "SDIO_WP";
+		function = "gpio";
+	};
+
+	hdmitx5v_pmux: hdmitx5v-pmux {
+		groups = "USB2_DRV_VBUS";
+		function = "gpio";
+	};
+	uart3_pmux: uart3-pmux {
+		groups = "STS0_CLK", "STS0_SOP", "STS0_SD", "STS0_VALD";
+		function = "uart3";
+		drive-strength = <3>;
+	};
+
+};
+
+&sm_pinctrl {
+	i2c2_pmux: i2c2-pmux {
+		groups = "SM_URT1_TXD", "SM_URT1_RXD";
+		function = "tw2b";
+		drive-strength = <7>;
+	};
+
+	i2c3_pmux: i2c3-pmux {
+		groups = "SM_TW3_SCL", "SM_TW3_SDA";
+		function = "tw3";
+		drive-strength = <7>;
+	};
+
+	uart2_pmux: uart2-pmux {
+		groups = "SM_SPI2_SS2n", "SM_SPI2_SS3n", "SM_SPI2_SDI", "SM_SPI2_SDO";
+		function = "uart2";
+		drive-strength = <3>;
+	};
+
+	gpioi2c3_pmux: gpioi2c3-pmux {
+		groups = "SM_TW3_SCL", "SM_TW3_SDA";
+		function = "gpio";
+		drive-strength = <7>;
+	};
+
+	hrx5v_pmux: hrx5v-pmux {
+		groups = "SM_HDMIRX_PWR5V";
+		function = "gpio";
+		drive-strength = <7>;
+	};
+
+	hrxhpd_pmux: hrxhpd-pmux {
+		groups = "SM_HDMI_HPD";
+		function = "gpio";
+	};
+
+	hrxedid_pmux: hrxedid-pmux {
+		groups = "SM_TW2_SCL", "SM_TW2_SDA";
+		function = "rx_edid";
+		drive-strength = <7>;
+	};
+
+	gmac_gpio_pmux: gmac_gpio_pmux {
+		groups = "SM_TDO";
+		function = "gpio";
+	};
+
+	levelshift_pmux: levelshift-pmux {
+		groups = "SM_HDMIRX_HPD";
+		function = "gpio";
+	};
+};
+
+&avio_pinctrl {
+	pwm2_pmux: pwm2-pmux {
+		groups = "I2S1_DO2";
+		function = "pwm";
+        };
+
+	i2s1_pmux: i2s1-pmux {
+		groups = "I2S1_BCLKIO", "I2S1_LRCKIO", "I2S1_DO0", "I2S1_MCLK";
+		function = "i2s1";
+	};
+
+	i2s2_pmux: i2s2-pmux {
+		groups = "I2S2_BCLKIO", "I2S2_LRCKIO", "I2S2_DI0";
+		function = "i2s2";
+	};
+
+	falcon_gpio_pmux: falcon_gpio-pmux {
+		groups = "I2S1_DO1";
+		function = "gpio";
+	};
+
+	i2s3_pmux: i2s3-pmux {
+		groups = "I2S3_LRCKIO", "I2S3_BCLKIO", "I2S3_DI", "I2S3_DO";
+		function = "i2s3";
+	};
+
+	pdm_pmux: pdm-pmux {
+		groups = "I2S2_MCLK", "I2S2_DI3", "I2S2_DI2";
+		function = "pdm";
+	};
+
+	spdifo_pmux: spdifo-pmux {
+		groups = "SPDIFO";
+		function = "spdifo";
+	};
+
+	spdifi_pmux: spdifi-pmux {
+		groups = "SPDIFI";
+		function = "spdifi";
+	};
+};
+
+&sdhci0 {
+	status = "okay";
+	sdclkdl-dc = /bits/ 8 <26>;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
+	mmc-hs400-1_8v;
+	dll-calibration;
+	pad-sp = /bits/ 8 <14>;
+	pad-sn = /bits/ 8 <14>;
+};
+
+&sdhci1 {
+	status = "okay";
+	pinctrl-0 = <&sdhci1_pmux>, <&sdhci1_gpio_pmux>;
+	pinctrl-names = "default";
+	no-sdio;
+	no-mmc;
+	disable-wp;
+	sdclkdl-dc = /bits/ 8 <75>;
+	pad-sp = /bits/ 8 <4>;
+	pad-sn = /bits/ 8 <4>;
+	vmmc-supply = <&vmmc_sdhci1>;
+};
+
+&pcie_phy0 {
+	status = "okay";
+};
+
+&pcie0 {
+	status = "okay";
+	reset-gpios = <&expander1 1 GPIO_ACTIVE_LOW>;
+};
+
+&i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_pmux>;
+	no-irq-suspend;
+
+	ina3221@40{
+		compatible = "ti,ina3221";
+		reg = <0x40>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		input@0 {
+			reg = <0x0>;
+			label = "VCORE";
+		};
+
+		input@1 {
+			reg = <0x1>;
+			label = "VCPU";
+		};
+
+		input@2 {
+			reg = <0x2>;
+			label = "VDDM";
+		};
+	};
+
+	ina3221@41{
+		compatible = "ti,ina3221";
+		reg = <0x41>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		input@0 {
+			reg = <0x0>;
+			label = "PWR_3V3";
+		};
+
+		input@1 {
+			reg = <0x1>;
+			label = "VDDM_1V8";
+		};
+
+		input@2 {
+			reg = <0x2>;
+			label = "VDDM_1V1";
+		};
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pmux>;
+
+	vcpu: regulator@40 {
+		compatible = "ti,tps62870";
+		reg = <0x40>;
+		status = "okay";
+		regulator-boot-on;
+		regulator-always-on;
+		regulator-active-discharge = <0>;
+		regulator-name = "vcpu";
+		regulator-min-microvolt = <700000>;
+		regulator-max-microvolt = <987500>;
+	};
+};
+
+&i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2_pmux>;
+
+	vcore: regulator@40 {
+		compatible = "ti,tps62870";
+		reg = <0x40>;
+		status = "okay";
+		regulator-boot-on;
+		regulator-always-on;
+		regulator-active-discharge = <0>;
+		regulator-name = "vcore";
+		regulator-min-microvolt = <700000>;
+		regulator-max-microvolt = <987500>;
+	};
+};
+
+&i2c3 {
+	status = "okay";
+	no-irq-suspend;
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&uart2 {
+	status = "okay";
+	pinctrl-0 = <&uart2_pmux>;
+	pinctrl-names = "default";
+};
+
+&uart3 {
+	status = "okay";
+	pinctrl-0 = <&uart3_pmux>;
+	pinctrl-names = "default";
+};
+
+&npu {
+	status = "okay";
+};
+
+&usb0 {
+	vbus-supply = <&reg_usb0_vbus>;
+	status = "okay";
+};
+
+&usb_phy0  {
+	status = "okay";
+};
+
+&xhci0 {
+	status = "okay";
+};
+
+&usb_phy1  {
+	status = "okay";
+};
+
+&mdio0 {
+	phy0: ethernet-phy@0 {
+		reg = <0>;
+		realtek,clkout-disable;
+		realtek,rxc-ssc-enable;
+		realtek,sysclk-ssc-enable;
+	};
+};
+
+&gmac0 {
+	status = "okay";
+	pinctrl-0 = <&gmac0_pmux>, <&gmac_gpio_pmux>;
+	pinctrl-names = "default";
+	phy-handle = <&phy0>;
+	phy-mode = "rgmii-id";
+	snps,reset-gpio = <&portd 8 GPIO_ACTIVE_HIGH>;
+	snps,reset-delays-us = <0 10000 50000>;
+};
+
+&sm {
+	status = "okay";
+};
+
+&ir {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+	i2c-bus = <&i2c3>;
+	dev-addr = <112>;
+};
+
+&isp_be {
+	status = "okay";
+};
+
+&isp_scaler {
+	status = "okay";
+};
+
+&vpp {
+        status = "okay";
+};
+
+&isp_vsi {
+	status = "okay";
+	reset-gpios = <&expander1 0 0>, <&expander1 6 0>;
+	enable-gpios = <&expander1 4 0>, <&expander1 7 0>;
+};
+
+&isp_vsi_video {
+	status = "okay";
+};
+
+&isp_vsi_vb {
+	status = "okay";
+};
+
+&isp_vsi_mipi {
+	status = "okay";
+};
+
+&isp_vsi_subdev {
+	status = "okay";
+};
+
+&fb {
+	status = "disabled";
+};
+
+&tsp {
+	status = "okay";
+};
+
+&h1 {
+	status = "okay";
+};
+
+&vxg {
+	status = "okay";
+};
+
+&shm {
+	status = "okay";
+};
+
+&bm {
+	status = "okay";
+};
+
+&drm {
+	status = "okay";
+
+	/* Supported Modes:	0 - HDMI only
+	 * 			1 - MIPI Only
+	 *			2 - Dual Mode PIP
+	 *
+ 	 * Supported types:	0 - HDMI
+	 * 		  	3 - MIPI-DSI
+	 */
+	disp-mode = <0>;
+	disp1-res-id = <115>;
+	disp1-type = <0>;
+	disp2-res-id = <102>;
+	disp2-type = <3>;
+
+	dsi_panel {
+		status= "disabled";
+
+		NO_OF_RESID =  <1>;
+		DSI_RES =  <102>;
+		ACTIVE_WIDTH = <800>;
+		HFP = <60>;
+		HSYNCWIDTH = <32>;
+		HBP = <60>;
+		ACTIVE_HEIGHT = <1280>;
+		VFP = <16>;
+		VSYNCWIDTH = <2>;
+		VBP = <14>;
+		TYPE = <1>;
+		SCAN = <0>;
+		FRAME_RATE = <9>;
+		FLAG_3D = <0>;
+		FREQ = <75000>;
+		PTS_PER_4 = <6000>;
+
+		bits_per_pixel = <24>;
+		busformat = <0>;
+
+		VB_MIN =  /bits/ 8 <6>;
+		HB_MIN =  /bits/ 8 <30>;
+		V_OFF = /bits/ 8 <6>;
+		H_OFF = /bits/ 8 <20>;
+		HB_VOP_OFF = /bits/ 8 <8>;
+		VB_VOP_OFF = /bits/ 8 <3>;
+		HB_BE = /bits/ 8 <7>;
+		VB_BE = /bits/ 8 <2>;
+		VB_FP = /bits/ 8 <2>;
+		HB_FP = /bits/ 8 <10>;
+		PIXEL_CLOCK = <75000>;
+
+		HTOTAL = <952>;
+		Lanes = /bits/ 8 <4>;
+		Vid_mode = /bits/ 8 <2>;
+		virtual_chan = /bits/ 8 <0>;
+		Clk_Lane_Polarity = /bits/ 8 <0>;
+		Data_Lane_Polarity = /bits/ 8 <0>;
+		Recv_ack = /bits/ 8 <0>;
+		Loosely_18 = /bits/ 8 <0>;
+		H_polarity = /bits/ 8 <1>;
+		V_Polarity = /bits/ 8 <1>;
+		Data_Polarity = /bits/ 8 <1>;
+		Eotp_tx = /bits/ 8 <1>;
+		Eotp_rx = /bits/ 8 <0>;
+		non-Continuous_clk = /bits/ 8 <1>;
+		dpi_lp_cmd =  /bits/ 8 <1>;
+		Color_coding = /bits/ 8 <5>;
+		Chunks = <0>;
+		Null_Pkt = <0>;
+		Byte_clk = <56250>;
+
+	/*  COMMAND= Command for initialisation
+	*  Format - <CMD> <Payloadlength-n> <BYTE1> <...> <BYTEn>
+	*  Long write Ex: 39 04 FF 98 81 03
+
+	*  Delay in micro seconds Command format: 0xFF <4BYTE delay>
+	*  Delay for 100ms(100000us => 0x000186A0)
+	*  	- FF A0 86 01 00
+	*/
+		command = /bits/ 8 <0x39 0x04 0xFF 0x98 0x81 0x03
+				0x15 0x02 0x01 0x00
+				0x15 0x02 0x02 0x00
+				0x15 0x02 0x03 0x73
+				0x15 0x02 0x04 0xD7
+				0x15 0x02 0x05 0x00
+				0x15 0x02 0x06 0x08
+				0x15 0x02 0x07 0x11
+				0x15 0x02 0x08 0x00
+				0x15 0x02 0x09 0x3F
+				0x15 0x02 0x0a 0x00
+				0x15 0x02 0x0b 0x00
+				0x15 0x02 0x0c 0x00
+				0x15 0x02 0x0d 0x00
+				0x15 0x02 0x0e 0x00
+				0x15 0x02 0x0f 0x3F
+				0x15 0x02 0x10 0x3F
+				0x15 0x02 0x11 0x00
+				0x15 0x02 0x12 0x00
+				0x15 0x02 0x13 0x00
+				0x15 0x02 0x14 0x00
+				0x15 0x02 0x15 0x00
+				0x15 0x02 0x16 0x00
+				0x15 0x02 0x17 0x00
+				0x15 0x02 0x18 0x00
+				0x15 0x02 0x19 0x00
+				0x15 0x02 0x1a 0x00
+				0x15 0x02 0x1b 0x00
+				0x15 0x02 0x1c 0x00
+				0x15 0x02 0x1d 0x00
+				0x15 0x02 0x1e 0x40
+				0x15 0x02 0x1f 0x80
+				0x15 0x02 0x20 0x06
+				0x15 0x02 0x21 0x01
+				0x15 0x02 0x22 0x00
+				0x15 0x02 0x23 0x00
+				0x15 0x02 0x24 0x00
+				0x15 0x02 0x25 0x00
+				0x15 0x02 0x26 0x00
+				0x15 0x02 0x27 0x00
+				0x15 0x02 0x28 0x33
+				0x15 0x02 0x29 0x33
+				0x15 0x02 0x2a 0x00
+				0x15 0x02 0x2b 0x00
+				0x15 0x02 0x2c 0x00
+				0x15 0x02 0x2d 0x00
+				0x15 0x02 0x2e 0x00
+				0x15 0x02 0x2f 0x00
+				0x15 0x02 0x30 0x00
+				0x15 0x02 0x31 0x00
+				0x15 0x02 0x32 0x00
+				0x15 0x02 0x33 0x00
+				0x15 0x02 0x34 0x00
+				0x15 0x02 0x35 0x00
+				0x15 0x02 0x36 0x00
+				0x15 0x02 0x37 0x00
+				0x15 0x02 0x38 0x00
+				0x15 0x02 0x39 0x00
+				0x15 0x02 0x3a 0x00
+				0x15 0x02 0x3b 0x00
+				0x15 0x02 0x3c 0x00
+				0x15 0x02 0x3d 0x00
+				0x15 0x02 0x3e 0x00
+				0x15 0x02 0x3f 0x00
+				0x15 0x02 0x40 0x00
+				0x15 0x02 0x41 0x00
+				0x15 0x02 0x42 0x00
+				0x15 0x02 0x43 0x00
+				0x15 0x02 0x44 0x00
+				0x15 0x02 0x50 0x01
+				0x15 0x02 0x51 0x23
+				0x15 0x02 0x52 0x44
+				0x15 0x02 0x53 0x67
+				0x15 0x02 0x54 0x89
+				0x15 0x02 0x55 0xab
+				0x15 0x02 0x56 0x01
+				0x15 0x02 0x57 0x23
+				0x15 0x02 0x58 0x45
+				0x15 0x02 0x59 0x67
+				0x15 0x02 0x5a 0x89
+				0x15 0x02 0x5b 0xab
+				0x15 0x02 0x5c 0xcd
+				0x15 0x02 0x5d 0xef
+				0x15 0x02 0x5e 0x00
+				0x15 0x02 0x5f 0x0C
+				0x15 0x02 0x60 0x0C
+				0x15 0x02 0x61 0x0F
+				0x15 0x02 0x62 0x0F
+				0x15 0x02 0x63 0x0E
+				0x15 0x02 0x64 0x0E
+				0x15 0x02 0x65 0x06
+				0x15 0x02 0x66 0x07
+				0x15 0x02 0x67 0x0D
+				0x15 0x02 0x68 0x02
+				0x15 0x02 0x69 0x02
+				0x15 0x02 0x6a 0x02
+				0x15 0x02 0x6b 0x02
+				0x15 0x02 0x6c 0x02
+				0x15 0x02 0x6d 0x02
+				0x15 0x02 0x6e 0x0D
+				0x15 0x02 0x6f 0x02
+				0x15 0x02 0x70 0x02
+				0x15 0x02 0x71 0x05
+				0x15 0x02 0x72 0x01
+				0x15 0x02 0x73 0x08
+				0x15 0x02 0x74 0x00
+				0x15 0x02 0x75 0x0C
+				0x15 0x02 0x76 0x0C
+				0x15 0x02 0x77 0x0F
+				0x15 0x02 0x78 0x0F
+				0x15 0x02 0x79 0x0E
+				0x15 0x02 0x7a 0x0E
+				0x15 0x02 0x7b 0x06
+				0x15 0x02 0x7c 0x07
+				0x15 0x02 0x7d 0x0D
+				0x15 0x02 0x7e 0x02
+				0x15 0x02 0x7f 0x02
+				0x15 0x02 0x80 0x02
+				0x15 0x02 0x81 0x02
+				0x15 0x02 0x82 0x02
+				0x15 0x02 0x83 0x02
+				0x15 0x02 0x84 0x0D
+				0x15 0x02 0x85 0x02
+				0x15 0x02 0x86 0x02
+				0x15 0x02 0x87 0x05
+				0x15 0x02 0x88 0x01
+				0x15 0x02 0x89 0x08
+				0x15 0x02 0x8A 0x00
+				0x39 0x04 0xFF 0x98 0x81 0x04
+				0x15 0x02 0x6E 0x3B
+				0x15 0x02 0x6F 0x57
+				0x15 0x02 0x3A 0xA4
+				0x15 0x02 0x35 0x17
+				0x15 0x02 0x8D 0x1F
+				0x15 0x02 0x87 0xBA
+				0x15 0x02 0xB2 0xD1
+				0x15 0x02 0x88 0x0B
+				0x15 0x02 0x38 0x01
+				0x15 0x02 0x39 0x00
+				0x15 0x02 0xB5 0x07
+				0x15 0x02 0x31 0x75
+				0x39 0x04 0xFF 0x98 0x81 0x01
+				0x15 0x02 0x22 0x0A
+				0x15 0x02 0x31 0x09
+				0x15 0x02 0x50 0x86
+				0x15 0x02 0x51 0x82
+				0x15 0x02 0x60 0x27
+				0x15 0x02 0x62 0x20
+				0x15 0x02 0xA0 0x00
+				0x15 0x02 0xA1 0x12
+				0x15 0x02 0xA2 0x21
+				0x15 0x02 0xA3 0x12
+				0x15 0x02 0xA4 0x15
+				0x15 0x02 0xA5 0x27
+				0x15 0x02 0xA6 0x1C
+				0x15 0x02 0xA7 0x1E
+				0x15 0x02 0xA8 0x7D
+				0x15 0x02 0xA9 0x1C
+				0x15 0x02 0xAA 0x2B
+				0x15 0x02 0xAB 0x6C
+				0x15 0x02 0xAC 0x1B
+				0x15 0x02 0xAD 0x19
+				0x15 0x02 0xAE 0x4D
+				0x15 0x02 0xAF 0x29
+				0x15 0x02 0xB0 0x2A
+				0x15 0x02 0xB1 0x4D
+				0x15 0x02 0xB2 0x5A
+				0x15 0x02 0xB3 0x23
+				0x15 0x02 0xC0 0x00
+				0x15 0x02 0xC1 0x14
+				0x15 0x02 0xC2 0x21
+				0x15 0x02 0xC3 0x11
+				0x15 0x02 0xC4 0x16
+				0x15 0x02 0xC5 0x28
+				0x15 0x02 0xC6 0x1C
+				0x15 0x02 0xC7 0x1D
+				0x15 0x02 0xC8 0x7B
+				0x15 0x02 0xC9 0x1D
+				0x15 0x02 0xCA 0x29
+				0x15 0x02 0xCB 0x6B
+				0x15 0x02 0xCC 0x19
+				0x15 0x02 0xCD 0x18
+				0x15 0x02 0xCE 0x4B
+				0x15 0x02 0xCF 0x21
+				0x15 0x02 0xD0 0x29
+				0x15 0x02 0xD1 0x4D
+				0x15 0x02 0xD2 0x5B
+				0x15 0x02 0xD3 0x23
+				0x39 0x04 0xFF 0x98 0x81 0x00
+				0x05 0x01 0x11
+				0xFF 0xC0 0xD4 0x01 0x00
+				0x05 0x01 0x29
+				0xFF 0x10 0x27 0x00 0x00>;
+	};
+
+	hdmi_tx {
+		status= "okay";
+		/* HDMI_Tx core config array with fields as in below order -
+		   HPD handling - 1:enable sink hotplug handling 0:disable sink hotplug handling
+		   FixedModeset - 1:Enable mode config from within drm driver(on HPD), disable modeset interface to user
+				  0:Expose user interface to set mode, don't control from within drm driver
+		 */
+		hdtx-core-config = /bits/ 8 <1 1>;
+		/* Select format IDs enabled for profile. enter number of entries (inclusive) followed by entries <size, n1, n2..>
+		   ID to res mapping as below
+		   1280x720P30=10 1280x720P60=13
+		   1920x1080P24=22 1920x1080P25=21 1920x1080P30=19 1920x1080P50=26 1920x1080P59.94=25 1920x1080P60=24
+		   3840x2160P24=57 3840x2160P25=59 3840x2160P30=61 3840x2160P50=62 3840x2160P59.94=63 3840x2160P60=64
+		   1280x800P60=115 */
+		hdtx-supported-formats = /bits/ 8 <13 10 13 15 22 21 19 26 25 24 61 111 115>;
+	};
+};
+
+&avio {
+	status = "okay";
+	pinctrl-0 = <&hdmitx5v_pmux>;
+	pinctrl-names = "default";
+	vpp {
+		hdtx5v-gpio = <&portb 23 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&cec {
+	status = "okay";
+};
+
+&axi_mc0 {
+	status = "okay";
+};
+
+&gpu {
+	status = "okay";
+};
+
+&aout {
+	status = "okay";
+};
+
+&hrx {
+	status = "okay";
+	pinctrl-0 = <&hrx5v_pmux>, <&hrxhpd_pmux>, <&hrxedid_pmux>;
+	pinctrl-names = "default";
+	hrxhpd-gpio = <&portd 2 GPIO_ACTIVE_HIGH>;
+	hrx5v-gpio = <&portd 21 GPIO_ACTIVE_HIGH>;
+};
+
+&i2s_pri {
+	status = "okay";
+	pinctrl-0 = <&i2s1_pmux>;
+	pinctrl-names = "default";
+};
+
+&spdif_out {
+	status = "disabled";
+	pinctrl-0 = <&spdifo_pmux>;
+	pinctrl-names = "default";
+};
+
+&i2s_mic1 {
+	status = "okay";
+	pinctrl-0 = <&i2s2_pmux>;
+	pinctrl-names = "default";
+	intlmode;
+};
+
+&dmic {
+	status = "okay";
+	pinctrl-0 = <&pdm_pmux>;
+	pinctrl-names = "default";
+	pdm-type = <1>;
+	pdm-clk-sel = <2>;
+	ch-shift-check;
+};
+
+&i2s_mic2 {
+	status = "okay";
+	pinctrl-0 = <&i2s3_pmux>;
+	pinctrl-names = "default";
+	duplex;
+	disablemicmute;
+};
+
+&i2s_mic6 {
+	status = "okay";
+};
+
+&i2s_pri_lpbk {
+	status = "okay";
+};
+
+&i2s_hdmi_lpbk {
+	status = "okay";
+};
+
+&hdmi_out {
+	status = "okay";
+};
+
+&hdmi_in {
+	status = "okay";
+};
+
+&dolphin_spdifi {
+	status = "disabled";
+	//pinctrl-0 = <&spdifi_pmux>;
+	//pinctrl-names = "default";
+	//gate-gpio = <&expander2 4 GPIO_ACTIVE_HIGH>;
+	//enable-gpio = <&expander3 7 GPIO_ACTIVE_LOW>;
+	dynamic-src-ctrl;
+};
+
+&dolphin_pcm {
+	status = "okay";
+};
+
+&i2s_sec {
+	status = "okay";
+	pinctrl-0 = <&i2s3_pmux>;
+	pinctrl-names = "default";
+	duplex;
+	sample-period = <32>;
+};
+
+
+&dolphin_asoc {
+	status = "okay";
+
+	soc_i2so1: soc-i2so1 {
+		status = "okay";
+		stream-name = "soc-i2so1";
+		link-name = "soc-i2so1";
+		format = "i2s";
+		continuous-clock;
+		bitclock-inversion;
+		frame-inversion;
+		cpu-node = <&i2s_pri>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_i2so3: soc-i2so3 {
+		status = "okay";
+		stream-name = "soc-i2so3";
+		link-name = "soc-i2so3";
+		format = "dsp_b";
+		bitclock-master;
+		frame-master;
+		cpu-node = <&i2s_sec>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_dmic: soc-dmic {
+		status = "okay";
+		stream-name = "soc-dmic";
+		link-name = "soc-dmic";
+		cpu-node = <&dmic>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_i2si: soc-i2si2 {
+		status = "okay";
+		stream-name = "soc-i2si2";
+		link-name = "soc-i2si2";
+		format = "i2s";
+		bitclock-master;
+		frame-master;
+		cpu-node = <&i2s_mic1>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_i2si3: soc-i2si3 {
+		status = "okay";
+		stream-name = "btsco-in";
+		link-name = "btsco-in";
+		format = "dsp_b";
+		bitclock-master;
+		frame-master;
+		continuous-clock;
+		cpu-node = <&i2s_mic2>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_i2s_pri_lpbk: soc-i2s-pri-lpbk {
+		status = "okay";
+		stream-name = "soc-i2s-pri-lpbk";
+		link-name = "soc-i2s-pri-lpbk";
+		format = "i2s";
+		cpu-node = <&i2s_pri_lpbk>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_i2s_hdmi_lpbk: soc-i2s-hdmi-lpbk {
+		status = "okay";
+		stream-name = "soc-i2s-hdmi-lpbk";
+		link-name = "soc-i2s-hdmi-lpbk";
+		format = "i2s";
+		cpu-node = <&i2s_hdmi_lpbk>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_hdmio: soc-hdmio {
+		status = "okay";
+		stream-name = "soc-hdmio";
+		link-name = "soc-hdmio";
+		format = "i2s";
+		cpu-node = <&hdmi_out>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+
+	soc_hdmii: soc-hdmii {
+		status = "okay";
+		stream-name = "soc-hdmii";
+		link-name = "soc-hdmii";
+		cpu-node = <&hdmi_in>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&dolphin_pcm>;
+	};
+};
+
+&ovp {
+	status = "okay";
+};
+
+&pwm0 {
+	pinctrl-0 = <&pwm2_pmux>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&mc_dfc {
+	status = "okay";
+};
+
+&sm_gpio0 {
+	pinctrl-0 = <&levelshift_pmux>;
+	pinctrl-names = "default";
+
+	portd: gpio-port@4 {
+		levelshift_en {
+			gpio-hog;
+			gpios = <20 GPIO_ACTIVE_HIGH>;
+			output-low;
+		};
+	};
+};
