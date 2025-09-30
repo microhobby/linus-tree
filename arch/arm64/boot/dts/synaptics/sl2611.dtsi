@@ -338,6 +338,39 @@
 			};
 		};
 
+		avio: avio {
+			compatible = "syna,berlin-avio";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			reg = <0xf7400000 0x200000>;
+			ranges = <0 0xf7400000 0x200000>;
+			status = "disabled";
+
+			aio {
+				compatible = "syna,berlin-aio";
+				reg = <0x94C00 0x400>, <0x90000 0x4000>;
+				reg-names = "aio_base", "gbl_base";
+				clocks = <&apll0 0>, <&apll1 0>, <&clk CLK_AIOSYS>;
+				clock-names = "audio0_clk", "audio1_clk", "aio_sysclk";
+				clock-rates = <294912000 270950400 0>;
+			};
+
+			dhub {
+				compatible = "syna,berlin-dhub";
+				frame-rate = <60>;
+				interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+				interrupt-names = "vpp_dhub";
+			};
+		};
+
+		dhubctr_a: interrupt-controller@f7480000 {
+			compatible = "syna,klamath-dhub-irq";
+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0xf7484000 0x1500>;
+			interrupt-controller;
+			#interrupt-cells = <1>;
+		};
+
 		vpll0: vpll0@f7422004 {
 			compatible = "syna,dolphin-pll";
 			reg = <0xf7422004 0x20>, <0xf7422094 0x4>;

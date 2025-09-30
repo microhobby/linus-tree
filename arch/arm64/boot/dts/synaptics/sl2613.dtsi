@@ -170,5 +170,27 @@
 			system-coherency = <31>;
 			status = "disabled";
 		};
+
+		vpp: vpp {
+			status = "disabled";
+			compatible = "syna,vpp-drv";
+			clocks = <&vpll1 0>, <&vpll1 0>;
+			clock-names = "avio_vclk0", "avio_dpiclk";
+		};
+
+		lcdc: lcdc {
+			compatible = "syna,lcdc";
+			status = "disabled";
+		};
+
+		drm: drm {
+			compatible = "syna,berlin-drm";
+			status = "disabled";
+
+			dsi_panel {
+				compatible = "syna,drm-dsi";
+				status= "disabled";
+			};
+		};
 	};
 };
