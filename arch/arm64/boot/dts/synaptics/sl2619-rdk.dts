@@ -254,8 +254,6 @@
 		reg = <0x44>;
 		gpio-controller;
 		#gpio-cells = <2>;
-		shutdown-mask = /bits/ 8 <0x1>;
-		shutdown-val = /bits/ 8 <0x0>;
 	};
 
 	ina220@40 {
