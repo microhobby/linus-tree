@@ -101,7 +101,7 @@
 
 	mdio-demux {
 		compatible = "mdio-demux";
-		mux-controls = <&mux 0>;
+		mux-controls = <&mux1 0>;
 		mdio-parent-bus = <&mdio1>;
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -185,7 +185,7 @@
 	};
 };
 
-&mux {
+&mux1 {
 	status = "okay";
 };
 
