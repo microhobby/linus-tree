@@ -401,7 +401,6 @@
 			clock-names = "core", "bus";
 			resets = <&chip 0x350 7 0 0>;
 			reset-names = "host";
-			phy-offset = <0x300>;
 			bus-width = <4>;
 			status = "disabled";
 		};
