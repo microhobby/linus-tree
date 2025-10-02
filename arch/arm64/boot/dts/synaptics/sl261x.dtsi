@@ -532,6 +532,14 @@
 			#reset-cells = <4>;
 		};
 
+		mux0: mux-controller@f7e10040 {
+			compatible = "reg-mux";
+			reg = <0xf7e10040 0x4>;
+			#mux-state-cells = <2>;
+		        mux-reg-masks = <0x0 0x30>;
+			status = "disabled";
+		};
+
 		syspll0: syspll0@f7e10200 {
 			compatible = "syna,dolphin-pll";
 			reg = <0xf7e10200 0x20>, <0xf7e10400 0x4>;
