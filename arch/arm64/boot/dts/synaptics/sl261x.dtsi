@@ -54,6 +54,7 @@
 			reg = <0x0>;
 			enable-method = "psci";
 			next-level-cache = <&L2_0>;
+			cpu-idle-states = <&CPU_SLEEP_0>;
 			L2_0: l2-cache {
 				compatible = "cache";
 				next-level-cache = <&L3>;
@@ -66,6 +67,7 @@
 			reg = <0x100>;
 			enable-method = "psci";
 			next-level-cache = <&L2_1>;
+			cpu-idle-states = <&CPU_SLEEP_0>;
 			L2_1: l2-cache {
 				compatible = "cache";
 				next-level-cache = <&L3>;
@@ -74,6 +76,18 @@
 
 		L3: l3-cache0 {
 			compatible = "cache";
+		};
+
+		idle-states {
+			entry-method = "psci";
+			CPU_SLEEP_0: cpu-sleep-0 {
+				compatible = "arm,idle-state";
+				local-timer-stop;
+				arm,psci-suspend-param = <0x0010000>;
+				entry-latency-us = <75>;
+				exit-latency-us = <155>;
+				min-residency-us = <50000>;
+			};
 		};
 	};
 
