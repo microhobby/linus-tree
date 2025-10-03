@@ -412,3 +412,11 @@
 &klamath_pcm {
 	status = "okay";
 };
+
+&porta {
+	i2s1_unmute {
+		gpio-hog;
+		gpios = <26 GPIO_ACTIVE_HIGH>;
+		output-high;
+	};
+};
