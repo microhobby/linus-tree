@@ -237,6 +237,11 @@
 		function = "uart1";
 		drive-strength = <7>;
 	};
+
+	pdm_pmux: pdm-pmux {
+		groups = "SM_GPIO31", "SM_GPIO32";
+		function = "pdm";
+	};
 };
 
 &mux1 {
@@ -469,6 +474,14 @@
 	clk_feed = "I2S3_DI";
 };
 
+&dmic {
+	status = "okay";
+	pinctrl-0 = <&pdm_pmux>;
+	pinctrl-names = "default";
+	pdm-type = <1>;
+	pdm-clk-sel = <1>;
+};
+
 &klamath_asoc {
 	status = "okay";
 
@@ -506,6 +519,16 @@
 		bitclock-master;
 		frame-master;
 		cpu-node = <&i2s3_dai>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&klamath_pcm>;
+	};
+
+	asoc_dmic: asoc-dmic {
+		status = "okay";
+		stream-name = "dummy-dmic";
+		link-name = "dummy-dmic";
+		cpu-node = <&dmic>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
 		platform-node = <&klamath_pcm>;

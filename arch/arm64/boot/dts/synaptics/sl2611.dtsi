@@ -804,6 +804,14 @@
 			status = "disabled";
 		};
 
+		dmic: dmic-pdm {
+			compatible = "syna,klamath-dmic-pdm";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <6>;
+			interrupt-names = "pdm";
+			status = "disabled";
+		};
+
 		klamath_pcm: klamath-pcm {
 			compatible = "syna,klamath-pcm";
 			status = "disabled";
