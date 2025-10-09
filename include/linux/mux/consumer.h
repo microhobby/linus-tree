@@ -16,6 +16,8 @@ struct device;
 struct mux_control;
 struct mux_state;
 
+#ifdef CONFIG_MULTIPLEXER
+
 unsigned int mux_control_states(struct mux_control *mux);
 int __must_check mux_control_select_delay(struct mux_control *mux,
 					  unsigned int state,
@@ -60,5 +62,100 @@ struct mux_control *devm_mux_control_get(struct device *dev,
 					 const char *mux_name);
 struct mux_state *devm_mux_state_get(struct device *dev,
 				     const char *mux_name);
+
+#else /* CONFIG_MULTIPLEXER */
+
+static inline unsigned int mux_control_states(struct mux_control *mux)
+{
+	return 0;
+}
+
+static inline
+int __must_check mux_control_select_delay(struct mux_control *mux,
+					  unsigned int state,
+					  unsigned int delay_us)
+{
+	return -ENOSYS;
+}
+
+static inline
+int __must_check mux_state_select_delay(struct mux_state *mstate,
+					unsigned int delay_us)
+{
+	return -ENOSYS;
+}
+
+static inline
+int __must_check mux_control_try_select_delay(struct mux_control *mux,
+					      unsigned int state,
+					      unsigned int delay_us)
+{
+	return -ENOSYS;
+}
+
+static inline
+int __must_check mux_state_try_select_delay(struct mux_state *mstate,
+					    unsigned int delay_us)
+{
+	return -ENOSYS;
+}
+
+static inline int __must_check mux_control_select(struct mux_control *mux,
+						  unsigned int state)
+{
+	return -ENOSYS;
+}
+
+static inline int __must_check mux_state_select(struct mux_state *mstate)
+{
+	return -ENOSYS;
+}
+
+static inline int __must_check mux_control_try_select(struct mux_control *mux,
+						      unsigned int state)
+{
+	return -ENOSYS;
+}
+
+static inline int __must_check mux_state_try_select(struct mux_state *mstate)
+{
+	return -ENOSYS;
+}
+
+static inline int mux_control_deselect(struct mux_control *mux)
+{
+	return -ENOSYS;
+}
+
+static inline int mux_state_deselect(struct mux_state *mstate)
+{
+	return -ENOSYS;
+}
+
+static inline
+struct mux_control *mux_control_get(struct device *dev, const char *mux_name)
+{
+	return ERR_PTR(-ENOSYS);
+}
+
+static inline void mux_control_put(struct mux_control *mux)
+{
+}
+
+static inline
+struct mux_control *devm_mux_control_get(struct device *dev,
+					 const char *mux_name)
+{
+	return ERR_PTR(-ENOSYS);
+}
+
+static inline
+struct mux_state *devm_mux_state_get(struct device *dev,
+				     const char *mux_name)
+{
+	return ERR_PTR(-ENOSYS);
+}
+
+#endif /* CONFIG_MULTIPLEXER */
 
 #endif /* _LINUX_MUX_CONSUMER_H */
