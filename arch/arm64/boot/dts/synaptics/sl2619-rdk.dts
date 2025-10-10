@@ -195,11 +195,12 @@
 		*      - FF A0 86 01 00
 		*/
 		command = /bits/ 8 <0xFF 0x10 0x27 0x00 0x00>;
-		dsi_hdmi_lt9611_bridge {
-			compatible = "syna-bridge,lt9611";
-			enable-gpio =  <&expander0 1 GPIO_ACTIVE_HIGH>;
-			reset-gpio =  <&expander0 7 GPIO_ACTIVE_LOW>;
-			i2c_bus = <2>;
-		};
+	};
+
+	dsi_hdmi_lt9611_bridge {
+		compatible = "syna-bridge,lt9611";
+		enable-gpio =  <&expander0 1 GPIO_ACTIVE_HIGH>;
+		reset-gpio =  <&expander0 7 GPIO_ACTIVE_LOW>;
+		i2c_bus = <2>;
 	};
 };
