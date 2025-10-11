@@ -821,7 +821,6 @@
 
 		timer@f7f3e000 {
 			compatible = "arm,sse-timer";
-			reg = <0xf7f3e000 0x2000>;
 			clocks = <&gateclk CLK_APBSYSCNT>, <&gateclk CLK_APBTIMERS>, <&gateclk CLK_APBWDT>;
 			clock-names = "counter", "timers", "watchdogs";
 			#address-cells = <1>;
