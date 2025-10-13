@@ -9,7 +9,7 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 
 / {
-	compatible = "syna,sl261x";
+	compatible = "syna,sl2611";
 	interrupt-parent = <&gic>;
 	#address-cells = <2>;
 	#size-cells = <2>;
@@ -58,21 +58,6 @@
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&cpupll 1>;
 			L2_0: l2-cache {
-				compatible = "cache";
-				next-level-cache = <&L3>;
-			};
-		};
-
-		cpu1: cpu@100 {
-			compatible = "arm,cortex-a55";
-			device_type = "cpu";
-			reg = <0x100>;
-			enable-method = "psci";
-			next-level-cache = <&L2_1>;
-			cpu-idle-states = <&CPU_SLEEP_0>;
-			operating-points-v2 = <&cpu_opp_table>;
-			clocks = <&cpupll 1>;
-			L2_1: l2-cache {
 				compatible = "cache";
 				next-level-cache = <&L3>;
 			};
@@ -133,10 +118,8 @@
 
 	pmu {
 		compatible = "arm,cortex-a55-pmu";
-		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
-			     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-		interrupt-affinity = <&cpu0>,
-				     <&cpu1>;
+		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-affinity = <&cpu0>;
 	};
 
 	timer {
@@ -388,18 +371,6 @@
 			pd-bypass;
 		};
 
-		gpu: gpu@f7980000 {
-			compatible = "arm,mali-midgard";
-			reg = <0xf7980000 0x4000>;
-			clocks = <&clk CLK_GPU>;
-			resets = <&chip 0x378 0 1 0>;
-			reset-names = "core_rst";
-			interrupts = <0 50 IRQ_TYPE_LEVEL_HIGH>, <0 51 IRQ_TYPE_LEVEL_HIGH>, <0 48 IRQ_TYPE_LEVEL_HIGH>;
-			interrupt-names = "JOB", "MMU", "GPU";
-			system-coherency = <31>;
-			status = "disabled";
-		};
-
 		sdhci0: sdhci@f7a00000 {
 			compatible = "snps,dwcmshc-sdhci";
 			reg = <0xf7a00000 0x1000>;
@@ -469,40 +440,6 @@
 			};
 
 			stmmac_axi_config_0: stmmac-axi-config {
-				snps,blen = <256 128 64 32>;
-				snps,rd_osr_lmt = <0x7>;
-				snps,wr_osr_lmt = <0x7>;
-			};
-		};
-
-		ethernet1: ethernet@f7a06000 {
-			compatible = "snps,dwmac-5.20";
-			reg = <0xf7a06000 0x2000>;
-			reg-names = "stmmaceth";
-			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-			interrupt-names = "macirq";
-			clocks = <&clk CLK_GETHRGMII1>, <&gateclk CLK_GETHRGMII1SYS>, <&clk CLK_GE1_PTP_REF>;
-			clock-names = "stmmaceth", "pclk", "ptp_ref";
-			snps,axi-config = <&stmmac_axi_config_1>;
-			snps,mixed-burst;
-			snps,mtl-rx-config = <&mtl_rx_setup_1>;
-			snps,mtl-tx-config = <&mtl_tx_setup_1>;
-			snps,pbl = <32>;
-			status = "disabled";
-
-			mtl_rx_setup_1: rx-queues-config {
-				snps,rx-queues-to-use = <2>;
-				queue0 {};
-				queue1 {};
-			};
-
-			mtl_tx_setup_1: tx-queues-config {
-				snps,tx-queues-to-use = <2>;
-				queue0 {};
-				queue1 {};
-			};
-
-			stmmac_axi_config_1: stmmac-axi-config {
 				snps,blen = <256 128 64 32>;
 				snps,rd_osr_lmt = <0x7>;
 				snps,wr_osr_lmt = <0x7>;

@@ -9,7 +9,7 @@
 
 #include <dt-bindings/gpio/gpio.h>
 
-#include "sl261x.dtsi"
+#include "sl2619.dtsi"
 
 / {
 	model = "Synaptics SL261X FPGA";

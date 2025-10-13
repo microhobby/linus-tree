@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+/*
+ * Copyright (C) 2025 Synaptics Incorporated
+ *
+ * Author: Jisheng Zhang <jszhang@kernel.org>
+ */
+
+#include "sl2613.dtsi"
+
+/ {
+	cpus {
+		cpu1: cpu@100 {
+			compatible = "arm,cortex-a55";
+			device_type = "cpu";
+			reg = <0x100>;
+			enable-method = "psci";
+			next-level-cache = <&L2_1>;
+			cpu-idle-states = <&CPU_SLEEP_0>;
+			operating-points-v2 = <&cpu_opp_table>;
+			clocks = <&cpupll 1>;
+			L2_1: l2-cache {
+				compatible = "cache";
+				next-level-cache = <&L3>;
+			};
+		};
+	};
+
+	pmu {
+		interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
+			     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-affinity = <&cpu0>,
+				     <&cpu1>;
+	};
+
+	soc {
+		ethernet1: ethernet@f7a06000 {
+			compatible = "snps,dwmac-5.20";
+			reg = <0xf7a06000 0x2000>;
+			reg-names = "stmmaceth";
+			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "macirq";
+			clocks = <&clk CLK_GETHRGMII1>, <&gateclk CLK_GETHRGMII1SYS>, <&clk CLK_GE1_PTP_REF>;
+			clock-names = "stmmaceth", "pclk", "ptp_ref";
+			snps,axi-config = <&stmmac_axi_config_1>;
+			snps,mixed-burst;
+			snps,mtl-rx-config = <&mtl_rx_setup_1>;
+			snps,mtl-tx-config = <&mtl_tx_setup_1>;
+			snps,pbl = <32>;
+			status = "disabled";
+
+			mtl_rx_setup_1: rx-queues-config {
+				snps,rx-queues-to-use = <2>;
+				queue0 {};
+				queue1 {};
+			};
+
+			mtl_tx_setup_1: tx-queues-config {
+				snps,tx-queues-to-use = <2>;
+				queue0 {};
+				queue1 {};
+			};
+
+			stmmac_axi_config_1: stmmac-axi-config {
+				snps,blen = <256 128 64 32>;
+				snps,rd_osr_lmt = <0x7>;
+				snps,wr_osr_lmt = <0x7>;
+			};
+		};
+	};
+};
