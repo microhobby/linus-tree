@@ -1,0 +1,263 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+/*
+ * Copyright (C) 2025 Synaptics Incorporated
+ *
+ * Author: Jisheng Zhang <jszhang@kernel.org>
+ */
+
+
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/linux-event-codes.h>
+
+#include "sl2619.dtsi"
+
+/ {
+	model = "Synaptics SL2619 LCSBC DDR4";
+	compatible = "syna,sl2619-lcsbc-ddr4", "syna,sl2619";
+
+	cpus {
+		cpu@0 {
+			cpu0-supply = <&vcore>;
+		};
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x01000000 0x0 0xdf000000>,
+		      <0x1 0xe0000000 0x0 0x20000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reg = <0x00 0x5c000000 0x00 0x20000000>;
+			linux,cma-default;
+			reusable;
+		};
+	};
+
+	dmabuf_heap {
+		compatible = "syna,berlin-heaps";
+		pool-num = <2>;
+		reg-names = "NonSecure-NC", "Secure";
+		reg = <0 0x7f000000 0 0x00800000>,
+		      <0 0x7f800000 0 0x00800000>;
+		attributes-num-per-pool = <2>;
+		pool-attributes = <0x00000105 0x00000F3A 0x00000102 0x00000F3D>;
+	};
+
+	sdhci1_pwrseq: sdhci1-pwrseq {
+		compatible = "mmc-pwrseq-simple";
+		pinctrl-0 = <&wl_reg_pmux>;
+		pinctrl-names = "default";
+		reset-gpios = <&portf 5 GPIO_ACTIVE_LOW>;
+		post-power-on-delay-ms = <50>;
+	};
+
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		vmmc_sdhci2: vmmc_sdhci2 {
+			compatible = "regulator-fixed";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vmmc_sdio";
+			enable-active-high;
+			regulator-boot-on;
+			gpio = <&portb 14 GPIO_ACTIVE_HIGH>;
+		};
+
+		vqmmc_sdhci2: vqmmc_sdhci2 {
+			compatible = "regulator-gpio";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-name = "vqmmc_sdio";
+			regulator-type = "voltage";
+			enable-active-high;
+			gpios = <&portb 15 GPIO_ACTIVE_HIGH>;
+			states = <1800000 0x0
+				  3300000 0x1>;
+		};
+	};
+};
+
+&pinctrl {
+	sdhci2_pmux: sdhci2-pmux {
+		groups = "GPIO16", "GPIO17", "GPIO18", "GPIO19", "GPIO20", "GPIO21", "GPIO22";
+		function = "sdio2";
+		drive-strength = <7>;
+	};
+
+	sdhci2_gpio_pmux: sdhci2_gpio-pmux {
+		groups = "GPIO46", "GPIO47";
+		function = "gpio";
+		drive-strength = <7>;
+	};
+};
+
+&sm_pinctrl {
+	i2c0_pmux: i2c0-pmux {
+		groups = "SM_GPIO12", "SM_GPIO13";
+		function = "tw0";
+		drive-strength = <7>;
+	};
+
+	i2c1_pmux: i2c1-pmux {
+		groups = "SM_GPIO3", "SM_GPIO4";
+		function = "tw1";
+		drive-strength = <7>;
+	};
+
+	vcore_gpio_pmux: vcore-gpio-pmux {
+		groups = "SM_GPIO5";
+		function = "gpio";
+	};
+
+	uart1_pmux: uart1-pmux {
+		groups = "SM_GPIO7", "SM_GPIO8", "SM_GPIO14", "SM_GPIO15";
+		function = "uart1";
+		drive-strength = <7>;
+	};
+
+	wl_reg_pmux: wl_reg-pmux {
+		groups = "SM_GPIO37";
+		function = "gpio";
+	};
+
+	xspi0_pmux: xspi0-pmux {
+		groups = "SM_GPIO18", "SM_GPIO19", "SM_GPIO20", "SM_GPIO21", "SM_GPIO22", "SM_GPIO23", "SM_GPIO24",
+			 "SM_GPIO25","SM_GPIO26", "SM_GPIO27", "SM_GPIO28", "SM_GPIO29", "SM_GPIO30";
+		function = "xspi";
+		drive-strength = <7>;
+	};
+};
+
+&mux0 {
+	status = "okay";
+};
+
+&pdma0 {
+	status = "okay";
+};
+
+&sdhci0 {
+	status = "okay";
+	sdclkdl-dc = /bits/ 8 <20>;
+	pad-sp = /bits/ 8 <10>;
+	pad-sn = /bits/ 8 <10>;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
+	mmc-hs400-1_8v;
+};
+
+&sdhci1 {
+	status = "okay";
+	bus-width = <4>;
+	sdclkdl-dc = /bits/ 8 <50>;
+	pad-sp = /bits/ 8 <12>;
+	pad-sn = /bits/ 8 <12>;
+	no-sd;
+	no-mmc;
+	non-removable;
+	mmc-pwrseq = <&sdhci1_pwrseq>;
+	mode1-tune;
+	keep-power-in-suspend;
+};
+
+&sdhci2 {
+	status = "okay";
+	pinctrl-0 = <&sdhci2_pmux>, <&sdhci2_gpio_pmux>;
+	pinctrl-names = "default";
+	bus-width = <4>;
+	no-sdio;
+	no-mmc;
+	disable-wp;
+	vmmc-supply = <&vmmc_sdhci2>;
+	vqmmc-supply = <&vqmmc_sdhci2>;
+	mux-states = <&mux0 0 3>;
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c0_pmux>;
+	no-irq-suspend;
+	clock-frequency = <100000>;
+};
+
+&i2c1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pmux>;
+
+	vcore: regulator@60 {
+		compatible = "silergy,sy8827n";
+		regulator-name = "vcore";
+		regulator-min-microvolt = <700000>;
+		regulator-max-microvolt = <987500>;
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-active-discharge = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcore_gpio_pmux>;
+		enable-gpios = <&portc 5 GPIO_ACTIVE_LOW>;
+		silergy,vsel-step = <1>;
+		reg = <0x60>;
+	};
+};
+
+&usb0 {
+	status = "okay";
+	dr_mode = "peripheral";
+};
+
+&usb_phy0 {
+	status = "okay";
+};
+
+&usb1 {
+	status = "okay";
+	dr_mode = "host";
+};
+
+&usb_phy1{
+	status = "okay";
+};
+
+&uart1 {
+	status = "okay";
+	pinctrl-0 = <&uart1_pmux>;
+	pinctrl-names = "default";
+};
+
+&gpu {
+	status = "okay";
+};
+
+&xspi0 {
+	status = "okay";
+	pinctrl-0 = <&xspi0_pmux>;
+	pinctrl-names = "default";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		status = "okay";
+	};
+};
