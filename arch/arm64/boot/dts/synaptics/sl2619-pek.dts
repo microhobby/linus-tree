@@ -12,6 +12,14 @@
 
 #include "sl2619.dtsi"
 
+&cpu0 {
+	/delete-property/ operating-points-v2;
+};
+
+&cpu1 {
+	/delete-property/ operating-points-v2;
+};
+
 / {
 	model = "Synaptics SL2619 PEK";
 	compatible = "syna,sl2619-pek", "syna,sl2619";
