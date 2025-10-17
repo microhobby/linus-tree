@@ -11,6 +11,137 @@
 	compatible = "syna,sl2613";
 
 	soc {
+		csi: csi@f7450000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+			compatible = "snps,dw-mipi-csi";
+			reg = <0xf7450000 0x8000>;
+			data-lanes = <2>;
+			data-type = <0x300a>; /* Bayer Raw 10 */
+			clocks = <&clk CLK_AVIO_IPI>;
+			clock-names = "avioipiclk";
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					csi_input: endpoint@0 {
+						reg = <0>;
+					};
+				};
+
+				port@1 {
+					reg = <1>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					/* FIXME endpoint numbering not intuitive */
+					csi_output: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&isp_subdev_ep0>;
+					};
+				};
+			};
+		};
+
+		isp: isp@f7458000 {
+			#address-cells = <2>;
+			#size-cells = <1>;
+			status = "disabled";
+			compatible = "syna,camera-isp";
+			reg = <0xf7458000 0xc400>, <0xf7440000 0x10000>;
+			interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "isp_dhub";
+			clocks = <&clk CLK_AVIO_P>;
+			clock-names = "aviopclk";
+			resets = <&chip 0x37c 2 1 0>;
+			reset-names = "isprst";
+
+			white-balance-config {
+				wb-mode = <1>;
+				wb-p00-mantissa = <48>;
+				wb-p00-exponent = <1>;
+				wb-p01-mantissa = <54>;
+				wb-p01-exponent = <0>;
+				wb-p10-mantissa = <54>;
+				wb-p10-exponent = <0>;
+				wb-p11-mantissa = <62>;
+				wb-p11-exponent = <0>;
+				input-sel = <32>;
+			};
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					isp_subdev_ep0: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&csi_output>;
+					};
+				};
+
+				port@1 {
+					reg = <1>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					isp_video_out_ep0: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&video_ep0>;
+					};
+				};
+
+				port@2 {
+					reg = <2>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					isp_video_out_ep1: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&video_ep1>;
+					};
+				};
+			};
+		};
+
+		camera_video: camera-video {
+			compatible = "syna,video";
+			id = <0>;
+			status = "disabled";
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				/* Video port 0 configuration */
+				port@0 {
+					reg = <0>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					video_ep0: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&isp_video_out_ep0>;
+					};
+				};
+
+				/* Video port 1 configuration */
+				port@1 {
+					reg = <1>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					video_ep1: endpoint@1 {
+						reg = <1>;
+						remote-endpoint = <&isp_video_out_ep1>;
+					};
+				};
+			};
+		};
 
 		synpu: synpu@f7600000 {
 			compatible = "syna,npu";

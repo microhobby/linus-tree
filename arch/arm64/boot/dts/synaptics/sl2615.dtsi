@@ -7,6 +7,10 @@
 
 #include "sl2613.dtsi"
 
+/delete-node/ &csi;
+/delete-node/ &isp;
+/delete-node/ &camera_video;
+
 / {
 	compatible = "syna,sl2615";
 
