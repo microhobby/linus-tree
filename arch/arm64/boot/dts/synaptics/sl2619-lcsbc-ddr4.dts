@@ -75,12 +75,11 @@
 
 	dmabuf_heap {
 		compatible = "syna,berlin-heaps";
-		pool-num = <2>;
-		reg-names = "NonSecure-NC", "Secure";
-		reg = <0 0x7f000000 0 0x00800000>,
-		      <0 0x7f800000 0 0x00800000>;
+		pool-num = <0>;
+		reg-names = "NonSecure-NC";
+		reg = <0 0x7f800000 0 0x00800000>;
 		attributes-num-per-pool = <2>;
-		pool-attributes = <0x00000105 0x00000F3A 0x00000102 0x00000F3D>;
+		pool-attributes = <0x00000105 0x00000F3A>;
 	};
 
 	sdhci1_pwrseq: sdhci1-pwrseq {
