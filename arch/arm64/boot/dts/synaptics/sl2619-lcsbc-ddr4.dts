@@ -38,12 +38,39 @@
 		#size-cells = <2>;
 		ranges;
 
+		vdev0vring0: vdev0vring0@0 {
+			compatible = "shared-dma-pool";
+			reg = <0 0x0000000 0 0x8000>;
+			no-map;
+		};
+
+		vdev0vring1: vdev0vring1@8000 {
+			compatible = "shared-dma-pool";
+			reg = <0 0x0008000 0 0x8000>;
+			no-map;
+		};
+
+		vdevbuffer: vdevbuffer {
+			compatible = "shared-dma-pool";
+			reg = <0 0x0010000 0 0xf0000>;
+			no-map;
+		};
+
 		linux,cma {
 			compatible = "shared-dma-pool";
 			reg = <0x00 0x5c000000 0x00 0x20000000>;
 			linux,cma-default;
 			reusable;
 		};
+	};
+
+	rpmsg {
+		compatible = "syna,rpmsg";
+		mbox-names = "rpmsg";
+		mboxes = <&ipc 0>;
+		syna,vdev-nums = <1>;
+		reg = <0x0 0x0000000 0x0 0x10000>;
+		memory-region = <&vdevbuffer>;
 	};
 
 	dmabuf_heap {
@@ -142,6 +169,10 @@
 		function = "xspi";
 		drive-strength = <7>;
 	};
+};
+
+&ipc {
+	status = "okay";
 };
 
 &mux0 {
