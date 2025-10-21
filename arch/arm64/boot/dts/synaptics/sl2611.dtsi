@@ -23,6 +23,9 @@
 		serial5 = &uart5;
 		serial6 = &uart6;
 		serial7 = &uart7;
+		mmc0 = &sdhci0;
+		mmc1 = &sdhci1;
+		mmc2 = &sdhci2;
 		i2c0 = &i2c0;
 		i2c1 = &i2c1;
 		i2c2 = &i2c2;
