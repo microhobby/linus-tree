@@ -585,6 +585,7 @@
 			#clock-cells = <1>;
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <3>;
+			suspend-resume;
 		};
 
 		mempll: mempll@f7e50008 {
