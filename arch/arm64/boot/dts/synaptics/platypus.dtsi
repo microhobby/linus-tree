@@ -812,6 +812,14 @@
 			#reset-cells = <4>;
 		};
 
+		mux0: mux-controller@f7ea0040 {
+			compatible = "reg-mux";
+			reg = <0xf7ea0040 0x4>;
+		        #mux-control-cells = <1>;
+		        mux-reg-masks = <0x0 0x40>;
+			status = "disabled";
+		};
+
 		vcore_opp_table: vcore_opp_table {
 			compatible = "operating-points-v2";
 
