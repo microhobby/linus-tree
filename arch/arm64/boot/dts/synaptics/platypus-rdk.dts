@@ -118,7 +118,7 @@
 		};
 	};
 
-	i2c2-mux {
+	i2c1-mux {
 		compatible = "i2c-mux";
 		i2c-parent = <&i2c1>;
 		mux-controls = <&mux0 0>;
