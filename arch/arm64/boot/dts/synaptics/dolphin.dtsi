@@ -890,6 +890,14 @@
 			#reset-cells = <4>;
 		};
 
+		mux0: mux-controller@f7ea0040 {
+			compatible = "reg-mux";
+			reg = <0xf7ea0040 0x4>;
+		        #mux-control-cells = <1>;
+		        mux-reg-masks = <0x0 0x20>;
+			status = "disabled";
+		};
+
 		syspll0: syspll0 {
 			compatible = "syna,dolphin-pll";
 			reg = <0xf7ea0200 0x20>, <0xf7ea0710 0x4>;
@@ -1070,6 +1078,14 @@
 				reg-shift = <2>;
 				status = "disabled";
 			};
+		};
+
+		mux1: mux-controller@f7fe2050 {
+			compatible = "reg-mux";
+			reg = <0xf7fe2050 0x4>;
+		        #mux-control-cells = <1>;
+		        mux-reg-masks = <0x0 0x1>;
+			status = "disabled";
 		};
 
 		sm_pinctrl: pinctrl@f7fe2c10 {
