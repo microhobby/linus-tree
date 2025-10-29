@@ -152,6 +152,58 @@
 		i2c-gpio,delay-us = <5>;
 	};
 
+	i2c1-mux {
+		compatible = "i2c-mux";
+		i2c-parent = <&i2c1>;
+		mux-controls = <&mux0 0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		i2c@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			vcpu: regulator@40 {
+				compatible = "ti,tps62870";
+				reg = <0x40>;
+				status = "okay";
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-active-discharge = <0>;
+				regulator-name = "vcpu";
+				regulator-min-microvolt = <700000>;
+				regulator-max-microvolt = <987500>;
+			};
+		};
+	};
+
+	i2c2-mux {
+		compatible = "i2c-mux";
+		i2c-parent = <&i2c2>;
+		mux-controls = <&mux1 0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		i2c@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			vcore: regulator@40 {
+				compatible = "ti,tps62870";
+				reg = <0x40>;
+				status = "okay";
+				regulator-boot-on;
+				regulator-always-on;
+				regulator-active-discharge = <0>;
+				regulator-name = "vcore";
+				regulator-min-microvolt = <700000>;
+				regulator-max-microvolt = <987500>;
+			};
+		};
+	};
+
 	i2cdemux3 {
 		compatible = "i2c-dyndmx-pinctrl";
 		#address-cells = <1>;
@@ -434,40 +486,24 @@
 	};
 };
 
+&mux0 {
+	status = "okay";
+};
+
+&mux1 {
+	status = "okay";
+};
+
 &i2c1 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_pmux>;
-
-	vcpu: regulator@40 {
-		compatible = "ti,tps62870";
-		reg = <0x40>;
-		status = "okay";
-		regulator-boot-on;
-		regulator-always-on;
-		regulator-active-discharge = <0>;
-		regulator-name = "vcpu";
-		regulator-min-microvolt = <700000>;
-		regulator-max-microvolt = <987500>;
-	};
 };
 
 &i2c2 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c2_pmux>;
-
-	vcore: regulator@40 {
-		compatible = "ti,tps62870";
-		reg = <0x40>;
-		status = "okay";
-		regulator-boot-on;
-		regulator-always-on;
-		regulator-active-discharge = <0>;
-		regulator-name = "vcore";
-		regulator-min-microvolt = <700000>;
-		regulator-max-microvolt = <987500>;
-	};
 };
 
 &i2c3 {
