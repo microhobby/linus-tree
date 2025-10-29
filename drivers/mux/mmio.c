@@ -130,13 +130,31 @@ static int mux_mmio_probe(struct platform_device *pdev)
 
 	mux_chip->ops = &mux_mmio_ops;
 
+	platform_set_drvdata(pdev, mux_chip);
+
 	return devm_mux_chip_register(dev, mux_chip);
 }
+
+static int mux_mmio_resume(struct device *dev)
+{
+	int i;
+	struct mux_chip *mux_chip = dev_get_drvdata(dev);
+
+	for (i = 0; i < mux_chip->controllers; ++i) {
+		struct mux_control *mux = &mux_chip->mux[i];
+		mux->cached_state = MUX_IDLE_AS_IS;
+	}
+
+	return 0;
+}
+
+static DEFINE_SIMPLE_DEV_PM_OPS(mux_mmio_pm_ops, NULL, mux_mmio_resume);
 
 static struct platform_driver mux_mmio_driver = {
 	.driver = {
 		.name = "mmio-mux",
 		.of_match_table	= mux_mmio_dt_ids,
+		.pm = pm_sleep_ptr(&mux_mmio_pm_ops),
 	},
 	.probe = mux_mmio_probe,
 };
