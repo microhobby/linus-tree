@@ -440,15 +440,13 @@
 			status = "disabled";
 
 			mtl_rx_setup_0: rx-queues-config {
-				snps,rx-queues-to-use = <2>;
+				snps,rx-queues-to-use = <1>;
 				queue0 {};
-				queue1 {};
 			};
 
 			mtl_tx_setup_0: tx-queues-config {
-				snps,tx-queues-to-use = <2>;
+				snps,tx-queues-to-use = <1>;
 				queue0 {};
-				queue1 {};
 			};
 
 			stmmac_axi_config_0: stmmac-axi-config {

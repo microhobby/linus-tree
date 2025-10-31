@@ -49,15 +49,13 @@
 			status = "disabled";
 
 			mtl_rx_setup_1: rx-queues-config {
-				snps,rx-queues-to-use = <2>;
+				snps,rx-queues-to-use = <1>;
 				queue0 {};
-				queue1 {};
 			};
 
 			mtl_tx_setup_1: tx-queues-config {
-				snps,tx-queues-to-use = <2>;
+				snps,tx-queues-to-use = <1>;
 				queue0 {};
-				queue1 {};
 			};
 
 			stmmac_axi_config_1: stmmac-axi-config {
