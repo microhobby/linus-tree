@@ -284,7 +284,6 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c0_pmux>;
-	clock-frequency = <100000>;
 	no-irq-suspend;
 	clock-frequency = <100000>;
 
