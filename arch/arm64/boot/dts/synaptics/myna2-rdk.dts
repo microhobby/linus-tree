@@ -576,6 +576,10 @@
 	pinctrl-names = "default", "default";
 };
 
+&axi_meter {
+	status = "okay";
+};
+
 &avio {
 	status = "okay";
 };
