@@ -1,0 +1,90 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
+/*
+* Copyright (C) 2016~2025 Synaptics Incorporated. All rights reserved.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 2 or
+* later as published by the Free Software Foundation.
+*
+* INFORMATION CONTAINED IN THIS DOCUMENT IS PROVIDED "AS-IS," AND
+* SYNAPTICS EXPRESSLY DISCLAIMS ALL EXPRESS AND IMPLIED WARRANTIES,
+* INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE, AND ANY WARRANTIES OF NON-INFRINGEMENT OF ANY
+* INTELLECTUAL PROPERTY RIGHTS. IN NO EVENT SHALL SYNAPTICS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR
+* CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE
+* OF THE INFORMATION CONTAINED IN THIS DOCUMENT, HOWEVER CAUSED AND
+* BASED ON ANY THEORY OF LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+* NEGLIGENCE OR OTHER TORTIOUS ACTION, AND EVEN IF SYNAPTICS WAS
+* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. IF A TRIBUNAL OF
+* COMPETENT JURISDICTION DOES NOT PERMIT THE DISCLAIMER OF DIRECT
+* DAMAGES OR ANY OTHER DAMAGES, SYNAPTICS' TOTAL CUMULATIVE LIABILITY
+* TO ANY PARTY SHALL NOT EXCEED ONE HUNDRED U.S. DOLLARS.
+*/
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+
+		target-path = "/soc";
+
+		__overlay__ {
+			i2c2: i2c@f7f05000 {
+				rpi_panel_regulator: rpi_panel_regulator@45 {
+					compatible = "raspberrypi,7inch-touchscreen-panel-regulator";
+					reg = <0x45>;
+					gpio-controller;
+					#gpio-cells = <2>;
+				};
+			};
+		};
+	};
+
+	fragment@1 {
+
+		target-path = "/soc";
+
+		__overlay__ {
+			drm: drm {
+				dsi_panel {
+					power-supply = <&rpi_panel_regulator>;
+					backlight = <&rpi_panel_regulator>;
+					ACTIVE_WIDTH = <800>;
+					HFP = <70>;
+					HSYNCWIDTH = <20>;
+					HBP = <26>;
+					ACTIVE_HEIGHT = <480>;
+					VFP = <7>;
+					VSYNCWIDTH = <2>;
+					VBP = <21>;
+					FREQ = <28030>;
+					HTOTAL = <916>;
+					Lanes = /bits/ 8 <1>;
+					Byte_clk = <84090>;
+					command = /bits/ 8 <0x29  0x06 0x10  0x02  0x03  0x00  0x00 0x00
+						0x29  0x06 0x64  0x01  0x0C  0x00  0x00 0x00
+						0x29  0x06 0x68  0x01  0x0C  0x00  0x00 0x00
+						0x29  0x06 0x44  0x01  0x00  0x00  0x00 0x00
+						0x29  0x06 0x48  0x01  0x00  0x00  0x00 0x00
+						0x29  0x06 0x14  0x01  0x15  0x00  0x00 0x00
+						0x29  0x06 0x50  0x04  0x60  0x00  0x00 0x00
+						0x29  0x06 0x20  0x04  0x52  0x01  0x10 0x00
+						0x29  0x06 0x28  0x04  0x20  0x03  0x69 0x00
+						0x29  0x06 0x2C  0x04  0x02  0x00  0x15 0x00
+						0x29  0x06 0x30  0x04  0xe0  0x01  0x07 0x00
+						0x29  0x06 0x34  0x04  0x0f  0x04  0x00 0x00
+						0x29  0x06 0x64  0x04  0x0f  0x04  0x00 0x00
+						0x29  0x06 0x04  0x01  0x01  0x00  0x00 0x00
+						0x29  0x06 0x04  0x02  0x01  0x00  0x00 0x00
+						0xFF  0xC0 0xD4  0x01  0x00
+						0xFF  0x10 0x27  0x00  0x00>;
+				};
+				dsi_hdmi_lt9611_bridge {
+					status = "disabled";
+				};
+			};
+		};
+	};
+};
