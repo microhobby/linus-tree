@@ -443,9 +443,9 @@
 	pinctrl-0 = <&sdhci1_pmux>;
 	pinctrl-names = "default";
 	bus-width = <4>;
-	sdclkdl-dc = /bits/ 8 <75>;
-	pad-sp = /bits/ 8 <4>;
-	pad-sn = /bits/ 8 <4>;
+	sdclkdl-dc = /bits/ 8 <35>;
+	pad-sp = /bits/ 8 <12>;
+	pad-sn = /bits/ 8 <12>;
 	no-sd;
 	no-mmc;
 	non-removable;
