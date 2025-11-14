@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+/*
+ * Copyright (C) 2025 Synaptics Incorporated
+ *
+ * Author: Jisheng Zhang <jszhang@kernel.org>
+ */
+
+/dts-v1/;
+
+#include "sl2617.dtsi"
+#include "sl261x-rdk-common.dtsi"
+
+/ {
+	model = "Synaptics SL2617 RDK";
+	compatible = "syna,sl2617-rdk", "syna,sl2617";
+};
+
+&gpu {
+	status = "okay";
+};
+
+&smmu {
+	status = "okay";
+};
+
+&synpu {
+	status = "okay";
+};
