@@ -31,7 +31,7 @@
 #include "dolphin.dtsi"
 
 / {
-	model = "Toradex Winglet SL1680";
+	model = "Toradex Luna SL1680";
 	compatible = "syna,dolphin-evk", "syna,dolphin";
 
 	aliases {
