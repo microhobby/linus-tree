@@ -116,31 +116,6 @@
 		};
 	};
 
-	mdio-demux {
-		compatible = "mdio-demux";
-		mux-controls = <&mux1 0>;
-		mdio-parent-bus = <&mdio1>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		mdio@1 {
-			reg = <0x1>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			ethernet_phy0: ethernet-phy@2 {
-				compatible = "ethernet-phy-id001c.c916";
-				reg = <2>;
-				pinctrl-0 = <&eth1_phy_rst_pmux>;
-				pinctrl-names = "default";
-				realtek,clkout-disable;
-				reset-assert-us = <20000>;
-				reset-deassert-us = <100000>;
-				reset-gpios = <&portf 3 GPIO_ACTIVE_HIGH>;
-			};
-		};
-	};
-
 	bt_reg_on: bt_reg_on {
 		compatible = "syna,rfkill";
 		bt-power-gpio = <&expander1 5 GPIO_ACTIVE_HIGH>;
@@ -153,18 +128,6 @@
 };
 
 &pinctrl {
-	eth_mdio_pmux: eth-mdio-pmux {
-		groups = "GPIO31", "GPIO32";
-		function = "rgmii";
-		drive-strength = <7>;
-	};
-
-	eth1_pmux: eth1-pmux {
-		groups = "GPIO48", "GPIO49", "GPIO50", "GPIO51", "GPIO52", "GPIO53", "GPIO54", "GPIO55", "GPIO56", "GPIO57", "GPIO58", "GPIO59";
-		function = "rgmii2";
-		drive-strength = <7>;
-	};
-
 	sdhci2_pmux: sdhci2-pmux {
 		groups = "GPIO16", "GPIO17", "GPIO18", "GPIO19", "GPIO20", "GPIO21", "GPIO22";
 		function = "sdio2";
@@ -214,10 +177,6 @@
 };
 
 &mux0 {
-	status = "okay";
-};
-
-&mux1 {
 	status = "okay";
 };
 
@@ -321,20 +280,6 @@
 		enable-gpios = <&portc 5 GPIO_ACTIVE_LOW>;
 		silergy,vsel-step = <1>;
 		reg = <0x60>;
-	};
-};
-
-&ethernet1 {
-	status = "okay";
-	pinctrl-0 = <&eth_mdio_pmux>, <&eth1_pmux>;
-	pinctrl-names = "default";
-	phy-handle = <&ethernet_phy0>;
-	phy-mode = "rgmii-id";
-
-	mdio1: mdio {
-		compatible = "snps,dwmac-mdio";
-		#address-cells = <1>;
-		#size-cells = <0>;
 	};
 };
 
