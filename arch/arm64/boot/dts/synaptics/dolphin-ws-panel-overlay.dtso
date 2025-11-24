@@ -40,6 +40,17 @@
 					gpio-controller;
 					#gpio-cells = <2>;
 				};
+
+				ft5406: ts@38 {
+					compatible = "edt,edt-ft5506";
+					reg = <0x38>;
+
+					touchscreen-size-x = < 800 >;
+					touchscreen-size-y = < 480 >;
+
+					touchscreen-inverted-x;
+					touchscreen-inverted-y;
+				};
 			};
 		};
 	};
