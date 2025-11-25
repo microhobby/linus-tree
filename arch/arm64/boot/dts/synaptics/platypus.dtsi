@@ -409,7 +409,7 @@
 		};
 
 		hwmon@f79200f0 {
-			compatible = "syna,as470-hwmon";
+			compatible = "syna,myna2-hwmon";
 			reg = <0xf79200f0 0x14>;
 			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
 		};
