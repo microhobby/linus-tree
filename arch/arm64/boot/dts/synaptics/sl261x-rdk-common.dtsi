@@ -133,6 +133,12 @@
 		function = "sdio2";
 		drive-strength = <7>;
 	};
+
+	i2c2_pmux: i2c2-pmux {
+		groups = "GPIO23", "GPIO24";
+		function = "tw2";
+		drive-strength = <7>;
+	};
 };
 
 &sm_pinctrl {
@@ -275,6 +281,12 @@
 		silergy,vsel-step = <1>;
 		reg = <0x60>;
 	};
+};
+
+&i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2_pmux>;
 };
 
 &usb0 {

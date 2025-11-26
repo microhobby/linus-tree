@@ -52,22 +52,10 @@
 		function = "rgmii2";
 		drive-strength = <7>;
 	};
-
-	i2c2_pmux: i2c2-pmux {
-		groups = "GPIO23", "GPIO24";
-		function = "tw2";
-		drive-strength = <7>;
-	};
 };
 
 &mux1 {
 	status = "okay";
-};
-
-&i2c2 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c2_pmux>;
 };
 
 &ethernet1 {
