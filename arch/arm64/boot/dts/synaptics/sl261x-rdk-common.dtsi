@@ -186,9 +186,9 @@
 		drive-strength = <7>;
 	};
 
-	pdm_pmux: pdm-pmux {
-		groups = "SM_GPIO31", "SM_GPIO32";
-		function = "pdm";
+	dmic_mute_gpio_pmux: dmic_mute_gpio-pmux {
+		groups = "SM_GPIO37";
+		function = "gpio";
 	};
 };
 
@@ -401,8 +401,6 @@
 
 &dmic {
 	status = "okay";
-	pinctrl-0 = <&pdm_pmux>;
-	pinctrl-names = "default";
 	pdm-type = <1>;
 	pdm-clk-sel = <1>;
 };
@@ -468,6 +466,17 @@
 	i2s1_unmute {
 		gpio-hog;
 		gpios = <26 GPIO_ACTIVE_HIGH>;
+		output-high;
+	};
+};
+
+&portf {
+	pinctrl-0 = <&dmic_mute_gpio_pmux>;
+	pinctrl-names = "default";
+
+	dmic_unmute {
+		gpio-hog;
+		gpios = <5 GPIO_ACTIVE_HIGH>;
 		output-high;
 	};
 };
