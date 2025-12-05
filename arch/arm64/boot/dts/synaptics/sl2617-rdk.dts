@@ -26,3 +26,69 @@
 &synpu {
 	status = "okay";
 };
+
+&avio {
+	status = "okay";
+};
+
+&vpp {
+	status = "okay";
+	enable_ampless_boot = <1>;
+};
+
+&drm {
+	status = "okay";
+
+	dsi_panel {
+		status= "okay";
+
+		ACTIVE_WIDTH = <1920>;
+		HFP = <88>;
+		HSYNCWIDTH = <44>;
+		HBP = <148>;
+		ACTIVE_HEIGHT = <1080>;
+		VFP = <4>;
+		VSYNCWIDTH = <5>;
+		VBP = <36>;
+		FREQ = <148500>;
+		bits_per_pixel = <24>;
+		busformat = <0>;
+
+		HTOTAL = <2200>;
+		Lanes = /bits/ 8 <4>;
+		Vid_mode = /bits/ 8 <2>;
+		virtual_chan = /bits/ 8 <0>;
+		Clk_Lane_Polarity = /bits/ 8 <0>;
+		Data_Lane_Polarity = /bits/ 8 <0>;
+		Recv_ack = /bits/ 8 <0>;
+		Loosely_18 = /bits/ 8 <0>;
+		H_polarity = /bits/ 8 <1>;
+		V_Polarity = /bits/ 8 <1>;
+		Data_Polarity = /bits/ 8 <1>;
+		Eotp_tx = /bits/ 8 <1>;
+		Eotp_rx = /bits/ 8 <0>;
+		non-Continuous_clk = /bits/ 8 <0>;
+		dpi_lp_cmd = /bits/ 8 <1>;
+		Color_coding = /bits/ 8 <5>;
+		Chunks = <0>;
+		Null_Pkt = <0>;
+		Byte_clk = <148500>;
+
+		/*  COMMAND= Command for initialisation
+		*  Format - <CMD> <Payloadlength-n> <BYTE1> <...> <BYTEn>
+		*  Long write Ex: 39 04 FF 98 81 03
+
+		*  Delay in micro seconds Command format: 0xFF <4BYTE delay>
+		*  Delay for 100ms(100000us => 0x000186A0)
+		*      - FF A0 86 01 00
+		*/
+		command = /bits/ 8 <0xFF 0x10 0x27 0x00 0x00>;
+	};
+
+	dsi_hdmi_lt9611_bridge {
+		compatible = "syna-bridge,lt9611";
+		enable-gpio =  <&expander0 1 GPIO_ACTIVE_HIGH>;
+		reset-gpio =  <&expander0 7 GPIO_ACTIVE_LOW>;
+		i2c_bus = <2>;
+	};
+};
