@@ -1,0 +1,62 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "crash-debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/microhobby/projects/G/gaia/linux/vmlinux",
+            "coreDumpPath": "/home/microhobby/projects/G/gaia/linux/vmcore",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "symbolLoadInfo": {
+                "loadAll": true,
+                "exceptionList": ""
+            },
+            "sourceFileMap": {
+                "/source/": "${workspaceFolder}/"
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Add module symbols",
+                    "text": "add-symbol-file /home/microhobby/projects/G/gaia/linux/panic_button.ko 0xffff800079b76000 -s .data 0xffff800079be6038 -s .rodata 0xffff800079bbd058",
+                    "ignoreFailures": false
+                }
+            ]
+        },
+        {
+            "type": "kgdb",
+            "request": "launch",
+            "name": "Kernel KGDB",
+            "program": "/home/microhobby/projects/G/gaia/linux/vmlinux",
+            "cwd": "${workspaceFolder}",
+            "remote": {
+                "enabled": true,
+                "address": "localhost:${config:kerneldev.kgdb_port}",
+                "mode": "remote",
+                "execfile": "/home/microhobby/projects/G/gaia/linux/vmlinux"
+            },
+            "internalConsoleOptions": "neverOpen",
+            "debuggerPath": "/usr/bin/gdb-multiarch",
+            "commandsBeforeExec": [
+                "-enable-pretty-printing",
+                "set print pretty on",
+                "set arch aarch64",
+                "set substitute-path /source ${workspaceFolder}",
+                "add-symbol-file /home/microhobby/projects/G/gaia/linux/panic_button.ko 0xffff800079acd000 -s .data 0xffff800079ae6038 -s .rodata 0xffff800079b5c058"
+            ],
+            "preLaunchTask": "${command:embeddedLinuxDev.breakKernel}"
+        }
+    ],
+    "compounds": []
+}

@@ -247,6 +247,8 @@ static void bgpio_set_set(struct gpio_chip *gc, unsigned int gpio, int val)
 	unsigned long mask = bgpio_line2mask(gc, gpio);
 	unsigned long flags;
 
+	printk("Luna:: gpio=%u, val=%d\n", gpio, val);
+
 	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
 
 	if (val)
@@ -345,6 +347,8 @@ static int bgpio_simple_dir_out(struct gpio_chip *gc, unsigned int gpio,
 static int bgpio_dir_in(struct gpio_chip *gc, unsigned int gpio)
 {
 	unsigned long flags;
+
+	printk("Luna:: gpio=%u set to input\n", gpio);
 
 	raw_spin_lock_irqsave(&gc->bgpio_lock, flags);
 

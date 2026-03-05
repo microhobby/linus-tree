@@ -1,0 +1,30 @@
+{
+    "name": "KernelDev-DevContainer",
+    "image": "pergamos/gaia-workspace-kernel-dev:latest",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "python.defaultInterpreterPath": "/usr/bin/python3"
+            },
+            "extensions": [
+                "microhobby.linuxkerneldev",
+                "idanp.checkpatch",
+                "ms-vscode.cpptools",
+                "microhobby.kgdb-debug"
+            ]
+        }
+    },
+    "privileged": true,
+    "runArgs": [
+        "--net=host",
+        "--cgroupns=host"
+    ],
+    "workspaceFolder": "/home/microhobby/projects/G/gaia/linux",
+    "containerUser": "gaia",
+    "mounts": [
+        "source=${localWorkspaceFolder}/../,target=/home/microhobby/projects/G/gaia,type=bind",
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+        "source=/dev,target=/dev,type=bind"
+    ]
+}

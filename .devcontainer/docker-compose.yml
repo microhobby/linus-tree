@@ -1,0 +1,22 @@
+services:
+  build:
+    build:
+      context: .
+      dockerfile: Containerfile
+    volumes:
+      - /home/microhobby/projects/G/gaia:/home/microhobby/projects/G/gaia
+    image: pergamos/gaia-workspace-kernel-dev:latest
+
+  dev:
+    volumes:
+      - /home/microhobby/projects/G/gaia:/home/microhobby/projects/G/gaia
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    environment:
+      - GUSER_ID=1000
+      - GGROUP_ID=1000
+    privileged: true
+    pid: host
+    network_mode: host
+    cgroup: host
+    image: pergamos/gaia-workspace-dev:latest
+    command: "bash"

@@ -1,0 +1,46 @@
+# using trixie as base image because we need podman v5.3.x
+FROM pergamos/podman:trixie
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    flex \
+    bison \
+    libssl-dev \
+    libelf-dev \
+    bc \
+    cpio \
+    kmod \
+    cpio \
+    dwarves \
+    python3-dev \
+    gdb-multiarch \
+    sudo
+
+RUN apt-get install -y \
+    universal-ctags \
+    git \
+    crash \
+    tio \
+    ssh
+
+COPY . /gaia
+
+WORKDIR /gaia
+
+# setup
+RUN chmod +x ./deps && \
+    ./deps
+
+# workspace will be mounted
+WORKDIR /home/microhobby/projects/G/gaia
+
+# create the gaia user
+RUN useradd -m -u 1000 -s /bin/bash gaia && \
+    echo "gaia ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/gaia && \
+    chmod -R 775 /root && \
+    echo "export GUSER_ID=1000" >> /etc/profile && \
+    echo "export GGROUP_ID=1000" >> /etc/profile
+
+USER gaia
+
+CMD [ "/usr/bin/bash" ]
